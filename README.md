@@ -1,4 +1,5 @@
-# MCAS Tracker
+# myMCAS
+# An MCAS Tracker
 
 ## Running the backend
 
