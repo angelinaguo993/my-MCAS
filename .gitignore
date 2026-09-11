@@ -5,3 +5,7 @@ __pycache__/
 .env
 *.db
 .DS_Store
+
+# Xcode user-specific state (not real code, shouldn't be tracked)
+*.xcuserstate
+xcuserdata/
