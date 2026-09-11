@@ -67,13 +67,21 @@ struct EpisodeDetailView: View {
                 .font(.headline)
                 .foregroundColor(Theme.textPrimary)
             ForEach(episode.symptoms) { symptom in
-                HStack {
-                    Text(symptom.category.displayName).font(.subheadline)
-                    Spacer()
-                    Text("\(symptom.severity)/10")
-                        .font(.subheadline.bold())
-                        .foregroundColor(Theme.accent)
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack {
+                        Text(symptom.category.displayName).font(.subheadline)
+                        Spacer()
+                        Text("\(symptom.severity)/10")
+                            .font(.subheadline.bold())
+                            .foregroundColor(Theme.accent)
+                    }
+                    if !symptom.specificSymptoms.isEmpty {
+                        Text(symptom.specificSymptoms.joined(separator: ", "))
+                            .font(.caption)
+                            .foregroundColor(Theme.textPrimary.opacity(0.6))
+                    }
                 }
+                .padding(.vertical, 2)
             }
         }
         .cardStyle()
@@ -109,11 +117,13 @@ struct EpisodeDetailView: View {
     }
 }
 
-#Preview {
-    EpisodeDetailView(episode: Episode(
-        id: 1,
-        triggers: [.stress, .highHistamineFood],
-        symptoms: [SymptomEntry(category: .gi, severity: 6)],
-        overallSeverity: 6
-    ))
+struct EpisodeDetailView_Previews: PreviewProvider {
+    static var previews: some View {
+        EpisodeDetailView(episode: Episode(
+            id: 1,
+            triggers: [.stress, .highHistamineFood],
+            symptoms: [SymptomEntry(category: .gi, severity: 6)],
+            overallSeverity: 6
+        ))
+    }
 }

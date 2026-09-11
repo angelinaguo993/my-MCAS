@@ -22,6 +22,7 @@ class EpisodeCreate(BaseModel):
     medication_taken: bool = False
     medication_name: Optional[str] = None
     medication_helped: Optional[bool] = None
+    food_eaten: Optional[str] = None
     notes: Optional[str] = None
 
 

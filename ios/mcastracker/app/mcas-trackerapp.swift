@@ -23,6 +23,8 @@ struct RootTabView: View {
     }
 }
 
-#Preview {
-    RootTabView()
+struct RootTabView_Previews: PreviewProvider {
+    static var previews: some View {
+        RootTabView()
+    }
 }

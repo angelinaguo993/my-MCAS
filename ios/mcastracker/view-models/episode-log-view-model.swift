@@ -6,10 +6,13 @@ final class EpisodeLogViewModel: ObservableObject {
     @Published var selectedTriggers: Set<Trigger> = []
     @Published var selectedSymptomCategories: Set<SymptomCategory> = []
     @Published var symptomSeverities: [SymptomCategory: Int] = [:]
+    @Published var specificSymptoms: [SymptomCategory: Set<String>] = [:]
     @Published var overallSeverity: Int = 5
+
     @Published var medicationTaken: Bool = false
     @Published var medicationName: String = ""
     @Published var medicationHelped: Bool = false
+    @Published var foodEaten: String = ""
     @Published var notes: String = ""
 
     @Published var isSubmitting = false
@@ -28,10 +31,26 @@ final class EpisodeLogViewModel: ObservableObject {
         if selectedSymptomCategories.contains(category) {
             selectedSymptomCategories.remove(category)
             symptomSeverities[category] = nil
+            specificSymptoms[category] = nil
         } else {
             selectedSymptomCategories.insert(category)
             symptomSeverities[category] = 5 // sensible default
         }
+    }
+
+    /// Checks/unchecks one specific symptom (e.g. "Hives") within a category.
+    func toggleSpecificSymptom(_ symptom: String, in category: SymptomCategory) {
+        var current = specificSymptoms[category] ?? []
+        if current.contains(symptom) {
+            current.remove(symptom)
+        } else {
+            current.insert(symptom)
+        }
+        specificSymptoms[category] = current
+    }
+
+    func isSpecificSymptomSelected(_ symptom: String, in category: SymptomCategory) -> Bool {
+        specificSymptoms[category]?.contains(symptom) ?? false
     }
 
     func severityBinding(for category: SymptomCategory) -> Binding<Int> {
@@ -55,7 +74,11 @@ final class EpisodeLogViewModel: ObservableObject {
         errorMessage = nil
 
         let symptoms = selectedSymptomCategories.map { category in
-            SymptomEntry(category: category, severity: symptomSeverities[category] ?? 5)
+            SymptomEntry(
+                category: category,
+                severity: symptomSeverities[category] ?? 5,
+                specificSymptoms: Array(specificSymptoms[category] ?? [])
+            )
         }
 
         let episode = Episode(
@@ -66,6 +89,7 @@ final class EpisodeLogViewModel: ObservableObject {
             medicationTaken: medicationTaken,
             medicationName: medicationTaken ? medicationName : nil,
             medicationHelped: medicationTaken ? medicationHelped : nil,
+            foodEaten: foodEaten.isEmpty ? nil : foodEaten,   // ← new
             notes: notes.isEmpty ? nil : notes
         )
 

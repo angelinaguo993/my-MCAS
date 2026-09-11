@@ -27,7 +27,9 @@ struct SeverityPickerView: View {
     }
 }
 
-#Preview {
-    SeverityPickerView(label: "Overall severity", value: .constant(6))
-        .padding()
+struct SeverityPickerView_Previews: PreviewProvider {
+    static var previews: some View {
+        SeverityPickerView(label: "Overall severity", value: .constant(6))
+            .padding()
+    }
 }

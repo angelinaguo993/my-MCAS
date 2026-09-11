@@ -14,6 +14,7 @@ struct EpisodeLogView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
                         triggersSection
+                        foodSection
                         symptomsSection
                         overallSeveritySection
                         medicationSection
@@ -37,7 +38,7 @@ struct EpisodeLogView: View {
                     Button("Cancel") { dismiss() }
                 }
             }
-            .onChange(of: viewModel.didSubmitSuccessfully) { _, didSucceed in
+            .onChange(of: viewModel.didSubmitSuccessfully) { didSucceed in
                 if didSucceed { dismiss() }
             }
             .overlay {
@@ -64,6 +65,19 @@ struct EpisodeLogView: View {
         .cardStyle()
     }
 
+    // MARK: Food
+
+    private var foodSection: some View {
+    VStack(alignment: .leading, spacing: 8) {
+        Text("What did you eat beforehand? (optional)")
+            .font(.headline)
+            .foregroundColor(Theme.textPrimary)
+        TextField("e.g. leftover pasta, aged cheese", text: $viewModel.foodEaten)
+            .textFieldStyle(.roundedBorder)
+        }
+        .cardStyle()
+    }
+
     // MARK: Symptoms
 
     private var symptomsSection: some View {
@@ -79,10 +93,15 @@ struct EpisodeLogView: View {
                 onTap: { viewModel.toggleSymptom($0) }
             )
 
-            // A severity slider appears for each symptom category the user selected,
-            // since severity can differ a lot by system (e.g. mild skin, severe GI).
+            // A severity slider + specific-symptom checklist appears for each
+            // category the user selected, since severity and exact symptoms
+            // can differ a lot by system (e.g. mild skin, severe GI).
             ForEach(SymptomCategory.allCases.filter { viewModel.selectedSymptomCategories.contains($0) }) { category in
-                SeverityPickerView(label: category.displayName, value: viewModel.severityBinding(for: category))
+                VStack(alignment: .leading, spacing: 10) {
+                    SeverityPickerView(label: category.displayName, value: viewModel.severityBinding(for: category))
+                    SpecificSymptomChecklist(category: category, viewModel: viewModel)
+                }
+                .padding(.top, 4)
             }
         }
         .cardStyle()
@@ -150,6 +169,42 @@ struct EpisodeLogView: View {
     }
 }
 
+/// Checklist of specific symptoms (e.g. "Hives", "Itching") shown under a
+/// category once it's selected — lets the user get more granular than just
+/// "skin symptoms happened," which is what actually makes cross-episode
+/// pattern detection (e.g. "GI flares specifically involve diarrhea, not
+/// bloating") possible later.
+private struct SpecificSymptomChecklist: View {
+    let category: SymptomCategory
+    @ObservedObject var viewModel: EpisodeLogViewModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Specific symptoms (optional)")
+                .font(.caption)
+                .foregroundColor(Theme.textPrimary.opacity(0.6))
+
+            ForEach(category.specificSymptoms, id: \.self) { symptom in
+                Button {
+                    viewModel.toggleSpecificSymptom(symptom, in: category)
+                } label: {
+                    HStack {
+                        Image(systemName: viewModel.isSpecificSymptomSelected(symptom, in: category)
+                              ? "checkmark.square.fill" : "square")
+                            .foregroundColor(viewModel.isSpecificSymptomSelected(symptom, in: category)
+                                             ? Theme.primary : .gray)
+                        Text(symptom)
+                            .font(.subheadline)
+                            .foregroundColor(Theme.textPrimary)
+                        Spacer()
+                    }
+                }
+            }
+        }
+        .padding(.leading, 4)
+    }
+}
+
 /// Small reusable "chip" multi-select grid — used for both the triggers
 /// list and the symptom-category list above.
 private struct FlowChips<Item: Identifiable & Hashable>: View {
@@ -180,6 +235,8 @@ private struct FlowChips<Item: Identifiable & Hashable>: View {
     }
 }
 
-#Preview {
-    EpisodeLogView()
+struct EpisodeLogView_Previews: PreviewProvider {
+    static var previews: some View {
+        EpisodeLogView()
+    }
 }

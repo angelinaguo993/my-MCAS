@@ -23,16 +23,41 @@ enum SymptomCategory: String, CaseIterable, Codable, Identifiable {
         case .general: return "General (fatigue)"
         }
     }
+
+    /// The specific, checkable symptoms shown once this category is selected.
+    /// Keeping this as a fixed list (rather than free text) means the analysis
+    /// engine can compare specific symptoms across episodes, not just categories.
+    var specificSymptoms: [String] {
+        switch self {
+        case .skin:
+            return ["Hives", "Flushing", "Itching", "Swelling"]
+        case .gi:
+            return ["Nausea", "Vomiting", "Diarrhea", "Cramping", "Bloating"]
+        case .respiratory:
+            return ["Wheezing", "Throat tightness", "Nasal congestion", "Shortness of breath"]
+        case .cardiovascular:
+            return ["Rapid heart rate", "Lightheadedness", "Low blood pressure", "Fainting"]
+        case .neurological:
+            return ["Brain fog", "Headache", "Anxiety-like symptoms", "Tremor"]
+        case .general:
+            return ["Fatigue", "Chills", "Malaise"]
+        }
+    }
 }
 
-/// One symptom entry within an episode — a category plus its own severity,
-/// since a single episode can hit multiple systems at different intensities.
+/// One symptom entry within an episode — a category, its own severity, and
+/// which specific symptoms within that category occurred (e.g. category
+/// "skin" with specificSymptoms ["Hives", "Itching"]). Specific symptoms are
+/// optional — a user can log just the category + severity without checking
+/// any boxes if they don't want to get that granular.
 struct SymptomEntry: Identifiable, Codable, Equatable {
     var id = UUID()
     var category: SymptomCategory
     var severity: Int // 1-10
+    var specificSymptoms: [String] = []
 
     enum CodingKeys: String, CodingKey {
         case category, severity
+        case specificSymptoms = "specific_symptoms"
     }
 }

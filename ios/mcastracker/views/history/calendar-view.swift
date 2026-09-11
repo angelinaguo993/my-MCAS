@@ -110,6 +110,8 @@ struct CalendarView: View {
     }
 }
 
-#Preview {
-    CalendarView()
+struct CalendarView_Previews: PreviewProvider {
+    static var previews: some View {
+        CalendarView()
+    }
 }
