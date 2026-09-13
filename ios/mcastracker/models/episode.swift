@@ -12,14 +12,15 @@ struct Episode: Identifiable, Codable, Equatable {
     var medicationTaken: Bool = false
     var medicationName: String? = nil
     var medicationHelped: Bool? = nil
+    var foodEaten: String? = nil
     var notes: String? = nil
 
-    var specificMedication: [String] {
-        switch self {
-        case .general:
-            return ["H1 Antihistamines", "H2 Antihistamines", "Mast Cell Stabilizers", "Leukotriene Inhbitors"]
-        }
-    }
+    // var specificMedication: [String] {
+    //     switch self {
+    //     case .general:
+    //         return ["H1 Antihistamines", "H2 Antihistamines", "Mast Cell Stabilizers", "Leukotriene Inhbitors"]
+    //     }
+    // }
 
     enum CodingKeys: String, CodingKey {
         case id, date, triggers, symptoms
@@ -27,6 +28,7 @@ struct Episode: Identifiable, Codable, Equatable {
         case medicationTaken = "medication_taken"
         case medicationName = "medication_name"
         case medicationHelped = "medication_helped"
+        case foodEaten = "food_eaten"
         case notes
     }
 }

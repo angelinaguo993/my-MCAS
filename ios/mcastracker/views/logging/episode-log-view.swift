@@ -129,6 +129,12 @@ struct EpisodeLogView: View {
                 .tint(Theme.primary)
 
             if viewModel.medicationTaken {
+                FlowChips(
+                    items: commonMedications,
+                    isSelected: { viewModel.medicationName == $0 },
+                    label: { $0 },
+                    onTap: { viewModel.medicationName = $0 }
+                )
                 TextField("Medication name", text: $viewModel.medicationName)
                     .textFieldStyle(.roundedBorder)
 
@@ -207,7 +213,7 @@ private struct SpecificSymptomChecklist: View {
 
 /// Small reusable "chip" multi-select grid — used for both the triggers
 /// list and the symptom-category list above.
-private struct FlowChips<Item: Identifiable & Hashable>: View {
+private struct FlowChips<Item: Hashable>: View {
     let items: [Item]
     let isSelected: (Item) -> Bool
     let label: (Item) -> String
@@ -217,7 +223,7 @@ private struct FlowChips<Item: Identifiable & Hashable>: View {
 
     var body: some View {
         LazyVGrid(columns: columns, alignment: .leading, spacing: 8) {
-            ForEach(items) { item in
+            ForEach(items, id: \.self) { item in
                 Button {
                     onTap(item)
                 } label: {
