@@ -14,7 +14,38 @@ final class APIClient {
 
     private let decoder: JSONDecoder = {
         let d = JSONDecoder()
-        d.dateDecodingStrategy = .iso8601
+        d.dateDecodingStrategy = .custom { decoder in
+            let container = try decoder.singleValueContainer()
+            let dateString = try container.decode(String.self)
+
+            // Try strict ISO8601 with fractional seconds first (e.g. "...T18:34:52.123Z")
+            let isoWithFraction = ISO8601DateFormatter()
+            isoWithFraction.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            if let date = isoWithFraction.date(from: dateString) { return date }
+
+            // Try strict ISO8601 without fractional seconds (e.g. "...T18:34:52Z")
+            let iso = ISO8601DateFormatter()
+            if let date = iso.date(from: dateString) { return date }
+
+            // Fall back to Python's default datetime.isoformat() output, which
+            // has no timezone letter at the end (e.g. "2026-09-13T18:34:52.765235")
+            let pythonWithMicroseconds = DateFormatter()
+            pythonWithMicroseconds.locale = Locale(identifier: "en_US_POSIX")
+            pythonWithMicroseconds.timeZone = TimeZone(identifier: "UTC")
+            pythonWithMicroseconds.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
+            if let date = pythonWithMicroseconds.date(from: dateString) { return date }
+
+            let pythonNoFraction = DateFormatter()
+            pythonNoFraction.locale = Locale(identifier: "en_US_POSIX")
+            pythonNoFraction.timeZone = TimeZone(identifier: "UTC")
+            pythonNoFraction.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+            if let date = pythonNoFraction.date(from: dateString) { return date }
+
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "Unrecognized date format: \(dateString)"
+            )
+        }
         return d
     }()
 

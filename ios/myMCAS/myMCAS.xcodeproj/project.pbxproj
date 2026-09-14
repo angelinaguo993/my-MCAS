@@ -29,6 +29,7 @@
 		E41B1C0C3052598800A467FA /* episode-detail-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BFA3052598700A467FA /* episode-detail-view.swift */; };
 		E41B1C0D3052598800A467FA /* calendar-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BFB3052598700A467FA /* calendar-view.swift */; };
 		E41B1C0E3052598800A467FA /* episode-log-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BFD3052598700A467FA /* episode-log-view.swift */; };
+		E46F70083057127C0063F1FF /* medication.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70073057127C0063F1FF /* medication.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,6 +75,7 @@
 		E41B1BFA3052598700A467FA /* episode-detail-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "episode-detail-view.swift"; sourceTree = "<group>"; };
 		E41B1BFB3052598700A467FA /* calendar-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "calendar-view.swift"; sourceTree = "<group>"; };
 		E41B1BFD3052598700A467FA /* episode-log-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "episode-log-view.swift"; sourceTree = "<group>"; };
+		E46F70073057127C0063F1FF /* medication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = medication.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -222,6 +224,7 @@
 		E41B1BE83052598700A467FA /* models */ = {
 			isa = PBXGroup;
 			children = (
+				E46F70073057127C0063F1FF /* medication.swift */,
 				E41B1BE93052598700A467FA /* trigger.swift */,
 				E41B1BEA3052598700A467FA /* symptom.swift */,
 				E41B1BEB3052598700A467FA /* episode.swift */,
@@ -425,6 +428,7 @@
 			files = (
 				E41B1C0D3052598800A467FA /* calendar-view.swift in Sources */,
 				E41B1C0A3052598800A467FA /* loading-view.swift in Sources */,
+				E46F70083057127C0063F1FF /* medication.swift in Sources */,
 				E41B1C013052598800A467FA /* trigger.swift in Sources */,
 				E41B1C003052598800A467FA /* apiclient.swift in Sources */,
 				E41B1C0E3052598800A467FA /* episode-log-view.swift in Sources */,

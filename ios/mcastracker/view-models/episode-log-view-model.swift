@@ -8,7 +8,6 @@ final class EpisodeLogViewModel: ObservableObject {
     @Published var symptomSeverities: [SymptomCategory: Int] = [:]
     @Published var specificSymptoms: [SymptomCategory: Set<String>] = [:]
     @Published var overallSeverity: Int = 5
-
     @Published var medicationTaken: Bool = false
     @Published var medicationName: String = ""
     @Published var medicationHelped: Bool = false
@@ -89,7 +88,7 @@ final class EpisodeLogViewModel: ObservableObject {
             medicationTaken: medicationTaken,
             medicationName: medicationTaken ? medicationName : nil,
             medicationHelped: medicationTaken ? medicationHelped : nil,
-            foodEaten: foodEaten.isEmpty ? nil : foodEaten,   // ← new
+            foodEaten: foodEaten.isEmpty ? nil : foodEaten,
             notes: notes.isEmpty ? nil : notes
         )
 
@@ -97,6 +96,7 @@ final class EpisodeLogViewModel: ObservableObject {
             _ = try await APIClient.shared.submitEpisode(episode)
             didSubmitSuccessfully = true
         } catch {
+            print("SUBMIT EPISODE FAILED:", error)  // TEMP DEBUG — check Xcode console for this
             errorMessage = "Couldn't save this episode. Check your connection and try again."
         }
 
