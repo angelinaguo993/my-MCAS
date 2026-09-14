@@ -16,6 +16,7 @@ final class HistoryViewModel: ObservableObject {
     func loadMonth(year: Int, month: Int) async {
         isLoading = true
         errorMessage = nil
+        episodes = []
         do {
             episodes = try await APIClient.shared.fetchEpisodes(year: year, month: month)
         } catch {
