@@ -49,7 +49,7 @@ def create_episode(payload: EpisodeCreate, db: Session = Depends(get_db)):
         symptoms=[s.model_dump() for s in payload.symptoms],
         overall_severity=payload.overall_severity,
         medication_taken=payload.medication_taken,
-        medication_name=payload.medication_name,
+        medication_names=payload.medication_names,
         medication_helped=payload.medication_helped,
         notes=payload.notes,
     )

@@ -20,7 +20,7 @@ class EpisodeCreate(BaseModel):
     symptoms: list[SymptomEntry] = []
     overall_severity: int = Field(ge=1, le=10)
     medication_taken: bool = False
-    medication_name: Optional[str] = None
+    medication_names: list[str] = []
     medication_helped: Optional[bool] = None
     notes: Optional[str] = None
 

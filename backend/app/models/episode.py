@@ -26,7 +26,7 @@ class Episode(Base):
     overall_severity = Column(Integer, nullable=False)  # 1-10
 
     medication_taken = Column(Boolean, default=False)
-    medication_name = Column(String, nullable=True)
+    medication_names = Column(JSON, default=list)
     medication_helped = Column(Boolean, nullable=True)
 
     notes = Column(String, nullable=True)
