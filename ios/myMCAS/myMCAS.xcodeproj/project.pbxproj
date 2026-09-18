@@ -12,7 +12,6 @@
 		E41B1BC43052586300A467FA /* myMCASTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BC33052586300A467FA /* myMCASTests.swift */; };
 		E41B1BCE3052586400A467FA /* myMCASUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BCD3052586400A467FA /* myMCASUITests.swift */; };
 		E41B1BD03052586400A467FA /* myMCASUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BCF3052586400A467FA /* myMCASUITestsLaunchTests.swift */; };
-		E41B1BFE3052598800A467FA /* mcas-trackerapp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BE03052598700A467FA /* mcas-trackerapp.swift */; };
 		E41B1BFF3052598800A467FA /* endpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BE23052598700A467FA /* endpoints.swift */; };
 		E41B1C003052598800A467FA /* apiclient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BE33052598700A467FA /* apiclient.swift */; };
 		E41B1C013052598800A467FA /* trigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BE93052598700A467FA /* trigger.swift */; };
@@ -30,6 +29,7 @@
 		E41B1C0D3052598800A467FA /* calendar-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BFB3052598700A467FA /* calendar-view.swift */; };
 		E41B1C0E3052598800A467FA /* episode-log-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BFD3052598700A467FA /* episode-log-view.swift */; };
 		E46F70083057127C0063F1FF /* medication.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70073057127C0063F1FF /* medication.swift */; };
+		E46F700A305A54300063F1FF /* mcas-trackerapp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F7009305A54300063F1FF /* mcas-trackerapp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,7 +58,6 @@
 		E41B1BC93052586400A467FA /* myMCASUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = myMCASUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E41B1BCD3052586400A467FA /* myMCASUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myMCASUITests.swift; sourceTree = "<group>"; };
 		E41B1BCF3052586400A467FA /* myMCASUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myMCASUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		E41B1BE03052598700A467FA /* mcas-trackerapp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "mcas-trackerapp.swift"; sourceTree = "<group>"; };
 		E41B1BE23052598700A467FA /* endpoints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = endpoints.swift; sourceTree = "<group>"; };
 		E41B1BE33052598700A467FA /* apiclient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = apiclient.swift; sourceTree = "<group>"; };
 		E41B1BE93052598700A467FA /* trigger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = trigger.swift; sourceTree = "<group>"; };
@@ -76,6 +75,7 @@
 		E41B1BFB3052598700A467FA /* calendar-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "calendar-view.swift"; sourceTree = "<group>"; };
 		E41B1BFD3052598700A467FA /* episode-log-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "episode-log-view.swift"; sourceTree = "<group>"; };
 		E46F70073057127C0063F1FF /* medication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = medication.swift; sourceTree = "<group>"; };
+		E46F7009305A54300063F1FF /* mcas-trackerapp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "mcas-trackerapp.swift"; path = "../../mcas-trackerapp.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,7 +176,7 @@
 		E41B1BDF3052598700A467FA /* app */ = {
 			isa = PBXGroup;
 			children = (
-				E41B1BE03052598700A467FA /* mcas-trackerapp.swift */,
+				E46F7009305A54300063F1FF /* mcas-trackerapp.swift */,
 			);
 			path = app;
 			sourceTree = "<group>";
@@ -437,12 +437,12 @@
 				E41B1C093052598800A467FA /* severity-picker-view.swift in Sources */,
 				E41B1C053052598800A467FA /* history-view-model.swift in Sources */,
 				E41B1C033052598800A467FA /* episode.swift in Sources */,
-				E41B1BFE3052598800A467FA /* mcas-trackerapp.swift in Sources */,
 				E41B1C063052598800A467FA /* dashboard-view-model.swift in Sources */,
 				E41B1C043052598800A467FA /* dashboardstats.swift in Sources */,
 				E41B1C023052598800A467FA /* symptom.swift in Sources */,
 				E41B1C0B3052598800A467FA /* dashboard-view.swift in Sources */,
 				E41B1C083052598800A467FA /* theme.swift in Sources */,
+				E46F700A305A54300063F1FF /* mcas-trackerapp.swift in Sources */,
 				E41B1C073052598800A467FA /* episode-log-view-model.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

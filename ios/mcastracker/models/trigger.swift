@@ -13,6 +13,7 @@ enum Trigger: String, CaseIterable, Codable, Identifiable {
     case alcohol = "alcohol"
     case lackOfSleep = "lack_of_sleep"
     case friction = "friction"
+    case other = "other"
 
     var id: String { rawValue }
 
@@ -27,6 +28,7 @@ enum Trigger: String, CaseIterable, Codable, Identifiable {
         case .alcohol: return "Alcohol"
         case .lackOfSleep: return "Lack of sleep"
         case .friction: return "Skin friction / pressure"
+        case .other: return "Other"
         }
     }
 }

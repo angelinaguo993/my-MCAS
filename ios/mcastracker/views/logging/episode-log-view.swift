@@ -14,7 +14,6 @@ struct EpisodeLogView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
                         triggersSection
-                        foodSection
                         symptomsSection
                         overallSeveritySection
                         medicationSection
@@ -61,19 +60,11 @@ struct EpisodeLogView: View {
                 label: { $0.displayName },
                 onTap: { viewModel.toggleTrigger($0) }
             )
-        }
-        .cardStyle()
-    }
 
-    // MARK: Food
-
-    private var foodSection: some View {
-    VStack(alignment: .leading, spacing: 8) {
-        Text("What did you eat beforehand? (optional)")
-            .font(.headline)
-            .foregroundColor(Theme.textPrimary)
-        TextField("e.g. leftover pasta, aged cheese", text: $viewModel.foodEaten)
-            .textFieldStyle(.roundedBorder)
+            if viewModel.selectedTriggers.contains(.other) {
+                TextField("Describe the trigger", text: $viewModel.otherTriggerDescription)
+                    .textFieldStyle(.roundedBorder)
+            }
         }
         .cardStyle()
     }
@@ -99,7 +90,12 @@ struct EpisodeLogView: View {
             ForEach(SymptomCategory.allCases.filter { viewModel.selectedSymptomCategories.contains($0) }) { category in
                 VStack(alignment: .leading, spacing: 10) {
                     SeverityPickerView(label: category.displayName, value: viewModel.severityBinding(for: category))
-                    SpecificSymptomChecklist(category: category, viewModel: viewModel)
+                    if category == .other {
+                        TextField("Describe the symptom", text: viewModel.otherSymptomDescriptionBinding())
+                            .textFieldStyle(.roundedBorder)
+                    } else {
+                        SpecificSymptomChecklist(category: category, viewModel: viewModel)
+                    }
                 }
                 .padding(.top, 4)
             }
@@ -131,11 +127,12 @@ struct EpisodeLogView: View {
             if viewModel.medicationTaken {
                 FlowChips(
                     items: commonMedications,
-                    isSelected: { viewModel.medicationName == $0 },
+                    isSelected: { viewModel.selectedMedications.contains($0) },
                     label: { $0 },
-                    onTap: { viewModel.medicationName = $0 }
+                    onTap: { viewModel.toggleMedication($0) }
                 )
-                TextField("Medication name", text: $viewModel.medicationName)
+
+                TextField("Other medication", text: $viewModel.otherMedicationName)
                     .textFieldStyle(.roundedBorder)
 
                 Toggle("Did it help?", isOn: $viewModel.medicationHelped)

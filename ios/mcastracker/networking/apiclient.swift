@@ -3,9 +3,18 @@ import Foundation
 /// One place for every network call the app makes. Views/ViewModels call
 /// these functions instead of using URLSession directly, so error handling
 /// and JSON decoding stay consistent everywhere.
-enum APIError: Error {
-    case badResponse
+enum APIError: Error, LocalizedError {
+    case badResponse(statusCode: Int, body: String)
     case decodingFailed
+
+    var errorDescription: String? {
+        switch self {
+        case .badResponse(let statusCode, let body):
+            return "Server returned \(statusCode): \(body)"
+        case .decodingFailed:
+            return "Failed to decode response"
+        }
+    }
 }
 
 final class APIClient {
@@ -58,7 +67,7 @@ final class APIClient {
     /// Flow 1: dashboard's "days since last episode" card.
     func fetchDashboard() async throws -> DashboardStats {
         let (data, response) = try await URLSession.shared.data(from: Endpoints.dashboard)
-        try validate(response)
+        try validate(response, data)
         return try decoder.decode(DashboardStats.self, from: data)
     }
 
@@ -70,20 +79,22 @@ final class APIClient {
         request.httpBody = try encoder.encode(episode)
 
         let (data, response) = try await URLSession.shared.data(for: request)
-        try validate(response)
+        try validate(response, data)
         return try decoder.decode(Episode.self, from: data)
     }
 
     /// Flow 3: calendar view — episodes for a given month.
     func fetchEpisodes(year: Int, month: Int) async throws -> [Episode] {
         let (data, response) = try await URLSession.shared.data(from: Endpoints.episodes(year: year, month: month))
-        try validate(response)
+        try validate(response, data)
         return try decoder.decode([Episode].self, from: data)
     }
 
-    private func validate(_ response: URLResponse) throws {
+    private func validate(_ response: URLResponse, _ data: Data) throws {
         guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
-            throw APIError.badResponse
+            let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
+            let body = String(data: data, encoding: .utf8) ?? "(no body)"
+            throw APIError.badResponse(statusCode: statusCode, body: body)
         }
     }
 }

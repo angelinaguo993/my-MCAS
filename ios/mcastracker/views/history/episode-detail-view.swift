@@ -93,7 +93,8 @@ struct EpisodeDetailView: View {
                 .font(.headline)
                 .foregroundColor(Theme.textPrimary)
             if episode.medicationTaken {
-                Text(episode.medicationName ?? "Taken").font(.subheadline)
+                Text(episode.medicationNames.isEmpty ? "Taken" : episode.medicationNames.joined(separator: ", "))
+                    .font(.subheadline)
                 if let helped = episode.medicationHelped {
                     Text(helped ? "Helped" : "Didn't help")
                         .font(.subheadline)

@@ -10,6 +10,7 @@ enum SymptomCategory: String, CaseIterable, Codable, Identifiable {
     case cardiovascular
     case neurological
     case general
+    case other
 
     var id: String { rawValue }
 
@@ -21,12 +22,17 @@ enum SymptomCategory: String, CaseIterable, Codable, Identifiable {
         case .cardiovascular: return "Cardiovascular (rapid heart rate, dizziness)"
         case .neurological: return "Neurological (brain fog, headache)"
         case .general: return "General (fatigue)"
+        case .other: return "Other"
         }
     }
 
     /// The specific, checkable symptoms shown once this category is selected.
     /// Keeping this as a fixed list (rather than free text) means the analysis
     /// engine can compare specific symptoms across episodes, not just categories.
+    /// ".other" has no fixed list — the View shows a text field for it instead,
+    /// and that typed description gets stored using this same specificSymptoms
+    /// array on SymptomEntry (see below), just with free text instead of a
+    /// pick from this list.
     var specificSymptoms: [String] {
         switch self {
         case .skin:
@@ -41,6 +47,8 @@ enum SymptomCategory: String, CaseIterable, Codable, Identifiable {
             return ["Brain fog", "Headache", "Anxiety-like symptoms", "Tremor"]
         case .general:
             return ["Fatigue", "Chills", "Malaise"]
+        case .other:
+            return []
         }
     }
 }
