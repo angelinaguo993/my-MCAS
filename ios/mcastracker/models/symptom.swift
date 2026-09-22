@@ -51,6 +51,19 @@ enum SymptomCategory: String, CaseIterable, Codable, Identifiable {
             return []
         }
     }
+    
+    /// SF Symbol shown alongside this category on the dashboard's insights cards.
+    var iconName: String {
+        switch self {
+        case .skin: return "bandage.fill"
+        case .gi: return "cross.case.fill"
+        case .respiratory: return "wind"
+        case .cardiovascular: return "heart.fill"
+        case .neurological: return "brain.head.profile"
+        case .general: return "figure.stand"
+        case .other: return "questionmark.circle.fill"
+        }
+    }
 }
 
 /// One symptom entry within an episode — a category, its own severity, and

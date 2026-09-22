@@ -19,7 +19,14 @@ enum APIError: Error, LocalizedError {
 
 final class APIClient {
     static let shared = APIClient()
-    private init() {}
+
+    private let session: URLSession
+
+    private init() {
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = 90
+        session = URLSession(configuration: config)
+    }
 
     private let decoder: JSONDecoder = {
         let d = JSONDecoder()
@@ -27,17 +34,13 @@ final class APIClient {
             let container = try decoder.singleValueContainer()
             let dateString = try container.decode(String.self)
 
-            // Try strict ISO8601 with fractional seconds first (e.g. "...T18:34:52.123Z")
             let isoWithFraction = ISO8601DateFormatter()
             isoWithFraction.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
             if let date = isoWithFraction.date(from: dateString) { return date }
 
-            // Try strict ISO8601 without fractional seconds (e.g. "...T18:34:52Z")
             let iso = ISO8601DateFormatter()
             if let date = iso.date(from: dateString) { return date }
 
-            // Fall back to Python's default datetime.isoformat() output, which
-            // has no timezone letter at the end (e.g. "2026-09-13T18:34:52.765235")
             let pythonWithMicroseconds = DateFormatter()
             pythonWithMicroseconds.locale = Locale(identifier: "en_US_POSIX")
             pythonWithMicroseconds.timeZone = TimeZone(identifier: "UTC")
@@ -66,7 +69,7 @@ final class APIClient {
 
     /// Flow 1: dashboard's "days since last episode" card.
     func fetchDashboard() async throws -> DashboardStats {
-        let (data, response) = try await URLSession.shared.data(from: Endpoints.dashboard)
+        let (data, response) = try await session.data(from: Endpoints.dashboard)
         try validate(response, data)
         return try decoder.decode(DashboardStats.self, from: data)
     }
@@ -78,16 +81,23 @@ final class APIClient {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try encoder.encode(episode)
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await session.data(for: request)
         try validate(response, data)
         return try decoder.decode(Episode.self, from: data)
     }
 
     /// Flow 3: calendar view — episodes for a given month.
     func fetchEpisodes(year: Int, month: Int) async throws -> [Episode] {
-        let (data, response) = try await URLSession.shared.data(from: Endpoints.episodes(year: year, month: month))
+        let (data, response) = try await session.data(from: Endpoints.episodes(year: year, month: month))
         try validate(response, data)
         return try decoder.decode([Episode].self, from: data)
+    }
+
+    /// Dashboard's trigger/symptom/medication summary cards.
+    func fetchInsights() async throws -> InsightsResponse {
+        let (data, response) = try await session.data(from: Endpoints.insights)
+        try validate(response, data)
+        return try decoder.decode(InsightsResponse.self, from: data)
     }
 
     private func validate(_ response: URLResponse, _ data: Data) throws {

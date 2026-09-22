@@ -8,6 +8,7 @@ enum Endpoints {
 
     static var dashboard: URL { URL(string: "\(baseURL)/dashboard")! }
     static var episodes: URL { URL(string: "\(baseURL)/episodes")! }
+    static var insights: URL { URL(string: "\(baseURL)/insights")! }
     static func episode(id: Int) -> URL { URL(string: "\(baseURL)/episodes/\(id)")! }
 
     /// For the calendar view, fetching one month at a time.

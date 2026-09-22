@@ -30,6 +30,7 @@
 		E41B1C0E3052598800A467FA /* episode-log-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BFD3052598700A467FA /* episode-log-view.swift */; };
 		E46F70083057127C0063F1FF /* medication.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70073057127C0063F1FF /* medication.swift */; };
 		E46F700A305A54300063F1FF /* mcas-trackerapp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F7009305A54300063F1FF /* mcas-trackerapp.swift */; };
+		E46F700C306228920063F1FF /* insights.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F700B306228920063F1FF /* insights.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +77,7 @@
 		E41B1BFD3052598700A467FA /* episode-log-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "episode-log-view.swift"; sourceTree = "<group>"; };
 		E46F70073057127C0063F1FF /* medication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = medication.swift; sourceTree = "<group>"; };
 		E46F7009305A54300063F1FF /* mcas-trackerapp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "mcas-trackerapp.swift"; path = "../../mcas-trackerapp.swift"; sourceTree = "<group>"; };
+		E46F700B306228920063F1FF /* insights.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = insights.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -224,6 +226,7 @@
 		E41B1BE83052598700A467FA /* models */ = {
 			isa = PBXGroup;
 			children = (
+				E46F700B306228920063F1FF /* insights.swift */,
 				E46F70073057127C0063F1FF /* medication.swift */,
 				E41B1BE93052598700A467FA /* trigger.swift */,
 				E41B1BEA3052598700A467FA /* symptom.swift */,
@@ -438,6 +441,7 @@
 				E41B1C053052598800A467FA /* history-view-model.swift in Sources */,
 				E41B1C033052598800A467FA /* episode.swift in Sources */,
 				E41B1C063052598800A467FA /* dashboard-view-model.swift in Sources */,
+				E46F700C306228920063F1FF /* insights.swift in Sources */,
 				E41B1C043052598800A467FA /* dashboardstats.swift in Sources */,
 				E41B1C023052598800A467FA /* symptom.swift in Sources */,
 				E41B1C0B3052598800A467FA /* dashboard-view.swift in Sources */,

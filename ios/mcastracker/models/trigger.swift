@@ -31,4 +31,25 @@ enum Trigger: String, CaseIterable, Codable, Identifiable {
         case .other: return "Other"
         }
     }
+
+    /// SF Symbol shown alongside this trigger on the dashboard's insights cards.
+    var iconName: String {
+        switch self {
+        case .highHistamineFood: return "fork.knife"
+        case .heat: return "sun.max.fill"
+        case .cold: return "snowflake"
+        case .stress: return "bolt.fill"
+        case .exercise: return "figure.run"
+        case .fragrance: return "wind"
+        case .alcohol: return "wineglass.fill"
+        case .lackOfSleep: return "bed.double.fill"
+        case .friction: return "hand.raised.fill"
+        case .other: return "questionmark.circle.fill"
+        }
+    }
+
+    /// Looks up a Trigger by its raw backend string (e.g. "stress").
+    static func from(rawValue: String) -> Trigger? {
+        Trigger(rawValue: rawValue)
+    }
 }
