@@ -16,12 +16,14 @@ final class DashboardViewModel: ObservableObject {
         do {
             stats = try await APIClient.shared.fetchDashboard()
         } catch {
+            print("DASHBOARD FETCH FAILED: ", error)
             encounteredError = true
         }
 
         do {
             insights = try await APIClient.shared.fetchInsights()
         } catch {
+            print("INSIGHTS FETCH FAILED: ", error)
             insights = nil  // clear stale data rather than leaving an outdated card on screen
             encounteredError = true
         }
