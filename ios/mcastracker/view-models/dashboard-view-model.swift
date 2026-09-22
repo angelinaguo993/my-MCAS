@@ -10,16 +10,26 @@ final class DashboardViewModel: ObservableObject {
     func loadDashboard() async {
         isLoading = true
         errorMessage = nil
+
+        var encounteredError = false
+
         do {
-            // Fetch both at once rather than one after another, so the
-            // dashboard doesn't wait twice as long to appear.
-            async let statsResult = APIClient.shared.fetchDashboard()
-            async let insightsResult = APIClient.shared.fetchInsights()
-            stats = try await statsResult
-            insights = try await insightsResult
+            stats = try await APIClient.shared.fetchDashboard()
         } catch {
+            encounteredError = true
+        }
+
+        do {
+            insights = try await APIClient.shared.fetchInsights()
+        } catch {
+            insights = nil  // clear stale data rather than leaving an outdated card on screen
+            encounteredError = true
+        }
+
+        if encounteredError {
             errorMessage = "Couldn't load your dashboard. Pull down to try again."
         }
+
         isLoading = false
     }
 }
