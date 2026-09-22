@@ -21,7 +21,7 @@ def generate_insights(episodes: list) -> dict:
             "recent_trend": None,
         }
 
-    severities = [ep.severity for ep in episodes]
+    severities = [ep.overall_severity for ep in episodes]
     average_severity = round(sum(severities) / len(severities), 1)
     return {
         "has_enough_data": True,
