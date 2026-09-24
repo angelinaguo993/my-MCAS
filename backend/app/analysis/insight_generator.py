@@ -56,6 +56,6 @@ def _recent_trend(episodes: list) -> dict:
 
     return {
         "direction": direction,
-        "last_14": last_14,
-        "prior_14": prior_14,
+        "episodes_last_14_days": last_14,
+        "episodes_prior_14_days": prior_14,
     }
