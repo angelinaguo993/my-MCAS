@@ -38,7 +38,7 @@ def _recent_trend(episodes: list) -> dict:
     now = datetime.now(timezone.utc)
 
     def _aware(dt):
-        return dt if tz.info else dt.replace(tzinfo=timezone.utc)
+        return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
     last_14 = sum(1 for ep in episodes if _aware(ep.date) >= now - timedelta(days=14))
     prior_14 = sum(
         1 for ep in episodes
