@@ -38,3 +38,27 @@ class DashboardResponse(BaseModel):
     days_since_last_episode: Optional[int]  # None if no episodes logged yet
     last_episode_date: Optional[datetime]
     total_episodes_logged: int
+
+class FrequencyStat(BaseModel):
+    name: str
+    proportion: float
+    lower: float
+    upper: float
+    sample_size: int
+
+
+class TrendInfo(BaseModel):
+    episodes_last_14_days: int
+    episodes_prior_14_days: int
+    direction: str  # "up" | "down" | "flat"
+
+
+class InsightsResponse(BaseModel):
+    has_enough_data: bool
+    total_episodes: int
+    episodes_needed: int
+    average_severity: Optional[float]
+    top_triggers: list[FrequencyStat]
+    top_symptom_categories: list[FrequencyStat]
+    medication_effectiveness: list[FrequencyStat]
+    recent_trend: Optional[TrendInfo]

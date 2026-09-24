@@ -10,7 +10,7 @@ struct Episode: Identifiable, Codable, Equatable {
     var symptoms: [SymptomEntry] = []
     var overallSeverity: Int = 5   // 1-10
     var medicationTaken: Bool = false
-    var medicationName: String? = nil
+    var medicationNames: [String] = []
     var medicationHelped: Bool? = nil
     var foodEaten: String? = nil
     var notes: String? = nil
@@ -26,7 +26,7 @@ struct Episode: Identifiable, Codable, Equatable {
         case id, date, triggers, symptoms
         case overallSeverity = "overall_severity"
         case medicationTaken = "medication_taken"
-        case medicationName = "medication_name"
+        case medicationNames = "medication_names"
         case medicationHelped = "medication_helped"
         case foodEaten = "food_eaten"
         case notes
