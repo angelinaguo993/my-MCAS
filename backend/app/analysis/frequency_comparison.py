@@ -8,8 +8,9 @@ def trigger_frequencies(episodes: list) -> list[dict]:
 
     counts = Counter()
     for ep in episodes:
-        for trigger in ep.symptoms or []:
-            counts[trigger] += 1
+        for trigger in ep.triggers or []:
+            if isinstance(trigger, str):
+                counts[trigger] += 1
 
     results = []
     for trigger, count in counts.items():
