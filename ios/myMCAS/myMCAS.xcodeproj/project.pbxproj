@@ -24,13 +24,17 @@
 		E41B1C083052598800A467FA /* theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BF23052598700A467FA /* theme.swift */; };
 		E41B1C093052598800A467FA /* severity-picker-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BF53052598700A467FA /* severity-picker-view.swift */; };
 		E41B1C0A3052598800A467FA /* loading-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BF63052598700A467FA /* loading-view.swift */; };
-		E41B1C0B3052598800A467FA /* dashboard-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BF83052598700A467FA /* dashboard-view.swift */; };
-		E41B1C0C3052598800A467FA /* episode-detail-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BFA3052598700A467FA /* episode-detail-view.swift */; };
-		E41B1C0D3052598800A467FA /* calendar-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BFB3052598700A467FA /* calendar-view.swift */; };
 		E41B1C0E3052598800A467FA /* episode-log-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BFD3052598700A467FA /* episode-log-view.swift */; };
 		E46F70083057127C0063F1FF /* medication.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70073057127C0063F1FF /* medication.swift */; };
-		E46F700A305A54300063F1FF /* mcas-trackerapp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F7009305A54300063F1FF /* mcas-trackerapp.swift */; };
 		E46F700C306228920063F1FF /* insights.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F700B306228920063F1FF /* insights.swift */; };
+		E46F70173064E1750063F1FF /* analytics-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F700E3064E1750063F1FF /* analytics-view.swift */; };
+		E46F70183064E1750063F1FF /* dashboard-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70103064E1750063F1FF /* dashboard-view.swift */; };
+		E46F70193064E1750063F1FF /* discover-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70123064E1750063F1FF /* discover-view.swift */; };
+		E46F701A3064E1750063F1FF /* episode-detail-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70143064E1750063F1FF /* episode-detail-view.swift */; };
+		E46F701B3064E1750063F1FF /* calendar-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70153064E1750063F1FF /* calendar-view.swift */; };
+		E46F701C3064E1750063F1FF /* day-episodes-list-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70163064E1750063F1FF /* day-episodes-list-view.swift */; };
+		E46F701E3064E2B60063F1FF /* analytics-view-model.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F701D3064E2B60063F1FF /* analytics-view-model.swift */; };
+		E46F7020306632FE0063F1FF /* mcas-trackerapp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F701F306632FE0063F1FF /* mcas-trackerapp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,13 +75,17 @@
 		E41B1BF23052598700A467FA /* theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = theme.swift; sourceTree = "<group>"; };
 		E41B1BF53052598700A467FA /* severity-picker-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "severity-picker-view.swift"; sourceTree = "<group>"; };
 		E41B1BF63052598700A467FA /* loading-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "loading-view.swift"; sourceTree = "<group>"; };
-		E41B1BF83052598700A467FA /* dashboard-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "dashboard-view.swift"; sourceTree = "<group>"; };
-		E41B1BFA3052598700A467FA /* episode-detail-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "episode-detail-view.swift"; sourceTree = "<group>"; };
-		E41B1BFB3052598700A467FA /* calendar-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "calendar-view.swift"; sourceTree = "<group>"; };
 		E41B1BFD3052598700A467FA /* episode-log-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "episode-log-view.swift"; sourceTree = "<group>"; };
 		E46F70073057127C0063F1FF /* medication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = medication.swift; sourceTree = "<group>"; };
-		E46F7009305A54300063F1FF /* mcas-trackerapp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "mcas-trackerapp.swift"; path = "../../mcas-trackerapp.swift"; sourceTree = "<group>"; };
 		E46F700B306228920063F1FF /* insights.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = insights.swift; sourceTree = "<group>"; };
+		E46F700E3064E1750063F1FF /* analytics-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "analytics-view.swift"; sourceTree = "<group>"; };
+		E46F70103064E1750063F1FF /* dashboard-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "dashboard-view.swift"; sourceTree = "<group>"; };
+		E46F70123064E1750063F1FF /* discover-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "discover-view.swift"; sourceTree = "<group>"; };
+		E46F70143064E1750063F1FF /* episode-detail-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "episode-detail-view.swift"; sourceTree = "<group>"; };
+		E46F70153064E1750063F1FF /* calendar-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "calendar-view.swift"; sourceTree = "<group>"; };
+		E46F70163064E1750063F1FF /* day-episodes-list-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "day-episodes-list-view.swift"; sourceTree = "<group>"; };
+		E46F701D3064E2B60063F1FF /* analytics-view-model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "analytics-view-model.swift"; sourceTree = "<group>"; };
+		E46F701F306632FE0063F1FF /* mcas-trackerapp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "mcas-trackerapp.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -178,7 +186,7 @@
 		E41B1BDF3052598700A467FA /* app */ = {
 			isa = PBXGroup;
 			children = (
-				E46F7009305A54300063F1FF /* mcas-trackerapp.swift */,
+				E46F701F306632FE0063F1FF /* mcas-trackerapp.swift */,
 			);
 			path = app;
 			sourceTree = "<group>";
@@ -239,6 +247,7 @@
 		E41B1BED3052598700A467FA /* view-models */ = {
 			isa = PBXGroup;
 			children = (
+				E46F701D3064E2B60063F1FF /* analytics-view-model.swift */,
 				E41B1BEE3052598700A467FA /* history-view-model.swift */,
 				E41B1BEF3052598700A467FA /* dashboard-view-model.swift */,
 				E41B1BF03052598700A467FA /* episode-log-view-model.swift */,
@@ -257,6 +266,10 @@
 		E41B1BF33052598700A467FA /* views */ = {
 			isa = PBXGroup;
 			children = (
+				E46F700D3064E1750063F1FF /* analytics */,
+				E46F70133064E1750063F1FF /* calendar */,
+				E46F70113064E1750063F1FF /* discover */,
+				E46F700F3064E1750063F1FF /* home */,
 				E41B1BF43052598700A467FA /* shared */,
 				E41B1BF73052598700A467FA /* dashboard */,
 				E41B1BF93052598700A467FA /* history */,
@@ -277,7 +290,6 @@
 		E41B1BF73052598700A467FA /* dashboard */ = {
 			isa = PBXGroup;
 			children = (
-				E41B1BF83052598700A467FA /* dashboard-view.swift */,
 			);
 			path = dashboard;
 			sourceTree = "<group>";
@@ -285,8 +297,6 @@
 		E41B1BF93052598700A467FA /* history */ = {
 			isa = PBXGroup;
 			children = (
-				E41B1BFA3052598700A467FA /* episode-detail-view.swift */,
-				E41B1BFB3052598700A467FA /* calendar-view.swift */,
 			);
 			path = history;
 			sourceTree = "<group>";
@@ -297,6 +307,40 @@
 				E41B1BFD3052598700A467FA /* episode-log-view.swift */,
 			);
 			path = logging;
+			sourceTree = "<group>";
+		};
+		E46F700D3064E1750063F1FF /* analytics */ = {
+			isa = PBXGroup;
+			children = (
+				E46F700E3064E1750063F1FF /* analytics-view.swift */,
+			);
+			path = analytics;
+			sourceTree = "<group>";
+		};
+		E46F700F3064E1750063F1FF /* home */ = {
+			isa = PBXGroup;
+			children = (
+				E46F70103064E1750063F1FF /* dashboard-view.swift */,
+			);
+			path = home;
+			sourceTree = "<group>";
+		};
+		E46F70113064E1750063F1FF /* discover */ = {
+			isa = PBXGroup;
+			children = (
+				E46F70123064E1750063F1FF /* discover-view.swift */,
+			);
+			path = discover;
+			sourceTree = "<group>";
+		};
+		E46F70133064E1750063F1FF /* calendar */ = {
+			isa = PBXGroup;
+			children = (
+				E46F70143064E1750063F1FF /* episode-detail-view.swift */,
+				E46F70153064E1750063F1FF /* calendar-view.swift */,
+				E46F70163064E1750063F1FF /* day-episodes-list-view.swift */,
+			);
+			path = calendar;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -429,24 +473,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E41B1C0D3052598800A467FA /* calendar-view.swift in Sources */,
 				E41B1C0A3052598800A467FA /* loading-view.swift in Sources */,
 				E46F70083057127C0063F1FF /* medication.swift in Sources */,
+				E46F701B3064E1750063F1FF /* calendar-view.swift in Sources */,
 				E41B1C013052598800A467FA /* trigger.swift in Sources */,
 				E41B1C003052598800A467FA /* apiclient.swift in Sources */,
 				E41B1C0E3052598800A467FA /* episode-log-view.swift in Sources */,
+				E46F70183064E1750063F1FF /* dashboard-view.swift in Sources */,
+				E46F70173064E1750063F1FF /* analytics-view.swift in Sources */,
 				E41B1BFF3052598800A467FA /* endpoints.swift in Sources */,
-				E41B1C0C3052598800A467FA /* episode-detail-view.swift in Sources */,
 				E41B1C093052598800A467FA /* severity-picker-view.swift in Sources */,
+				E46F701A3064E1750063F1FF /* episode-detail-view.swift in Sources */,
+				E46F701C3064E1750063F1FF /* day-episodes-list-view.swift in Sources */,
 				E41B1C053052598800A467FA /* history-view-model.swift in Sources */,
 				E41B1C033052598800A467FA /* episode.swift in Sources */,
+				E46F701E3064E2B60063F1FF /* analytics-view-model.swift in Sources */,
 				E41B1C063052598800A467FA /* dashboard-view-model.swift in Sources */,
 				E46F700C306228920063F1FF /* insights.swift in Sources */,
 				E41B1C043052598800A467FA /* dashboardstats.swift in Sources */,
 				E41B1C023052598800A467FA /* symptom.swift in Sources */,
-				E41B1C0B3052598800A467FA /* dashboard-view.swift in Sources */,
+				E46F7020306632FE0063F1FF /* mcas-trackerapp.swift in Sources */,
+				E46F70193064E1750063F1FF /* discover-view.swift in Sources */,
 				E41B1C083052598800A467FA /* theme.swift in Sources */,
-				E46F700A305A54300063F1FF /* mcas-trackerapp.swift in Sources */,
 				E41B1C073052598800A467FA /* episode-log-view-model.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -1,7 +1,9 @@
 import SwiftUI
 
-/// Core Flow 1: user opens the dashboard, sees days since their last
-/// episode, and taps "Record Episode" to start the survey.
+/// Home tab: user opens the dashboard, sees days since their last
+/// episode, and taps "Record Episode" to start the survey. Also shows
+/// which medications the user uses (trigger/symptom pattern cards live
+/// on the Analytics tab instead — see analytics-view.swift).
 struct DashboardView: View {
     @StateObject private var viewModel = DashboardViewModel()
     @State private var showingEpisodeLog = false
@@ -21,8 +23,8 @@ struct DashboardView: View {
                             }
                             daysSinceCard
                             totalLoggedCard
-                            if let insights = viewModel.insights {
-                                insightsSection(insights)
+                            if let insights = viewModel.insights, insights.hasEnoughData {
+                                medicationsUsedCard(insights.medicationEffectiveness)
                             }
                             recordButton
                         }
@@ -30,7 +32,7 @@ struct DashboardView: View {
                     }
                 }
             }
-            .navigationTitle("MCAS Tracker")
+            .navigationTitle("Home")
             .task { await viewModel.loadDashboard() }
             .refreshable { await viewModel.loadDashboard() }
             .sheet(isPresented: $showingEpisodeLog, onDismiss: {
@@ -110,73 +112,6 @@ struct DashboardView: View {
         .cardStyle()
     }
 
-    @ViewBuilder
-    private func insightsSection(_ insights: InsightsResponse) -> some View {
-        if !insights.hasEnoughData {
-            notEnoughDataCard(insights)
-        } else {
-            topTriggersCard(insights.topTriggers)
-            topSymptomsCard(insights.topSymptomCategories)
-            medicationsUsedCard(insights.medicationEffectiveness)
-        }
-    }
-
-    private func notEnoughDataCard(_ insights: InsightsResponse) -> some View {
-        VStack(spacing: 6) {
-            Text("Not enough data yet")
-                .font(.subheadline.bold())
-                .foregroundColor(Theme.textPrimary)
-            Text("Log \(insights.episodesNeeded) more episode\(insights.episodesNeeded == 1 ? "" : "s") to start seeing your patterns.")
-                .font(.caption)
-                .multilineTextAlignment(.center)
-                .foregroundColor(Theme.textPrimary.opacity(0.6))
-        }
-        .frame(maxWidth: .infinity)
-        .cardStyle()
-    }
-
-    private func topTriggersCard(_ triggers: [FrequencyStat]) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Your Most Common Triggers")
-                .font(.headline)
-                .foregroundColor(Theme.textPrimary)
-
-            if triggers.isEmpty {
-                Text("No triggers logged yet").font(.caption).foregroundColor(.gray)
-            } else {
-                ForEach(triggers) { stat in
-                    insightRow(
-                        icon: Trigger.from(rawValue: stat.name)?.iconName ?? "questionmark.circle.fill",
-                        label: Trigger.from(rawValue: stat.name)?.displayName ?? stat.name,
-                        proportion: stat.proportion
-                    )
-                }
-            }
-        }
-        .cardStyle()
-    }
-
-    private func topSymptomsCard(_ symptoms: [FrequencyStat]) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Your Most Common Symptoms")
-                .font(.headline)
-                .foregroundColor(Theme.textPrimary)
-
-            if symptoms.isEmpty {
-                Text("No symptoms logged yet").font(.caption).foregroundColor(.gray)
-            } else {
-                ForEach(symptoms) { stat in
-                    insightRow(
-                        icon: SymptomCategory(rawValue: stat.name)?.iconName ?? "questionmark.circle.fill",
-                        label: SymptomCategory(rawValue: stat.name)?.displayName ?? stat.name,
-                        proportion: stat.proportion
-                    )
-                }
-            }
-        }
-        .cardStyle()
-    }
-
     private func medicationsUsedCard(_ medications: [FrequencyStat]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Medications You Use")
@@ -203,24 +138,6 @@ struct DashboardView: View {
             }
         }
         .cardStyle()
-    }
-
-    /// One row: icon, name, and how often it shows up (as a rounded percentage).
-    /// The confidence interval (stat.lower/upper) is computed but not shown here
-    /// to keep the dashboard simple — worth surfacing later in a detail view.
-    private func insightRow(icon: String, label: String, proportion: Double) -> some View {
-        HStack {
-            Image(systemName: icon)
-                .foregroundColor(Theme.primary)
-                .frame(width: 24)
-            Text(label)
-                .font(.subheadline)
-                .foregroundColor(Theme.textPrimary)
-            Spacer()
-            Text("\(Int(proportion * 100))%")
-                .font(.caption.bold())
-                .foregroundColor(Theme.accent)
-        }
     }
 }
 
