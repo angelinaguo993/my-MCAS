@@ -4,14 +4,12 @@ import SwiftUI
 @MainActor
 final class EpisodeLogViewModel: ObservableObject {
     @Published var selectedTriggers: Set<Trigger> = []
-    @Published var otherTriggerDescription: String = ""
     @Published var selectedSymptomCategories: Set<SymptomCategory> = []
     @Published var symptomSeverities: [SymptomCategory: Int] = [:]
     @Published var specificSymptoms: [SymptomCategory: Set<String>] = [:]
     @Published var overallSeverity: Int = 5
     @Published var medicationTaken: Bool = false
-    @Published var selectedMedications: Set<String> = []
-    @Published var otherMedicationName: String = ""
+    @Published var medicationName: String = ""
     @Published var medicationHelped: Bool = false
     @Published var notes: String = ""
 
@@ -60,23 +58,6 @@ final class EpisodeLogViewModel: ObservableObject {
         )
     }
 
-    /// For category .other, reuses the same specificSymptoms storage to hold
-    /// one free-typed description instead of a checked list from a fixed set.
-    func otherSymptomDescriptionBinding() -> Binding<String> {
-        Binding(
-            get: { self.specificSymptoms[.other]?.first ?? "" },
-            set: { self.specificSymptoms[.other] = $0.isEmpty ? [] : [$0] }
-        )
-    }
-
-    func toggleMedication(_ medication: String) {
-        if selectedMedications.contains(medication) {
-            selectedMedications.remove(medication)
-        } else {
-            selectedMedications.insert(medication)
-        }
-    }
-
     var canSubmit: Bool {
         !selectedSymptomCategories.isEmpty
     }
@@ -98,26 +79,15 @@ final class EpisodeLogViewModel: ObservableObject {
             )
         }
 
-        var combinedNotes = notes
-        if selectedTriggers.contains(.other), !otherTriggerDescription.isEmpty {
-            let triggerNote = "Other trigger: \(otherTriggerDescription)"
-            combinedNotes = combinedNotes.isEmpty ? triggerNote : "\(combinedNotes)\n\(triggerNote)"
-        }
-
-        var medicationNames = Array(selectedMedications)
-        if !otherMedicationName.isEmpty {
-            medicationNames.append(otherMedicationName)
-        }
-
         let episode = Episode(
             date: Date(),
             triggers: Array(selectedTriggers),
             symptoms: symptoms,
             overallSeverity: overallSeverity,
             medicationTaken: medicationTaken,
-            medicationNames: medicationTaken ? medicationNames : [],
+            medicationName: medicationTaken ? medicationName : nil,
             medicationHelped: medicationTaken ? medicationHelped : nil,
-            notes: combinedNotes.isEmpty ? nil : combinedNotes
+            notes: notes.isEmpty ? nil : notes
         )
 
         do {

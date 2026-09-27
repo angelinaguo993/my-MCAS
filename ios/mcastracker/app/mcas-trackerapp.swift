@@ -2,9 +2,18 @@ import SwiftUI
 
 @main
 struct MCASTrackerApp: App {
+    @StateObject private var profileStore = UserProfileStore()
+
     var body: some Scene {
         WindowGroup {
-            RootTabView()
+            Group {
+                if profileStore.hasCompletedOnboarding {
+                    RootTabView()
+                } else {
+                    OnboardingView()
+                }
+            }
+            .environmentObject(profileStore)
         }
     }
 }
@@ -32,6 +41,6 @@ struct RootTabView: View {
 
 struct RootTabView_Previews: PreviewProvider {
     static var previews: some View {
-        RootTabView()
+        RootTabView().environmentObject(UserProfileStore())
     }
 }

@@ -7,6 +7,7 @@ import SwiftUI
 struct DashboardView: View {
     @StateObject private var viewModel = DashboardViewModel()
     @State private var showingEpisodeLog = false
+    @State private var showingSettings = false
 
     var body: some View {
         NavigationStack {
@@ -33,12 +34,25 @@ struct DashboardView: View {
                 }
             }
             .navigationTitle("Home")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showingSettings = true
+                    } label: {
+                        Image(systemName: "gearshape.fill")
+                            .foregroundColor(Theme.primary)
+                    }
+                }
+            }
             .task { await viewModel.loadDashboard() }
             .refreshable { await viewModel.loadDashboard() }
             .sheet(isPresented: $showingEpisodeLog, onDismiss: {
                 Task { await viewModel.loadDashboard() }
             }) {
                 EpisodeLogView()
+            }
+            .sheet(isPresented: $showingSettings) {
+                SettingsView()
             }
         }
     }
