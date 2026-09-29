@@ -38,7 +38,7 @@
 		E46F70233069C4EA0063F1FF /* onboarding-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70223069C4EA0063F1FF /* onboarding-view.swift */; };
 		E46F70263069C4FC0063F1FF /* settings-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70253069C4FC0063F1FF /* settings-view.swift */; };
 		E46F70283069C5200063F1FF /* userprofile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70273069C5200063F1FF /* userprofile.swift */; };
-		E46F702A3069C5380063F1FF /* user-profile-store.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70293069C5370063F1FF /* user-profile-store.swift */; };
+		E46F702C306B6EAA0063F1FF /* user-profile-store.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F702B306B6EAA0063F1FF /* user-profile-store.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,7 +93,7 @@
 		E46F70223069C4EA0063F1FF /* onboarding-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "onboarding-view.swift"; sourceTree = "<group>"; };
 		E46F70253069C4FC0063F1FF /* settings-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "settings-view.swift"; sourceTree = "<group>"; };
 		E46F70273069C5200063F1FF /* userprofile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = userprofile.swift; path = ../../../../Downloads/mcastracker/models/userprofile.swift; sourceTree = "<group>"; };
-		E46F70293069C5370063F1FF /* user-profile-store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "user-profile-store.swift"; path = "../../../../Downloads/mcastracker/utilities/user-profile-store.swift"; sourceTree = "<group>"; };
+		E46F702B306B6EAA0063F1FF /* user-profile-store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "user-profile-store.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -269,7 +269,7 @@
 		E41B1BF13052598700A467FA /* utilities */ = {
 			isa = PBXGroup;
 			children = (
-				E46F70293069C5370063F1FF /* user-profile-store.swift */,
+				E46F702B306B6EAA0063F1FF /* user-profile-store.swift */,
 				E41B1BF23052598700A467FA /* theme.swift */,
 			);
 			path = utilities;
@@ -515,7 +515,7 @@
 				E41B1BFF3052598800A467FA /* endpoints.swift in Sources */,
 				E41B1C093052598800A467FA /* severity-picker-view.swift in Sources */,
 				E46F701A3064E1750063F1FF /* episode-detail-view.swift in Sources */,
-				E46F702A3069C5380063F1FF /* user-profile-store.swift in Sources */,
+				E46F702C306B6EAA0063F1FF /* user-profile-store.swift in Sources */,
 				E46F70233069C4EA0063F1FF /* onboarding-view.swift in Sources */,
 				E46F701C3064E1750063F1FF /* day-episodes-list-view.swift in Sources */,
 				E41B1C053052598800A467FA /* history-view-model.swift in Sources */,

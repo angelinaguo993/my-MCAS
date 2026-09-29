@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Reached via the gear icon on Home. Only edits the basic profile
-/// fields (name, age, sex, location) — medications/frequency/history
+/// fields (name, age, sex, city/state) — medications/frequency/history
 /// are set once during onboarding and aren't editable here.
 struct SettingsView: View {
     @EnvironmentObject private var profileStore: UserProfileStore
@@ -10,7 +10,8 @@ struct SettingsView: View {
     @State private var name = ""
     @State private var ageText = ""
     @State private var sex: BiologicalSex?
-    @State private var location = ""
+    @State private var city = ""
+    @State private var state = usStates.first!
 
     var body: some View {
         NavigationStack {
@@ -36,9 +37,16 @@ struct SettingsView: View {
                                 onTap: { sex = $0 }
                             )
 
-                            Text("Location").font(.subheadline).foregroundColor(Theme.textPrimary)
-                            TextField("Location (city, state)", text: $location)
+                            Text("City").font(.subheadline).foregroundColor(Theme.textPrimary)
+                            TextField("City", text: $city)
                                 .textFieldStyle(.roundedBorder)
+
+                            Text("State").font(.subheadline).foregroundColor(Theme.textPrimary)
+                            Picker("State", selection: $state) {
+                                ForEach(usStates, id: \.self) { Text($0) }
+                            }
+                            .pickerStyle(.menu)
+                            .tint(Theme.primary)
                         }
                         .cardStyle()
                     }
@@ -64,7 +72,8 @@ struct SettingsView: View {
         name = profile.name
         ageText = profile.age.map { String($0) } ?? ""
         sex = profile.sex
-        location = profile.location
+        city = profile.city
+        state = profile.state.isEmpty ? usStates.first! : profile.state
     }
 
     private func save() {
@@ -72,7 +81,8 @@ struct SettingsView: View {
         profile.name = name
         profile.age = Int(ageText)
         profile.sex = sex
-        profile.location = location
+        profile.city = city
+        profile.state = state
         profileStore.save(profile)
         dismiss()
     }
