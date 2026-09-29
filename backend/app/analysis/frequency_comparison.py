@@ -8,8 +8,9 @@ def trigger_frequencies(episodes: list) -> list[dict]:
 
     counts = Counter()
     for ep in episodes:
-        for trigger in ep.symptoms or []:
-            counts[trigger] += 1
+        for trigger in ep.triggers or []:
+            if isinstance(trigger, str):
+                counts[trigger] += 1
 
     results = []
     for trigger, count in counts.items():
@@ -47,10 +48,11 @@ def medication_effectiveness(episodes: list) -> list[dict]:
         if not ep.medication_taken:
             continue
         helped = bool(ep.medication_helped)
-        for med in ep.medications or []:
-            taken_counts[med] += 1
-            if helped:
-                helped_counts[med] += 1
+        for med in ep.medication_names or []:
+            if isinstance(med, str):
+                taken_counts[med] += 1
+                if helped:
+                    helped_counts[med] += 1
 
 
     results = []

@@ -2,11 +2,15 @@ import SwiftUI
 
 /// Core Flow 3: user reviews historical patterns and past episode details
 /// via a calendar view. Days with a logged episode are highlighted;
-/// tapping one shows that day's details.
+/// tapping one shows that day's episode(s) — if there's more than one
+/// (e.g. multiple episodes logged the same day), a list appears first,
+/// otherwise it jumps straight to that single episode's detail.
 struct CalendarView: View {
     @StateObject private var viewModel = HistoryViewModel()
     @State private var displayedMonth = Date()
-    @State private var selectedEpisode: Episode?
+    @State private var selectedDayEpisodes: [Episode]?
+    @State private var selectedDayDate: Date?
+    @State private var selectedSingleEpisode: Episode?
 
     private let calendar = Calendar.current
     private let columns = Array(repeating: GridItem(.flexible()), count: 7)
@@ -29,10 +33,18 @@ struct CalendarView: View {
                 }
                 .padding()
             }
-            .navigationTitle("History")
+            .navigationTitle("Calendar")
             .task { await load() }
-            .sheet(item: $selectedEpisode) { episode in
+            .sheet(item: $selectedSingleEpisode) { episode in
                 EpisodeDetailView(episode: episode)
+            }
+            .sheet(isPresented: Binding(
+                get: { selectedDayEpisodes != nil },
+                set: { if !$0 { selectedDayEpisodes = nil } }
+            )) {
+                if let episodes = selectedDayEpisodes, let date = selectedDayDate {
+                    DayEpisodesListView(date: date, episodes: episodes)
+                }
             }
         }
     }
@@ -70,18 +82,47 @@ struct CalendarView: View {
     private func dayCell(_ day: Int) -> some View {
         let episodesThatDay = viewModel.episodesByDay[day] ?? []
         let hasEpisode = !episodesThatDay.isEmpty
+        
+        // 1. Calculate if this specific cell represents 'today'
+        var isToday = false
+        var components = calendar.dateComponents([.year, .month], from: displayedMonth)
+        components.day = day
+        if let cellDate = calendar.date(from: components) {
+            isToday = calendar.isDateInToday(cellDate)
+        }
+        
+        // 2. Define your custom hex color (#B3D89C)
+        let todayColor = Color(red: 179/255, green: 216/255, blue: 156/255)
 
         return Button {
-            if let first = episodesThatDay.first {
-                selectedEpisode = first
+            guard !episodesThatDay.isEmpty else { return }
+
+            if episodesThatDay.count == 1 {
+                // Only one episode that day — skip the list, go straight to detail.
+                selectedSingleEpisode = episodesThatDay.first
+            } else {
+                // Multiple episodes logged the same day — show them all in a list.
+                selectedDayDate = episodesThatDay.first?.date
+                selectedDayEpisodes = episodesThatDay
             }
         } label: {
-            Text("\(day)")
-                .font(.caption)
-                .frame(width: 36, height: 36)
-                .background(hasEpisode ? Theme.accent : Color.gray.opacity(0.1))
-                .foregroundColor(hasEpisode ? .white : Theme.textPrimary)
-                .clipShape(Circle())
+            VStack(spacing: 2) {
+                Text("\(day)")
+                    .font(.caption)
+                if hasEpisode && episodesThatDay.count > 1 {
+                    Text("\(episodesThatDay.count)")
+                        .font(.system(size: 9, weight: .bold))
+                }
+            }
+            .frame(width: 36, height: 36)
+            // Apply the background logic:
+            // If it has an episode -> Theme.accent
+            // If it doesn't have an episode but IS today -> todayColor
+            // Otherwise -> light gray
+            .background(hasEpisode ? Theme.accent : (isToday ? todayColor : Color.gray.opacity(0.1)))
+            // Make text white if it's highlighted with either color
+            .foregroundColor(hasEpisode || isToday ? .white : Theme.textPrimary)
+            .clipShape(Circle())
         }
         .disabled(!hasEpisode)
     }

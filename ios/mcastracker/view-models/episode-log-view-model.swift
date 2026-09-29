@@ -9,6 +9,7 @@ final class EpisodeLogViewModel: ObservableObject {
     @Published var symptomSeverities: [SymptomCategory: Int] = [:]
     @Published var specificSymptoms: [SymptomCategory: Set<String>] = [:]
     @Published var overallSeverity: Int = 5
+
     @Published var medicationTaken: Bool = false
     @Published var selectedMedications: Set<String> = []
     @Published var otherMedicationName: String = ""
@@ -34,11 +35,10 @@ final class EpisodeLogViewModel: ObservableObject {
             specificSymptoms[category] = nil
         } else {
             selectedSymptomCategories.insert(category)
-            symptomSeverities[category] = 5 // sensible default
+            symptomSeverities[category] = 5
         }
     }
 
-    /// Checks/unchecks one specific symptom (e.g. "Hives") within a category.
     func toggleSpecificSymptom(_ symptom: String, in category: SymptomCategory) {
         var current = specificSymptoms[category] ?? []
         if current.contains(symptom) {
@@ -124,7 +124,7 @@ final class EpisodeLogViewModel: ObservableObject {
             _ = try await APIClient.shared.submitEpisode(episode)
             didSubmitSuccessfully = true
         } catch {
-            print("SUBMIT EPISODE FAILED:", error)  // TEMP DEBUG — check Xcode console for this
+            print("SUBMIT EPISODE FAILED:", error)
             errorMessage = "Couldn't save this episode. Check your connection and try again."
         }
 
