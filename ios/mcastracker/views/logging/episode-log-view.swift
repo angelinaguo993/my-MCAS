@@ -50,7 +50,7 @@ struct EpisodeLogView: View {
 
     private var triggersSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("What might have triggered this?")
+            Text("Select every potenntial trigger that might have triggered (or worsened) this episode.")
                 .font(.headline)
                 .foregroundColor(Theme.textPrimary)
 
@@ -73,7 +73,7 @@ struct EpisodeLogView: View {
 
     private var symptomsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("What symptoms did you have?")
+            Text("Select every symptom that you experienced during this episode.")
                 .font(.headline)
                 .foregroundColor(Theme.textPrimary)
 
@@ -146,9 +146,15 @@ struct EpisodeLogView: View {
 
     private var notesSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Notes (optional)")
+            Text("Would you like to add any other notes about this episode? (Optional)")
                 .font(.headline)
                 .foregroundColor(Theme.textPrimary)
+            
+            // Add your smaller title here
+            Text("Ex: what symptom lasted the longest, side effects from a medication, etc.")
+                .font(.subheadline)
+                .foregroundColor(Theme.textPrimary.opacity(0.7))
+            
             TextEditor(text: $viewModel.notes)
                 .frame(height: 80)
                 .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))

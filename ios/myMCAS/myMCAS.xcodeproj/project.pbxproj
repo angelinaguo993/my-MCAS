@@ -35,10 +35,10 @@
 		E46F701C3064E1750063F1FF /* day-episodes-list-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70163064E1750063F1FF /* day-episodes-list-view.swift */; };
 		E46F701E3064E2B60063F1FF /* analytics-view-model.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F701D3064E2B60063F1FF /* analytics-view-model.swift */; };
 		E46F7020306632FE0063F1FF /* mcas-trackerapp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F701F306632FE0063F1FF /* mcas-trackerapp.swift */; };
-		E46F70233069C4EA0063F1FF /* onboarding-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70223069C4EA0063F1FF /* onboarding-view.swift */; };
 		E46F70263069C4FC0063F1FF /* settings-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70253069C4FC0063F1FF /* settings-view.swift */; };
 		E46F70283069C5200063F1FF /* userprofile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70273069C5200063F1FF /* userprofile.swift */; };
 		E46F702C306B6EAA0063F1FF /* user-profile-store.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F702B306B6EAA0063F1FF /* user-profile-store.swift */; };
+		E4D5E707306E017000ECDADE /* onboarding-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D5E706306E017000ECDADE /* onboarding-view.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,10 +90,10 @@
 		E46F70163064E1750063F1FF /* day-episodes-list-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "day-episodes-list-view.swift"; sourceTree = "<group>"; };
 		E46F701D3064E2B60063F1FF /* analytics-view-model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "analytics-view-model.swift"; sourceTree = "<group>"; };
 		E46F701F306632FE0063F1FF /* mcas-trackerapp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "mcas-trackerapp.swift"; sourceTree = "<group>"; };
-		E46F70223069C4EA0063F1FF /* onboarding-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "onboarding-view.swift"; sourceTree = "<group>"; };
 		E46F70253069C4FC0063F1FF /* settings-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "settings-view.swift"; sourceTree = "<group>"; };
 		E46F70273069C5200063F1FF /* userprofile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = userprofile.swift; path = ../../../../Downloads/mcastracker/models/userprofile.swift; sourceTree = "<group>"; };
 		E46F702B306B6EAA0063F1FF /* user-profile-store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "user-profile-store.swift"; sourceTree = "<group>"; };
+		E4D5E706306E017000ECDADE /* onboarding-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "onboarding-view.swift"; path = "../../../../my-MCAS/ios/mcastracker/views/onboarding/onboarding-view.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -358,7 +358,7 @@
 		E46F70213069C4EA0063F1FF /* onboarding */ = {
 			isa = PBXGroup;
 			children = (
-				E46F70223069C4EA0063F1FF /* onboarding-view.swift */,
+				E4D5E706306E017000ECDADE /* onboarding-view.swift */,
 			);
 			name = onboarding;
 			path = ../../../Downloads/mcastracker/views/onboarding;
@@ -508,6 +508,7 @@
 				E46F70263069C4FC0063F1FF /* settings-view.swift in Sources */,
 				E46F701B3064E1750063F1FF /* calendar-view.swift in Sources */,
 				E41B1C013052598800A467FA /* trigger.swift in Sources */,
+				E4D5E707306E017000ECDADE /* onboarding-view.swift in Sources */,
 				E41B1C003052598800A467FA /* apiclient.swift in Sources */,
 				E41B1C0E3052598800A467FA /* episode-log-view.swift in Sources */,
 				E46F70183064E1750063F1FF /* dashboard-view.swift in Sources */,
@@ -516,7 +517,6 @@
 				E41B1C093052598800A467FA /* severity-picker-view.swift in Sources */,
 				E46F701A3064E1750063F1FF /* episode-detail-view.swift in Sources */,
 				E46F702C306B6EAA0063F1FF /* user-profile-store.swift in Sources */,
-				E46F70233069C4EA0063F1FF /* onboarding-view.swift in Sources */,
 				E46F701C3064E1750063F1FF /* day-episodes-list-view.swift in Sources */,
 				E41B1C053052598800A467FA /* history-view-model.swift in Sources */,
 				E41B1C033052598800A467FA /* episode.swift in Sources */,
