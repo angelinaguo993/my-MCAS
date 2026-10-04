@@ -25,6 +25,8 @@
 		E41B1C093052598800A467FA /* severity-picker-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BF53052598700A467FA /* severity-picker-view.swift */; };
 		E41B1C0A3052598800A467FA /* loading-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BF63052598700A467FA /* loading-view.swift */; };
 		E41B1C0E3052598800A467FA /* episode-log-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BFD3052598700A467FA /* episode-log-view.swift */; };
+		E4251C803072F1A10070618B /* AIanalysisresult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4251C7F3072F1A10070618B /* AIanalysisresult.swift */; };
+		E4251C823072F1C20070618B /* AIanalysisservice.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4251C813072F1C20070618B /* AIanalysisservice.swift */; };
 		E46F70083057127C0063F1FF /* medication.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70073057127C0063F1FF /* medication.swift */; };
 		E46F700C306228920063F1FF /* insights.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F700B306228920063F1FF /* insights.swift */; };
 		E46F70173064E1750063F1FF /* analytics-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F700E3064E1750063F1FF /* analytics-view.swift */; };
@@ -80,6 +82,8 @@
 		E41B1BF53052598700A467FA /* severity-picker-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "severity-picker-view.swift"; sourceTree = "<group>"; };
 		E41B1BF63052598700A467FA /* loading-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "loading-view.swift"; sourceTree = "<group>"; };
 		E41B1BFD3052598700A467FA /* episode-log-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "episode-log-view.swift"; sourceTree = "<group>"; };
+		E4251C7F3072F1A10070618B /* AIanalysisresult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AIanalysisresult.swift; sourceTree = "<group>"; };
+		E4251C813072F1C20070618B /* AIanalysisservice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AIanalysisservice.swift; sourceTree = "<group>"; };
 		E46F70073057127C0063F1FF /* medication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = medication.swift; sourceTree = "<group>"; };
 		E46F700B306228920063F1FF /* insights.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = insights.swift; sourceTree = "<group>"; };
 		E46F700E3064E1750063F1FF /* analytics-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "analytics-view.swift"; sourceTree = "<group>"; };
@@ -204,6 +208,7 @@
 		E41B1BE13052598700A467FA /* networking */ = {
 			isa = PBXGroup;
 			children = (
+				E4251C813072F1C20070618B /* AIanalysisservice.swift */,
 				E41B1BE23052598700A467FA /* endpoints.swift */,
 				E41B1BE33052598700A467FA /* apiclient.swift */,
 			);
@@ -244,6 +249,7 @@
 		E41B1BE83052598700A467FA /* models */ = {
 			isa = PBXGroup;
 			children = (
+				E4251C7F3072F1A10070618B /* AIanalysisresult.swift */,
 				E46F70273069C5200063F1FF /* userprofile.swift */,
 				E46F700B306228920063F1FF /* insights.swift */,
 				E46F70073057127C0063F1FF /* medication.swift */,
@@ -513,6 +519,7 @@
 				E41B1C0E3052598800A467FA /* episode-log-view.swift in Sources */,
 				E46F70183064E1750063F1FF /* dashboard-view.swift in Sources */,
 				E46F70173064E1750063F1FF /* analytics-view.swift in Sources */,
+				E4251C803072F1A10070618B /* AIanalysisresult.swift in Sources */,
 				E41B1BFF3052598800A467FA /* endpoints.swift in Sources */,
 				E41B1C093052598800A467FA /* severity-picker-view.swift in Sources */,
 				E46F701A3064E1750063F1FF /* episode-detail-view.swift in Sources */,
@@ -523,6 +530,7 @@
 				E46F701E3064E2B60063F1FF /* analytics-view-model.swift in Sources */,
 				E41B1C063052598800A467FA /* dashboard-view-model.swift in Sources */,
 				E46F700C306228920063F1FF /* insights.swift in Sources */,
+				E4251C823072F1C20070618B /* AIanalysisservice.swift in Sources */,
 				E41B1C043052598800A467FA /* dashboardstats.swift in Sources */,
 				E41B1C023052598800A467FA /* symptom.swift in Sources */,
 				E46F7020306632FE0063F1FF /* mcas-trackerapp.swift in Sources */,
