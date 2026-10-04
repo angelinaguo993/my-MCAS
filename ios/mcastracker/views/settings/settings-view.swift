@@ -1,14 +1,14 @@
 import SwiftUI
 
 /// Reached via the gear icon on Home. Only edits the basic profile
-/// fields (name, age, sex, city/state) — medications/frequency/history
-/// are set once during onboarding and aren't editable here.
+/// fields (name, birthday, sex, city/state) — medications/frequency/
+/// history are set once during onboarding and aren't editable here.
 struct SettingsView: View {
     @EnvironmentObject private var profileStore: UserProfileStore
     @Environment(\.dismiss) private var dismiss
 
     @State private var name = ""
-    @State private var ageText = ""
+    @State private var birthday = Calendar.current.date(byAdding: .year, value: -18, to: Date()) ?? Date()
     @State private var sex: BiologicalSex?
     @State private var city = ""
     @State private var state = usStates.first!
@@ -24,10 +24,16 @@ struct SettingsView: View {
                             TextField("Name", text: $name)
                                 .textFieldStyle(.roundedBorder)
 
-                            Text("Age").font(.subheadline).foregroundColor(Theme.textPrimary)
-                            TextField("Age", text: $ageText)
-                                .textFieldStyle(.roundedBorder)
-                                .keyboardType(.numberPad)
+                            Text("Birthday").font(.subheadline).foregroundColor(Theme.textPrimary)
+                            DatePicker(
+                                "Birthday",
+                                selection: $birthday,
+                                in: ...Date(),
+                                displayedComponents: .date
+                            )
+                            .labelsHidden()
+                            .datePickerStyle(.compact)
+                            .tint(Theme.primary)
 
                             Text("Sex").font(.subheadline).foregroundColor(Theme.textPrimary)
                             ChipGrid(
@@ -70,7 +76,7 @@ struct SettingsView: View {
     private func loadCurrentProfile() {
         guard let profile = profileStore.profile else { return }
         name = profile.name
-        ageText = profile.age.map { String($0) } ?? ""
+        birthday = profile.birthday ?? birthday
         sex = profile.sex
         city = profile.city
         state = profile.state.isEmpty ? usStates.first! : profile.state
@@ -79,7 +85,8 @@ struct SettingsView: View {
     private func save() {
         var profile = profileStore.profile ?? UserProfile()
         profile.name = name
-        profile.age = Int(ageText)
+        profile.birthday = birthday
+        profile.age = Calendar.current.dateComponents([.year], from: birthday, to: Date()).year
         profile.sex = sex
         profile.city = city
         profile.state = state

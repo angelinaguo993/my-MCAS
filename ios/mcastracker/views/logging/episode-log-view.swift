@@ -13,6 +13,7 @@ struct EpisodeLogView: View {
                 Theme.background.ignoresSafeArea()
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
+                        dateSection
                         triggersSection
                         symptomsSection
                         overallSeveritySection
@@ -44,6 +45,27 @@ struct EpisodeLogView: View {
                 if viewModel.isSubmitting { LoadingView() }
             }
         }
+    }
+    
+    // MARK: Date
+
+    private var dateSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Date of Episode")
+                .font(.headline)
+                .foregroundColor(Theme.textPrimary)
+
+            DatePicker(
+                "Date of Episode",
+                selection: $viewModel.episodeDate,
+                in: ...Date(),
+                displayedComponents: .date
+            )
+            .labelsHidden()
+            .datePickerStyle(.compact)
+            .tint(Theme.primary)
+        }
+        .cardStyle()
     }
 
     // MARK: Triggers
