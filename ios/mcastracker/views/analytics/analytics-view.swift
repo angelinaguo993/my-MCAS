@@ -47,10 +47,13 @@ struct AnalyticsView: View {
             Text("Couldn't load your data")
                 .font(.subheadline.bold())
                 .foregroundColor(Theme.accent)
-            Text("The server may be waking up after being idle — this can take up to a minute on the free tier.")
+            
+            // This line is the crucial change to reveal the true error
+            Text(message) 
                 .font(.caption)
                 .multilineTextAlignment(.center)
                 .foregroundColor(Theme.textPrimary.opacity(0.7))
+            
             Button("Try Again") {
                 Task { await viewModel.loadInsights() }
             }
@@ -193,10 +196,10 @@ struct AnalyticsView: View {
                     .font(.subheadline)
                     .foregroundColor(.gray)
             } else {
-                ForEach(items, id: \.self) { item in
-                    Text("• \(item)")
-                        .font(.subheadline)
-                        .foregroundColor(Theme.textPrimary.opacity(0.8))
+                ForEach(items.indices, id: \.self) { index in
+                    Text("• \(items[index])")
+                    .font(.subheadline)
+                    .foregroundColor(Theme.textPrimary.opacity(0.8))
                 }
             }
         }

@@ -41,6 +41,7 @@ final class AnalyticsViewModel: ObservableObject {
             // 3. Send the episodes to OpenRouter
             aiResult = try await aiService.fetchAnalysis(for: episodes)
         } catch {
+            print("Decoding error: \(error)")
             errorMessage = "AI Analysis failed: \(error.localizedDescription)"
         }
         

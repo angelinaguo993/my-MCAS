@@ -24,7 +24,7 @@ class AIAnalysisService {
         """
 
         let requestBody: [String: Any] = [
-            "model": "anthropic/claude-opus-5.5",
+            "model": "openai/gpt-4o-mini",
             "response_format": ["type": "json_object"], // Forces JSON output
             "messages": [
                 ["role": "system", "content": systemPrompt],
@@ -39,7 +39,11 @@ class AIAnalysisService {
         request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
 
         // 3. Make the network call and decode the result
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        if let rawString = String(data: data, encoding: .utf8) {
+            print("Raw OPENROUTER response: \(rawString)")
+        }
         
         // Parse the nested OpenAI JSON response to extract your AIAnalysisResult
         struct OpenAIResponse: Codable {
@@ -50,8 +54,8 @@ class AIAnalysisService {
             let choices: [Choice]
         }
         
-        let response = try JSONDecoder().decode(OpenAIResponse.self, from: data)
-        guard let jsonString = response.choices.first?.message.content,
+        let decodedResponse = try JSONDecoder().decode(OpenAIResponse.self, from: data)
+        guard let jsonString = decodedResponse.choices.first?.message.content,
               let jsonData = jsonString.data(using: .utf8) else {
             throw URLError(.cannotParseResponse)
         }
