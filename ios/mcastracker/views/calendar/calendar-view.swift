@@ -69,7 +69,10 @@ struct CalendarView: View {
     private var calendarGrid: some View {
         let days = daysInDisplayedMonth()
         return LazyVGrid(columns: columns, spacing: 10) {
-            ForEach(days, id: \.self) { day in
+            // Loop through the unique index numbers instead
+            ForEach(days.indices, id: \.self) { index in
+                let day = days[index] // Extract the actual day number
+                
                 if day == 0 {
                     Color.clear.frame(height: 36)
                 } else {

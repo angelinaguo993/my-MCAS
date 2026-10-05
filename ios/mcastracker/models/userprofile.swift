@@ -49,6 +49,7 @@ enum EpisodeFrequency: String, CaseIterable, Codable, Identifiable {
 struct UserProfile: Codable, Equatable {
     var name: String = ""
     var age: Int? = nil
+    var birthday: Date = Date()
     var sex: BiologicalSex? = nil
     var city: String = ""
     var state: String = ""

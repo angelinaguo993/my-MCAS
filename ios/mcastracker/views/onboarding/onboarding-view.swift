@@ -10,6 +10,7 @@ struct OnboardingView: View {
 
     @State private var name = ""
     @State private var age: Int?
+    @State private var birthday = Date()
     @State private var sex: BiologicalSex?
     @State private var city = ""
     @State private var state: String?
@@ -54,10 +55,10 @@ struct OnboardingView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Welcome!")
+            Text("Welcome")
                 .font(.largeTitle.bold())
                 .foregroundColor(Theme.textPrimary)
-            Text("A few quick questions to get your tracker set up. Please fill out all the questions to the best you can.")
+            Text("A few quick questions to get your tracker set up. Please answer every question to the best you can.")
                 .font(.subheadline)
                 .foregroundColor(Theme.textPrimary.opacity(0.7))
         }
@@ -71,6 +72,11 @@ struct OnboardingView: View {
 
             TextField("Name", text: $name)
                 .textFieldStyle(.roundedBorder)
+
+            DatePicker("Birthday", selection: $birthday, displayedComponents: .date)
+                .font(.subheadline)
+                .foregroundColor(Theme.textPrimary)
+                .tint(Theme.primary)
 
             Text("Age").font(.subheadline).foregroundColor(Theme.textPrimary)
             Picker("Age", selection: $age) {
@@ -370,21 +376,22 @@ struct OnboardingView: View {
 
         let allSpecificSymptoms = specificSymptomsByCategory.values.flatMap { $0 }
 
-        let profile = UserProfile(
-            name: name,
-            age: age,
-            sex: sex,
-            city: city,
-            state: state ?? "",
-            prescribedMedications: medications,
-            typicalEpisodeFrequency: frequency,
-            otherFrequencyDescription: frequency == .other ? otherFrequencyText : nil,
-            previousSymptoms: Array(previousSymptoms),
-            previousSpecificSymptoms: Array(allSpecificSymptoms),
-            otherSymptomDescription: previousSymptoms.contains(.other) ? otherSymptomText : nil,
-            previousTriggers: Array(previousTriggers),
-            otherTriggerDescription: previousTriggers.contains(.other) ? otherTriggerText : nil
-        )
+        var profile = UserProfile()
+        profile.name = name
+        profile.age = age
+        profile.birthday = birthday
+        profile.sex = sex
+        profile.city = city
+        profile.state = state ?? ""
+        profile.prescribedMedications = medications
+        profile.typicalEpisodeFrequency = frequency
+        profile.otherFrequencyDescription = frequency == .other ? otherFrequencyText : nil
+        profile.previousSymptoms = Array(previousSymptoms)
+        profile.previousSpecificSymptoms = Array(allSpecificSymptoms)
+        profile.otherSymptomDescription = previousSymptoms.contains(.other) ? otherSymptomText : nil
+        profile.previousTriggers = Array(previousTriggers)
+        profile.otherTriggerDescription = previousTriggers.contains(.other) ? otherTriggerText : nil
+        
         profileStore.completeOnboarding(with: profile)
     }
 }

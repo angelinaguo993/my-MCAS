@@ -5,6 +5,7 @@ import SwiftUI
 final class EpisodeLogViewModel: ObservableObject {
     @Published var selectedTriggers: Set<Trigger> = []
     @Published var otherTriggerDescription: String = ""
+    @Published var episodeDate: Date = Date()
     @Published var selectedSymptomCategories: Set<SymptomCategory> = []
     @Published var symptomSeverities: [SymptomCategory: Int] = [:]
     @Published var specificSymptoms: [SymptomCategory: Set<String>] = [:]
@@ -110,7 +111,7 @@ final class EpisodeLogViewModel: ObservableObject {
         }
 
         let episode = Episode(
-            date: Date(),
+            date: episodeDate,
             triggers: Array(selectedTriggers),
             symptoms: symptoms,
             overallSeverity: overallSeverity,

@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Analytics tab: "most common triggers," "most common symptoms," and
-/// (in the future) other pattern-detection insights. Medication
+/// AI-driven pattern-detection insights. Medication
 /// effectiveness stays on the Home tab for now, per the current layout.
 struct AnalyticsView: View {
     @StateObject private var viewModel = AnalyticsViewModel()
@@ -26,6 +26,9 @@ struct AnalyticsView: View {
                                 } else {
                                     topTriggersCard(insights.topTriggers)
                                     topSymptomsCard(insights.topSymptomCategories)
+                                    
+                                    // MARK: - AI Insights Section
+                                    aiInsightsSection
                                 }
                             }
                         }
@@ -44,10 +47,13 @@ struct AnalyticsView: View {
             Text("Couldn't load your data")
                 .font(.subheadline.bold())
                 .foregroundColor(Theme.accent)
-            Text("The server may be waking up after being idle — this can take up to a minute on the free tier.")
+            
+            // This line is the crucial change to reveal the true error
+            Text(message) 
                 .font(.caption)
                 .multilineTextAlignment(.center)
                 .foregroundColor(Theme.textPrimary.opacity(0.7))
+            
             Button("Try Again") {
                 Task { await viewModel.loadInsights() }
             }
@@ -127,6 +133,78 @@ struct AnalyticsView: View {
                 .font(.caption.bold())
                 .foregroundColor(Theme.accent)
         }
+    }
+    
+    // MARK: - AI View Components
+    
+    @ViewBuilder
+    private var aiInsightsSection: some View {
+        if viewModel.isAILoading {
+            VStack {
+                ProgressView()
+                    .padding(.bottom, 8)
+                Text("AI is analyzing your notes and triggers...")
+                    .font(.caption)
+                    .foregroundColor(Theme.textPrimary.opacity(0.7))
+            }
+            .frame(maxWidth: .infinity)
+            .padding()
+            .cardStyle()
+        } else if let aiResult = viewModel.aiResult {
+            VStack(spacing: 16) {
+                Text("AI Insights")
+                    .font(.title2.bold())
+                    .foregroundColor(Theme.textPrimary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, 8)
+
+                aiInsightCard(title: "Triggers to Avoid", items: aiResult.triggersToAvoid, icon: "exclamationmark.triangle")
+                aiInsightCard(title: "Medication Insights", items: aiResult.medicationInsights, icon: "pills")
+                aiInsightCard(title: "Notes Analysis", items: aiResult.notesAnalysis, icon: "doc.text.magnifyingglass")
+            }
+        } else {
+            Button(action: {
+                Task { await viewModel.generateAIInsights() }
+            }) {
+                HStack {
+                    Image(systemName: "sparkles")
+                    Text("Generate AI Insights")
+                }
+                .font(.headline)
+                .foregroundColor(.white)
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(Theme.accent)
+                .cornerRadius(10)
+            }
+            .padding(.top, 8)
+        }
+    }
+    
+    private func aiInsightCard(title: String, items: [String], icon: String) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: icon)
+                    .foregroundColor(Theme.accent)
+                Text(title)
+                    .font(.headline)
+                    .foregroundColor(Theme.textPrimary)
+            }
+            
+            if items.isEmpty {
+                Text("No specific patterns detected yet.")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+            } else {
+                ForEach(items.indices, id: \.self) { index in
+                    Text("• \(items[index])")
+                    .font(.subheadline)
+                    .foregroundColor(Theme.textPrimary.opacity(0.8))
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .cardStyle()
     }
 }
 
