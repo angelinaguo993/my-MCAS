@@ -20,6 +20,7 @@ final class HistoryViewModel: ObservableObject {
         do {
             episodes = try await APIClient.shared.fetchEpisodes(year: year, month: month)
         } catch {
+            print("Error loading episodes: \(error)")
             errorMessage = "Couldn't load episode history."
         }
         isLoading = false

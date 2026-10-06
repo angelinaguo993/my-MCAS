@@ -116,7 +116,7 @@ final class EpisodeLogViewModel: ObservableObject {
 
         // 2. Properly structured Episode initialization with all commas and parameters
         let episode = Episode(
-            id: UUID(),
+            id: UUID().uuidString,
             date: episodeDate,
             triggers: Array(selectedTriggers),
             symptoms: symptoms,
