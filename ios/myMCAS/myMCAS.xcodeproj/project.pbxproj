@@ -41,6 +41,7 @@
 		E46F70263069C4FC0063F1FF /* settings-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70253069C4FC0063F1FF /* settings-view.swift */; };
 		E46F70283069C5200063F1FF /* userprofile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70273069C5200063F1FF /* userprofile.swift */; };
 		E46F702C306B6EAA0063F1FF /* user-profile-store.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F702B306B6EAA0063F1FF /* user-profile-store.swift */; };
+		E4831B2F30732EBD0083CEE5 /* weatherservice.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4831B2E30732EBD0083CEE5 /* weatherservice.swift */; };
 		E4D5E707306E017000ECDADE /* onboarding-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D5E706306E017000ECDADE /* onboarding-view.swift */; };
 /* End PBXBuildFile section */
 
@@ -99,6 +100,7 @@
 		E46F70253069C4FC0063F1FF /* settings-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "settings-view.swift"; sourceTree = "<group>"; };
 		E46F70273069C5200063F1FF /* userprofile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = userprofile.swift; path = ../../../../Downloads/mcastracker/models/userprofile.swift; sourceTree = "<group>"; };
 		E46F702B306B6EAA0063F1FF /* user-profile-store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "user-profile-store.swift"; sourceTree = "<group>"; };
+		E4831B2E30732EBD0083CEE5 /* weatherservice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = weatherservice.swift; sourceTree = "<group>"; };
 		E4D5E706306E017000ECDADE /* onboarding-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "onboarding-view.swift"; path = "../../../../my-MCAS/ios/mcastracker/views/onboarding/onboarding-view.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -210,6 +212,7 @@
 		E41B1BE13052598700A467FA /* networking */ = {
 			isa = PBXGroup;
 			children = (
+				E4831B2E30732EBD0083CEE5 /* weatherservice.swift */,
 				E4251C833072F5940070618B /* Secrets.swift */,
 				E4251C813072F1C20070618B /* AIanalysisservice.swift */,
 				E41B1BE23052598700A467FA /* endpoints.swift */,
@@ -514,6 +517,7 @@
 			files = (
 				E41B1C0A3052598800A467FA /* loading-view.swift in Sources */,
 				E4251C843072F5940070618B /* Secrets.swift in Sources */,
+				E4831B2F30732EBD0083CEE5 /* weatherservice.swift in Sources */,
 				E46F70083057127C0063F1FF /* medication.swift in Sources */,
 				E46F70263069C4FC0063F1FF /* settings-view.swift in Sources */,
 				E46F701B3064E1750063F1FF /* calendar-view.swift in Sources */,
