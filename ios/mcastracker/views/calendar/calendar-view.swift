@@ -1,16 +1,21 @@
 import SwiftUI
 
-/// Core Flow 3: user reviews historical patterns and past episode details
-/// via a calendar view. Days with a logged episode are highlighted;
-/// tapping one shows that day's episode(s) — if there's more than one
-/// (e.g. multiple episodes logged the same day), a list appears first,
-/// otherwise it jumps straight to that single episode's detail.
 struct CalendarView: View {
     @StateObject private var viewModel = HistoryViewModel()
     @State private var displayedMonth = Date()
     @State private var selectedDayEpisodes: [Episode]?
     @State private var selectedDayDate: Date?
     @State private var selectedSingleEpisode: Episode?
+    
+    // View state trackers
+    @State private var viewMode: CalendarViewMode = .calendar
+    @State private var selectedTimeframe: TrendTimeframe = .oneMonth // Default to 1 month
+
+    enum CalendarViewMode: String, CaseIterable, Identifiable {
+        case calendar = "Calendar"
+        case trends = "Trends"
+        var id: String { rawValue }
+    }
 
     private let calendar = Calendar.current
     private let columns = Array(repeating: GridItem(.flexible()), count: 7)
@@ -20,20 +25,66 @@ struct CalendarView: View {
             ZStack {
                 Theme.background.ignoresSafeArea()
                 VStack(spacing: 16) {
-                    monthHeader
+                    
+                    // Main Toggle: Calendar vs Trends
+                    Picker("View Mode", selection: $viewMode) {
+                        ForEach(CalendarViewMode.allCases) { mode in
+                            Text(mode.rawValue).tag(mode)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .padding(.horizontal)
+                    .onChange(of: viewMode) { _ in
+                        Task { await load() }
+                    }
 
-                    if viewModel.isLoading {
-                        LoadingView()
+                    if viewMode == .calendar {
+                        // === CALENDAR UI ===
+                        monthHeader
+
+                        if viewModel.isLoading {
+                            LoadingView()
+                        } else {
+                            calendarGrid
+                                .cardStyle()
+                        }
                     } else {
-                        calendarGrid
-                            .cardStyle()
+                        // === TRENDS UI ===
+                        VStack(spacing: 16) {
+                            // Sub-Toggle: 1W / 1M / 3M
+                            Picker("Timeframe", selection: $selectedTimeframe) {
+                                ForEach(TrendTimeframe.allCases) { frame in
+                                    Text(frame.rawValue).tag(frame)
+                                }
+                            }
+                            .pickerStyle(.segmented)
+                            .padding(.horizontal)
+                            .onChange(of: selectedTimeframe) { _ in
+                                Task { await load() }
+                            }
+
+                            if viewModel.isLoading {
+                                LoadingView()
+                            } else {
+                                ScrollView {
+                                    VStack(spacing: 20) {
+                                        // Feeds the filtered trendEpisodes array to the chart
+                                        SeverityTrendChart(episodes: viewModel.trendEpisodes)
+                                        
+                                        trendSummaryCard
+                                    }
+                                    .padding(.horizontal)
+                                }
+                            }
+                        }
                     }
 
                     Spacer()
                 }
-                .padding()
+                .padding(.top)
             }
-            .navigationTitle("Calendar")
+            .navigationTitle("History & Trends")
+            .navigationBarTitleDisplayMode(.inline)
             .task { await load() }
             .sheet(item: $selectedSingleEpisode) { episode in
                 EpisodeDetailView(episode: episode)
@@ -64,15 +115,46 @@ struct CalendarView: View {
             }
         }
         .foregroundColor(Theme.primary)
+        .padding(.horizontal)
+    }
+
+    private var trendSummaryCard: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("\(selectedTimeframe.rawValue) Summary")
+                .font(.headline)
+                .foregroundColor(Theme.textPrimary)
+            
+            let totalEpisodes = viewModel.trendEpisodes.count
+            let avgSeverity = totalEpisodes > 0 ? Double(viewModel.trendEpisodes.reduce(0) { $0 + $1.overallSeverity }) / Double(totalEpisodes) : 0
+            
+            HStack {
+                VStack(alignment: .leading) {
+                    Text("Total Episodes")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                    Text("\(totalEpisodes)")
+                        .font(.title2.bold())
+                        .foregroundColor(Theme.textPrimary)
+                }
+                Spacer()
+                VStack(alignment: .trailing) {
+                    Text("Average Severity")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                    Text(String(format: "%.1f / 10", avgSeverity))
+                        .font(.title2.bold())
+                        .foregroundColor(Theme.accent)
+                }
+            }
+        }
+        .cardStyle()
     }
 
     private var calendarGrid: some View {
         let days = daysInDisplayedMonth()
         return LazyVGrid(columns: columns, spacing: 10) {
-            // Loop through the unique index numbers instead
             ForEach(days.indices, id: \.self) { index in
-                let day = days[index] // Extract the actual day number
-                
+                let day = days[index]
                 if day == 0 {
                     Color.clear.frame(height: 36)
                 } else {
@@ -86,7 +168,6 @@ struct CalendarView: View {
         let episodesThatDay = viewModel.episodesByDay[day] ?? []
         let hasEpisode = !episodesThatDay.isEmpty
         
-        // 1. Calculate if this specific cell represents 'today'
         var isToday = false
         var components = calendar.dateComponents([.year, .month], from: displayedMonth)
         components.day = day
@@ -94,17 +175,13 @@ struct CalendarView: View {
             isToday = calendar.isDateInToday(cellDate)
         }
         
-        // 2. Define your custom hex color (#B3D89C)
         let todayColor = Color(red: 179/255, green: 216/255, blue: 156/255)
 
         return Button {
             guard !episodesThatDay.isEmpty else { return }
-
             if episodesThatDay.count == 1 {
-                // Only one episode that day — skip the list, go straight to detail.
                 selectedSingleEpisode = episodesThatDay.first
             } else {
-                // Multiple episodes logged the same day — show them all in a list.
                 selectedDayDate = episodesThatDay.first?.date
                 selectedDayEpisodes = episodesThatDay
             }
@@ -118,12 +195,7 @@ struct CalendarView: View {
                 }
             }
             .frame(width: 36, height: 36)
-            // Apply the background logic:
-            // If it has an episode -> Theme.accent
-            // If it doesn't have an episode but IS today -> todayColor
-            // Otherwise -> light gray
             .background(hasEpisode ? Theme.accent : (isToday ? todayColor : Color.gray.opacity(0.1)))
-            // Make text white if it's highlighted with either color
             .foregroundColor(hasEpisode || isToday ? .white : Theme.textPrimary)
             .clipShape(Circle())
         }
@@ -135,7 +207,6 @@ struct CalendarView: View {
               let firstOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: displayedMonth))
         else { return [] }
 
-        // Leading blanks so day 1 lands under the correct weekday column.
         let weekday = calendar.component(.weekday, from: firstOfMonth) - 1
         return Array(repeating: 0, count: weekday) + Array(range)
     }
@@ -148,14 +219,13 @@ struct CalendarView: View {
     }
 
     private func load() async {
-        let year = calendar.component(.year, from: displayedMonth)
-        let month = calendar.component(.month, from: displayedMonth)
-        await viewModel.loadMonth(year: year, month: month)
-    }
-}
-
-struct CalendarView_Previews: PreviewProvider {
-    static var previews: some View {
-        CalendarView()
+        if viewMode == .calendar {
+            let year = calendar.component(.year, from: displayedMonth)
+            let month = calendar.component(.month, from: displayedMonth)
+            await viewModel.loadMonth(year: year, month: month)
+        } else {
+            // Tell the view model to fetch the custom timeframe array
+            await viewModel.loadTrends(timeframe: selectedTimeframe)
+        }
     }
 }
