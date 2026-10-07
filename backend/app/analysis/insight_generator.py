@@ -3,6 +3,7 @@ from app.analysis.frequency_comparison import (
     trigger_frequencies,
     symptom_category_frequencies,
     medication_effectiveness,
+    trigger_cooccurrence,
 )
 
 MIN_EPISODES_FOR_INSIGHTS = 5
@@ -18,6 +19,7 @@ def generate_insights(episodes: list) -> dict:
             "top_triggers": [],
             "top_symptom_categories": [],
             "medication_effectiveness": [],
+            "trigger_cooccurrence": [],
             "recent_trend": None,
         }
 
@@ -31,6 +33,7 @@ def generate_insights(episodes: list) -> dict:
         "top_triggers": trigger_frequencies(episodes)[:5],
         "top_symptom_categories": symptom_category_frequencies(episodes)[:5],
         "medication_effectiveness": medication_effectiveness(episodes),
+        "trigger_cooccurrence": trigger_cooccurrence(episodes)[:5],
         "recent_trend": _recent_trend(episodes),
     }
 
@@ -42,7 +45,7 @@ def _recent_trend(episodes: list) -> dict:
     last_14 = sum(1 for ep in episodes if _aware(ep.date) >= now - timedelta(days=14))
     prior_14 = sum(
         1 for ep in episodes
-        if now - timedelta(days=28) <= _aware(ep.date) < now - timedelta(days=28) 
+        if now - timedelta(days=28) <= _aware(ep.date) < now - timedelta(days=14)
     )
 
     if prior_14 == 0:
