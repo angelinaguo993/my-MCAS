@@ -61,4 +61,5 @@ class InsightsResponse(BaseModel):
     top_triggers: list[FrequencyStat]
     top_symptom_categories: list[FrequencyStat]
     medication_effectiveness: list[FrequencyStat]
+    trigger_cooccurrence: list[FrequencyStat]
     recent_trend: Optional[TrendInfo]
