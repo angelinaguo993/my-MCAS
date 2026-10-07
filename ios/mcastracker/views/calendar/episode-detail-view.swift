@@ -121,7 +121,7 @@ struct EpisodeDetailView: View {
 struct EpisodeDetailView_Previews: PreviewProvider {
     static var previews: some View {
         EpisodeDetailView(episode: Episode(
-            id: 1,
+            id: UUID().uuidString,
             triggers: [.stress, .highHistamineFood],
             symptoms: [SymptomEntry(category: .gi, severity: 6)],
             overallSeverity: 6

@@ -37,6 +37,7 @@ struct InsightsResponse: Codable {
     let topTriggers: [FrequencyStat]
     let topSymptomCategories: [FrequencyStat]
     let medicationEffectiveness: [FrequencyStat]
+    let triggerCooccurrence: [FrequencyStat]
     let recentTrend: TrendInfo?
 
     enum CodingKeys: String, CodingKey {
@@ -47,6 +48,7 @@ struct InsightsResponse: Codable {
         case topTriggers = "top_triggers"
         case topSymptomCategories = "top_symptom_categories"
         case medicationEffectiveness = "medication_effectiveness"
+        case triggerCooccurrence = "trigger_cooccurrence"
         case recentTrend = "recent_trend"
     }
 }

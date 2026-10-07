@@ -1,4 +1,5 @@
 from collections import Counter
+from itertools import combinations
 from app.analysis.confidence_intervals import wilson_score_interval
 
 def trigger_frequencies(episodes: list) -> list[dict]:
@@ -54,12 +55,37 @@ def medication_effectiveness(episodes: list) -> list[dict]:
                 if helped:
                     helped_counts[med] += 1
 
-
     results = []
     for med, taken in taken_counts.items():
-        interval = wilson_score_interval(helped_counts[med],taken)
+        interval = wilson_score_interval(helped_counts[med], taken)
         results.append({"name": med, "count": taken, **interval})
 
     results.sort(key=lambda x: x["count"], reverse=True)
     return results
 
+def trigger_cooccurrence(episodes: list) -> list[dict]:
+    """
+    analyzing pairs of triggers + how often they appear together in the same episode 
+    -> 
+    to help analyze how combinations of triggers cause episodes
+    """
+    
+    total = len(episodes)
+    if total == 0:
+        return []
+
+    pair_counts = Counter()
+    for ep in episodes:
+        triggers = sorted(set(t for t in (ep.triggers or []) if isinstance(t, str)))
+        for pair in combinations(triggers, 2):
+            pair_counts[pair] += 1
+
+    results = []
+    for pair, count in pair_counts.items():
+        if count < 2:  # skip one-off coincidences — not a real pattern yet
+            continue
+        interval = wilson_score_interval(count, total)
+        results.append({"name": " + ".join(pair), "count": count, **interval})
+
+    results.sort(key=lambda x: x["count"], reverse=True)
+    return results

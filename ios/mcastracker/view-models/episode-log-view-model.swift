@@ -91,6 +91,10 @@ final class EpisodeLogViewModel: ObservableObject {
         isSubmitting = true
         errorMessage = nil
 
+        // 1. Fetch weather for the user's location
+        let userCity = UserDefaults.standard.string(forKey: "userCity") ?? "Seattle"
+        let weather = await WeatherService.shared.fetchWeather(for: userCity)
+
         let symptoms = selectedSymptomCategories.map { category in
             SymptomEntry(
                 category: category,
@@ -110,7 +114,9 @@ final class EpisodeLogViewModel: ObservableObject {
             medicationNames.append(otherMedicationName)
         }
 
+        // 2. Properly structured Episode initialization with all commas and parameters
         let episode = Episode(
+            id: UUID().uuidString,
             date: episodeDate,
             triggers: Array(selectedTriggers),
             symptoms: symptoms,
@@ -118,7 +124,8 @@ final class EpisodeLogViewModel: ObservableObject {
             medicationTaken: medicationTaken,
             medicationNames: medicationTaken ? medicationNames : [],
             medicationHelped: medicationTaken ? medicationHelped : nil,
-            notes: combinedNotes.isEmpty ? nil : combinedNotes
+            notes: combinedNotes.isEmpty ? nil : combinedNotes,
+            weatherSummary: weather // <-- Included cleanly with a comma above it
         )
 
         do {

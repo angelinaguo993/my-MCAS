@@ -26,6 +26,9 @@ struct AnalyticsView: View {
                                 } else {
                                     topTriggersCard(insights.topTriggers)
                                     topSymptomsCard(insights.topSymptomCategories)
+                                    if !insights.triggerCooccurrence.isEmpty {
+                                        triggerCooccurrenceCard(insights.triggerCooccurrence)
+                                    }
                                     
                                     // MARK: - AI Insights Section
                                     aiInsightsSection
@@ -120,6 +123,36 @@ struct AnalyticsView: View {
         .cardStyle()
     }
 
+    private func triggerCooccurrenceCard(_ pairs: [FrequencyStat]) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Trigger Combinations")
+                .font(.headline)
+                .foregroundColor(Theme.textPrimary)
+            Text("How often pairs of triggers show up together in the same episode")
+                .font(.caption)
+                .foregroundColor(Theme.textPrimary.opacity(0.6))
+
+            ForEach(pairs) { stat in
+                HStack {
+                    Image(systemName: "link")
+                        .foregroundColor(Theme.primary)
+                        .frame(width: 24)
+                    Text(stat.name.split(separator: "+").map {
+                        Trigger.from(rawValue: $0.trimmingCharacters(in: .whitespaces))?.displayName
+                        ?? $0.trimmingCharacters(in: .whitespaces)
+                    }.joined(separator: " + "))
+                        .font(.subheadline)
+                        .foregroundColor(Theme.textPrimary)
+                    Spacer()
+                    Text("\(Int(stat.proportion * 100))%")
+                        .font(.caption.bold())
+                        .foregroundColor(Theme.accent)
+                }
+            }
+        }
+        .cardStyle()
+    }
+
     private func insightRow(icon: String, label: String, proportion: Double) -> some View {
         HStack {
             Image(systemName: icon)
@@ -158,9 +191,24 @@ struct AnalyticsView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.top, 8)
 
-                aiInsightCard(title: "Triggers to Avoid", items: aiResult.triggersToAvoid, icon: "exclamationmark.triangle")
-                aiInsightCard(title: "Medication Insights", items: aiResult.medicationInsights, icon: "pills")
-                aiInsightCard(title: "Notes Analysis", items: aiResult.notesAnalysis, icon: "doc.text.magnifyingglass")
+                aiInsightCard(
+                    title: "Triggers to Avoid", 
+                    subtitle: "Based on your logged episodes and notes, these triggers appear to be associated with more severe or frequent episodes.",
+                    items: aiResult.triggersToAvoid, 
+                    icon: "exclamationmark.triangle"
+                )
+                aiInsightCard(
+                    title: "Medication Insights", 
+                    subtitle: "Based on your logged episodes and notes, these medications appear to be more effective for you personally.*",
+                    items: aiResult.medicationInsights, 
+                    icon: "pills"
+                )
+                aiInsightCard(
+                    title: "Notes Analysis", 
+                    subtitle: "Basd on your logged notes, these are patterns or observations that the AI has detected in your entries.",
+                    items: aiResult.notesAnalysis, 
+                    icon: "doc.text.magnifyingglass"
+                )
             }
         } else {
             Button(action: {
@@ -181,7 +229,7 @@ struct AnalyticsView: View {
         }
     }
     
-    private func aiInsightCard(title: String, items: [String], icon: String) -> some View {
+    private func aiInsightCard(title: String, subtitle: String? = nil, items: [String], icon: String) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: icon)
@@ -189,6 +237,12 @@ struct AnalyticsView: View {
                 Text(title)
                     .font(.headline)
                     .foregroundColor(Theme.textPrimary)
+            }
+
+            if let subtitle = subtitle {
+                Text(subtitle)
+                    .font(.caption)
+                    .foregroundColor(Theme.textPrimary.opacity(0.6))
             }
             
             if items.isEmpty {
