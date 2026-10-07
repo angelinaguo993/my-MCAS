@@ -164,26 +164,61 @@ struct AnalyticsView: View {
             Text("Trigger → Symptom Patterns")
                 .font(.headline)
                 .foregroundColor(Theme.textPrimary)
-            Text("Which symptoms tend to follow which triggers")
+            Text("Tap a trigger to see which symptoms tend to follow it")
                 .font(.caption)
                 .foregroundColor(Theme.textPrimary.opacity(0.6))
 
-            ForEach(pairs) { stat in
-                HStack {
-                    Image(systemName: "arrow.right.circle")
-                        .foregroundColor(Theme.primary)
-                        .frame(width: 24)
-                    Text(readablePairName(stat.name))
-                        .font(.subheadline)
+            ForEach(groupedByTrigger(pairs), id: \.trigger) { group in
+                DisclosureGroup {
+                    VStack(alignment: .leading, spacing: 8) {
+                        ForEach(group.symptoms) { stat in
+                            HStack {
+                                Image(systemName: "arrow.right.circle")
+                                    .foregroundColor(Theme.primary)
+                                    .frame(width: 24)
+                                Text(symptomNameFromPair(stat.name))
+                                    .font(.subheadline)
+                                    .foregroundColor(Theme.textPrimary)
+                                Spacer()
+                                Text("\(Int(stat.proportion * 100))%")
+                                    .font(.caption.bold())
+                                    .foregroundColor(Theme.accent)
+                            }
+                        }
+                    }
+                    .padding(.top, 6)
+                } label: {
+                    Text(Trigger.from(rawValue: group.trigger)?.displayName ?? group.trigger)
+                        .font(.subheadline.bold())
                         .foregroundColor(Theme.textPrimary)
-                    Spacer()
-                    Text("\(Int(stat.proportion * 100))%")
-                        .font(.caption.bold())
-                        .foregroundColor(Theme.accent)
                 }
+                .tint(Theme.primary)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .cardStyle()
+    }
+
+    private struct TriggerSymptomGroup {
+        let trigger: String
+        let symptoms: [FrequencyStat]
+    }
+
+    private func groupedByTrigger(_ pairs: [FrequencyStat]) -> [TriggerSymptomGroup] {
+        var buckets: [String: [FrequencyStat]] = [:]
+        for stat in pairs {
+            let parts = stat.name.split(separator: "→").map { $0.trimmingCharacters(in: .whitespaces) }
+            guard let trigger = parts.first else { continue }
+            buckets[trigger, default: []].append(stat)
+        }
+        return buckets.map { TriggerSymptomGroup(trigger: $0.key, symptoms: $0.value) }
+            .sorted { $0.symptoms.count > $1.symptoms.count }
+    }
+
+    private func symptomNameFromPair(_ raw: String) -> String {
+        let parts = raw.split(separator: "→").map { $0.trimmingCharacters(in: .whitespaces) }
+        guard parts.count == 2 else { return raw }
+        return SymptomCategory(rawValue: parts[1])?.displayName ?? parts[1]
     }
 
     private func readablePairName(_ raw: String) -> String {
@@ -220,6 +255,7 @@ struct AnalyticsView: View {
                 .padding(.vertical, 2)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .cardStyle()
     }
 
