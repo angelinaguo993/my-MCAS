@@ -46,6 +46,12 @@ class FrequencyStat(BaseModel):
     upper: float
     sample_size: int
 
+class SeverityComparisonStat(BaseModel):
+    name: str
+    avg_severity_with: float
+    avg_severity_without: float
+    sample_size: int
+
 
 class TrendInfo(BaseModel):
     episodes_last_14_days: int
@@ -63,3 +69,5 @@ class InsightsResponse(BaseModel):
     medication_effectiveness: list[FrequencyStat]
     trigger_cooccurrence: list[FrequencyStat]
     recent_trend: Optional[TrendInfo]
+    symptom_trigger_pairs: list[FrequencyStat] 
+    severity_by_trigger: list[SeverityComparisonStat]

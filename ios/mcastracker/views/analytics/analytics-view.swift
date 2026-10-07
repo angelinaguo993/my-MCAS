@@ -29,6 +29,12 @@ struct AnalyticsView: View {
                                     if !insights.triggerCooccurrence.isEmpty {
                                         triggerCooccurrenceCard(insights.triggerCooccurrence)
                                     }
+                                    if !insights.symptomTriggerPairs.isEmpty {
+                                        symptomTriggerPairsCard(insights.symptomTriggerPairs)
+                                    }
+                                    if !insights.severityByTrigger.isEmpty {
+                                        severityByTriggerCard(insights.severityByTrigger)
+                                    }
                                     
                                     // MARK: - AI Insights Section
                                     aiInsightsSection
@@ -153,6 +159,70 @@ struct AnalyticsView: View {
         .cardStyle()
     }
 
+    private func symptomTriggerPairsCard(_ pairs: [FrequencyStat]) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Trigger → Symptom Patterns")
+                .font(.headline)
+                .foregroundColor(Theme.textPrimary)
+            Text("Which symptoms tend to follow which triggers")
+                .font(.caption)
+                .foregroundColor(Theme.textPrimary.opacity(0.6))
+
+            ForEach(pairs) { stat in
+                HStack {
+                    Image(systemName: "arrow.right.circle")
+                        .foregroundColor(Theme.primary)
+                        .frame(width: 24)
+                    Text(readablePairName(stat.name))
+                        .font(.subheadline)
+                        .foregroundColor(Theme.textPrimary)
+                    Spacer()
+                    Text("\(Int(stat.proportion * 100))%")
+                        .font(.caption.bold())
+                        .foregroundColor(Theme.accent)
+                }
+            }
+        }
+        .cardStyle()
+    }
+
+    private func readablePairName(_ raw: String) -> String {
+        let parts = raw.split(separator: "→").map { $0.trimmingCharacters(in: .whitespaces) }
+        guard parts.count == 2 else { return raw }
+        let triggerName = Trigger.from(rawValue: parts[0])?.displayName ?? parts[0]
+        let symptomName = SymptomCategory(rawValue: parts[1])?.displayName ?? parts[1]
+        return "\(triggerName) → \(symptomName)"
+    }
+
+
+    private func severityByTriggerCard(_ stats: [SeverityComparisonStat]) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Triggers That Make Episodes Worse")
+                .font(.headline)
+                .foregroundColor(Theme.textPrimary)
+            Text("Average severity with this trigger present vs. without it")
+                .font(.caption)
+                .foregroundColor(Theme.textPrimary.opacity(0.6))
+
+            ForEach(stats) { stat in
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(Trigger.from(rawValue: stat.name)?.displayName ?? stat.name)
+                        .font(.subheadline)
+                        .foregroundColor(Theme.textPrimary)
+                    HStack {
+                        Text("With: \(stat.avgSeverityWith, specifier: "%.1f")")
+                            .foregroundColor(Theme.accent)
+                        Text("Without: \(stat.avgSeverityWithout, specifier: "%.1f")")
+                            .foregroundColor(Theme.textPrimary.opacity(0.6))
+                    }
+                    .font(.caption)
+                }
+                .padding(.vertical, 2)
+            }
+        }
+        .cardStyle()
+    }
+
     private func insightRow(icon: String, label: String, proportion: Double) -> some View {
         HStack {
             Image(systemName: icon)
@@ -194,7 +264,7 @@ struct AnalyticsView: View {
                 aiInsightCard(
                     title: "Triggers to Avoid", 
                     subtitle: "Based on your logged episodes and notes, these triggers appear to be associated with more severe or frequent episodes.",
-                    items: aiResult.triggersToAvoid, 
+                    items: aiResult.triggersToAvoid.map { Trigger.from(rawValue: $0)?.displayName ?? $0 },
                     icon: "exclamationmark.triangle"
                 )
                 aiInsightCard(

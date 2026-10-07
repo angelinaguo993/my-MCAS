@@ -1,9 +1,12 @@
 from datetime import datetime, timezone, timedelta
+
 from app.analysis.frequency_comparison import (
     trigger_frequencies,
     symptom_category_frequencies,
     medication_effectiveness,
     trigger_cooccurrence,
+    symptom_trigger_pairing,
+    severity_by_trigger,
 )
 
 MIN_EPISODES_FOR_INSIGHTS = 5
@@ -21,6 +24,8 @@ def generate_insights(episodes: list) -> dict:
             "medication_effectiveness": [],
             "trigger_cooccurrence": [],
             "recent_trend": None,
+            "symptom_trigger_pairs": [],
+            "severity_by_trigger": [],
         }
 
     severities = [ep.overall_severity for ep in episodes]
@@ -35,6 +40,8 @@ def generate_insights(episodes: list) -> dict:
         "medication_effectiveness": medication_effectiveness(episodes),
         "trigger_cooccurrence": trigger_cooccurrence(episodes)[:5],
         "recent_trend": _recent_trend(episodes),
+        "symptom_trigger_pairs": symptom_trigger_pairing(episodes),
+        "severity_by_trigger": severity_by_trigger(episodes),
     }
 
 def _recent_trend(episodes: list) -> dict:

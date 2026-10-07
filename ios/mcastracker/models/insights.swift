@@ -39,6 +39,8 @@ struct InsightsResponse: Codable {
     let medicationEffectiveness: [FrequencyStat]
     let triggerCooccurrence: [FrequencyStat]
     let recentTrend: TrendInfo?
+    let symptomTriggerPairs: [FrequencyStat]
+    let severityByTrigger: [SeverityComparisonStat]
 
     enum CodingKeys: String, CodingKey {
         case hasEnoughData = "has_enough_data"
@@ -50,5 +52,22 @@ struct InsightsResponse: Codable {
         case medicationEffectiveness = "medication_effectiveness"
         case triggerCooccurrence = "trigger_cooccurrence"
         case recentTrend = "recent_trend"
+        case symptomTriggerPairs = "symptom_trigger_pairs"
+        case severityByTrigger = "severity_by_trigger"
+    }
+}
+
+struct SeverityComparisonStat: Codable, Identifiable {
+    var id: String { name }
+    let name: String
+    let avgSeverityWith: Double
+    let avgSeverityWithout: Double
+    let sampleSize: Int
+
+    enum CodingKeys: String, CodingKey {
+        case name
+        case avgSeverityWith = "avg_severity_with"
+        case avgSeverityWithout = "avg_severity_without"
+        case sampleSize = "sample_size"
     }
 }
