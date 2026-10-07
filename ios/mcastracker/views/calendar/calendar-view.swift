@@ -72,6 +72,8 @@ struct CalendarView: View {
                                         SeverityTrendChart(episodes: viewModel.trendEpisodes)
                                         
                                         trendSummaryCard
+                                        mostFrequentTriggersCard
+                                        mostFrequentSymptomsCard
                                     }
                                     .padding(.horizontal)
                                 }
@@ -148,6 +150,82 @@ struct CalendarView: View {
             }
         }
         .cardStyle()
+
+    }
+
+    private var mostFrequentTriggersCard: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Most Frequent Triggers")
+                .font(.headline)
+                .foregroundColor(Theme.textPrimary)
+
+            let counts = countOccurrences(viewModel.trendEpisodes.flatMap { $0.triggers.map { $0.rawValue } })
+
+            if counts.isEmpty {
+                Text("No triggers logged in this timeframe")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+            } else {
+                ForEach(counts.prefix(5), id: \.name) { item in
+                    HStack {
+                        Image(systemName: Trigger.from(rawValue: item.name)?.iconName ?? "questionmark.circle.fill")
+                            .foregroundColor(Theme.primary)
+                            .frame(width: 24)
+                        Text(Trigger.from(rawValue: item.name)?.displayName ?? item.name)
+                            .font(.subheadline)
+                            .foregroundColor(Theme.textPrimary)
+                        Spacer()
+                        Text("\(item.count)")
+                            .font(.caption.bold())
+                            .foregroundColor(Theme.accent)
+                    }
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .cardStyle()
+    }
+
+    private var mostFrequentSymptomsCard: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Most Frequent Symptoms")
+                .font(.headline)
+                .foregroundColor(Theme.textPrimary)
+
+            let counts = countOccurrences(viewModel.trendEpisodes.flatMap { $0.symptoms.map { $0.category.rawValue } })
+
+            if counts.isEmpty {
+                Text("No symptoms logged in this timeframe")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+            } else {
+                ForEach(counts.prefix(5), id: \.name) { item in
+                    HStack {
+                        Image(systemName: SymptomCategory(rawValue: item.name)?.iconName ?? "questionmark.circle.fill")
+                            .foregroundColor(Theme.primary)
+                            .frame(width: 24)
+                        Text(SymptomCategory(rawValue: item.name)?.displayName ?? item.name)
+                            .font(.subheadline)
+                            .foregroundColor(Theme.textPrimary)
+                        Spacer()
+                        Text("\(item.count)")
+                            .font(.caption.bold())
+                            .foregroundColor(Theme.accent)
+                    }
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .cardStyle()
+    }
+
+    private func countOccurrences(_ values: [String]) -> [(name: String, count: Int)] {
+        var counts: [String: Int] = [:]
+        for value in values {
+            counts[value, default: 0] += 1
+        }
+        return counts.map { (name: $0.key, count: $0.value) }
+            .sorted { $0.count > $1.count }
     }
 
     private var calendarGrid: some View {
