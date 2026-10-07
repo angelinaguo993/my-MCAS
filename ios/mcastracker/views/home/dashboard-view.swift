@@ -8,6 +8,7 @@ struct DashboardView: View {
     @StateObject private var viewModel = DashboardViewModel()
     @State private var showingEpisodeLog = false
     @State private var showingSettings = false
+    @EnvironmentObject private var profileStore: UserProfileStore
 
     var body: some View {
         NavigationStack {
@@ -33,7 +34,7 @@ struct DashboardView: View {
                     }
                 }
             }
-            .navigationTitle("Home")
+            .navigationTitle(greeting)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
@@ -56,6 +57,14 @@ struct DashboardView: View {
             }
         }
     }
+
+    private var greeting: String {
+        guard let name = profileStore.profile?.name, !name.isEmpty else {
+            return "Home"
+        }
+        return "Welcome, \(name)!"
+    }
+
 
     private var daysSinceCard: some View {
         VStack(spacing: 8) {

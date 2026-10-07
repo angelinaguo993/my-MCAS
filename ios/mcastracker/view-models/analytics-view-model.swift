@@ -39,7 +39,7 @@ final class AnalyticsViewModel: ObservableObject {
             let episodes = try await APIClient.shared.fetchEpisodes(year: currentYear, month: currentMonth) 
             
             // 3. Send the episodes to OpenRouter
-            aiResult = try await aiService.fetchAnalysis(for: episodes)
+            aiResult = try await aiService.fetchAnalysis(for: episodes, insights: insights)
         } catch {
             print("Decoding error: \(error)")
             errorMessage = "AI Analysis failed: \(error.localizedDescription)"
