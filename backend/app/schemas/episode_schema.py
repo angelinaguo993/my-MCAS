@@ -23,6 +23,8 @@ class EpisodeCreate(BaseModel):
     medication_names: list[str] = []
     medication_helped: Optional[bool] = None
     notes: Optional[str] = None
+    sleep_hours: Optional[float] = None
+    date: Optional[datetime] = None  # if not provided, server will use current UTC time
 
 
 class EpisodeResponse(EpisodeCreate):

@@ -5,6 +5,7 @@ import SwiftUI
 final class EpisodeLogViewModel: ObservableObject {
     @Published var selectedTriggers: Set<Trigger> = []
     @Published var otherTriggerDescription: String = ""
+    @Published var triggerDetails: [Trigger: String] = [:]
     @Published var episodeDate: Date = Date()
     @Published var selectedSymptomCategories: Set<SymptomCategory> = []
     @Published var symptomSeverities: [SymptomCategory: Int] = [:]
@@ -21,9 +22,17 @@ final class EpisodeLogViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var didSubmitSuccessfully = false
 
+    // Sleep
+    @Published var bedtime: Date = Calendar.current.date(bySettingHour: 23, minute: 0, second: 0, of: Date()) ?? Date()
+    @Published var wakeTime: Date = Calendar.current.date(bySettingHour: 7, minute: 0, second: 0, of: Date()) ?? Date()
+    @Published var didEditSleep = false
+
+
     func toggleTrigger(_ trigger: Trigger) {
         if selectedTriggers.contains(trigger) {
             selectedTriggers.remove(trigger)
+            triggerDetails[trigger] = nil
+
         } else {
             selectedTriggers.insert(trigger)
         }
@@ -59,6 +68,42 @@ final class EpisodeLogViewModel: ObservableObject {
             get: { self.symptomSeverities[category] ?? 5 },
             set: { self.symptomSeverities[category] = $0 }
         )
+    }
+
+    func triggerDetailBinding(for trigger: Trigger) -> Binding<String> {
+        Binding(
+            get: { self.triggerDetails[trigger] ?? "" },
+            set: { self.triggerDetails[trigger] = $0 }
+        )
+    }
+
+
+    // Sleep- bedtime, waketime, hours of slep 
+    func bedtimeBinding() -> Binding<Date> {
+        Binding(
+            get: { self.bedtime },
+            set: { self.bedtime = $0; self.didEditSleep = true }
+        )
+    }
+
+    func wakeTimeBinding() -> Binding<Date> {
+        Binding(
+            get: { self.wakeTime },
+            set: { self.wakeTime = $0; self.didEditSleep = true }
+        )
+    }
+
+    /// Hours slept, or nil if the user hasn't set a time yet.
+    var sleepHours: Double? {
+        guard didEditSleep else { return nil }
+        let cal = Calendar.current
+        let bed = cal.dateComponents([.hour, .minute], from: bedtime)
+        let wake = cal.dateComponents([.hour, .minute], from: wakeTime)
+        let bedMinutes = (bed.hour ?? 0) * 60 + (bed.minute ?? 0)
+        let wakeMinutes = (wake.hour ?? 0) * 60 + (wake.minute ?? 0)
+        var diff = wakeMinutes - bedMinutes
+        if diff < 0 { diff += 24 * 60 }  // slept past midnight
+        return Double(diff) / 60.0
     }
 
     /// For category .other, reuses the same specificSymptoms storage to hold
@@ -104,9 +149,12 @@ final class EpisodeLogViewModel: ObservableObject {
         }
 
         var combinedNotes = notes
-        if selectedTriggers.contains(.other), !otherTriggerDescription.isEmpty {
-            let triggerNote = "Other trigger: \(otherTriggerDescription)"
-            combinedNotes = combinedNotes.isEmpty ? triggerNote : "\(combinedNotes)\n\(triggerNote)"
+        for trigger in Trigger.allCases where selectedTriggers.contains(trigger) {
+            let detail = (triggerDetails[trigger] ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !detail.isEmpty else { continue }
+            let label = trigger == .other ? "Other trigger" : trigger.displayName
+            let line = "\(label): \(detail)"
+            combinedNotes = combinedNotes.isEmpty ? line : "\(combinedNotes)\n\(line)"
         }
 
         var medicationNames = Array(selectedMedications)
@@ -125,7 +173,8 @@ final class EpisodeLogViewModel: ObservableObject {
             medicationNames: medicationTaken ? medicationNames : [],
             medicationHelped: medicationTaken ? medicationHelped : nil,
             notes: combinedNotes.isEmpty ? nil : combinedNotes,
-            weatherSummary: weather // <-- Included cleanly with a comma above it
+            weatherSummary: weather, // <-- Included cleanly with a comma above it
+            sleepHours: sleepHours
         )
 
         do {

@@ -12,6 +12,7 @@ struct Episode: Identifiable, Codable, Equatable {
     var foodEaten: String? = nil
     var notes: String? = nil
     var weatherSummary: String? = nil
+    var sleepHours: Double? = nil  // hours of sleep the night before
 
     enum CodingKeys: String, CodingKey {
         case id, date, triggers, symptoms
@@ -22,11 +23,12 @@ struct Episode: Identifiable, Codable, Equatable {
         case foodEaten = "food_eaten"
         case notes
         case weatherSummary = "weather_summary"
+        case sleepHours = "sleep_hours"
     }
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        
+
         // Handle ID as either an Int or String from the backend
         if let intId = try? container.decode(Int.self, forKey: .id) {
             id = String(intId)
@@ -35,7 +37,7 @@ struct Episode: Identifiable, Codable, Equatable {
         } else {
             id = UUID().uuidString
         }
-        
+
         date = try container.decodeIfPresent(Date.self, forKey: .date) ?? Date()
         triggers = try container.decodeIfPresent([Trigger].self, forKey: .triggers) ?? []
         symptoms = try container.decodeIfPresent([SymptomEntry].self, forKey: .symptoms) ?? []
@@ -46,9 +48,23 @@ struct Episode: Identifiable, Codable, Equatable {
         foodEaten = try container.decodeIfPresent(String.self, forKey: .foodEaten)
         notes = try container.decodeIfPresent(String.self, forKey: .notes)
         weatherSummary = try container.decodeIfPresent(String.self, forKey: .weatherSummary)
+        sleepHours = try container.decodeIfPresent(Double.self, forKey: .sleepHours)
     }
 
-    init(id: String = UUID().uuidString, date: Date = Date(), triggers: [Trigger] = [], symptoms: [SymptomEntry] = [], overallSeverity: Int = 5, medicationTaken: Bool = false, medicationNames: [String] = [], medicationHelped: Bool? = nil, foodEaten: String? = nil, notes: String? = nil, weatherSummary: String? = nil) {
+    init(
+        id: String = UUID().uuidString,
+        date: Date = Date(),
+        triggers: [Trigger] = [],
+        symptoms: [SymptomEntry] = [],
+        overallSeverity: Int = 5,
+        medicationTaken: Bool = false,
+        medicationNames: [String] = [],
+        medicationHelped: Bool? = nil,
+        foodEaten: String? = nil,
+        notes: String? = nil,
+        weatherSummary: String? = nil,
+        sleepHours: Double? = nil
+    ) {
         self.id = id
         self.date = date
         self.triggers = triggers
@@ -60,5 +76,6 @@ struct Episode: Identifiable, Codable, Equatable {
         self.foodEaten = foodEaten
         self.notes = notes
         self.weatherSummary = weatherSummary
+        self.sleepHours = sleepHours
     }
 }
