@@ -53,6 +53,7 @@
 		E4FBA6C9307ADBB400F6D5CC /* doctor-report.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FBA6C8307ADBB400F6D5CC /* doctor-report.swift */; };
 		E4FBA6CB307ADCD800F6D5CC /* doctor-report-pdf.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FBA6CA307ADCD800F6D5CC /* doctor-report-pdf.swift */; };
 		E4FBA6CD307ADD6100F6D5CC /* export-report-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FBA6CC307ADD6100F6D5CC /* export-report-view.swift */; };
+		E4FBA6CF307AE0C000F6D5CC /* discover-content.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FBA6CE307AE0C000F6D5CC /* discover-content.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -122,6 +123,7 @@
 		E4FBA6C8307ADBB400F6D5CC /* doctor-report.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "doctor-report.swift"; sourceTree = "<group>"; };
 		E4FBA6CA307ADCD800F6D5CC /* doctor-report-pdf.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "doctor-report-pdf.swift"; sourceTree = "<group>"; };
 		E4FBA6CC307ADD6100F6D5CC /* export-report-view.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "export-report-view.swift"; sourceTree = "<group>"; };
+		E4FBA6CE307AE0C000F6D5CC /* discover-content.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "discover-content.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -286,6 +288,7 @@
 				E41B1BEB3052598700A467FA /* episode.swift */,
 				E41B1BEC3052598700A467FA /* dashboardstats.swift */,
 				E4FBA6C8307ADBB400F6D5CC /* doctor-report.swift */,
+				E4FBA6CE307AE0C000F6D5CC /* discover-content.swift */,
 			);
 			path = models;
 			sourceTree = "<group>";
@@ -565,6 +568,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4FBA6CF307AE0C000F6D5CC /* discover-content.swift in Sources */,
 				E41B1C0A3052598800A467FA /* loading-view.swift in Sources */,
 				E4251C843072F5940070618B /* Secrets.swift in Sources */,
 				E4831B2F30732EBD0083CEE5 /* weatherservice.swift in Sources */,
