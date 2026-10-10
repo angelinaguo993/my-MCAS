@@ -7,7 +7,7 @@ struct SeverityTrendChart: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text("Severity Over Time")
-                .font(.headline)
+                .font(.nHeadline)
             
             Chart {
                 ForEach(episodes) { episode in

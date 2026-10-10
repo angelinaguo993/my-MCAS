@@ -35,11 +35,11 @@ struct EpisodeDetailView: View {
     private var summaryCard: some View {
         HStack {
             Text("Overall severity")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
             Spacer()
             Text("\(episode.overallSeverity)/10")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.accent)
         }
         .cardStyle()
@@ -48,7 +48,7 @@ struct EpisodeDetailView: View {
     private var triggersCard: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Triggers")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
             if episode.triggers.isEmpty {
                 Text("None recorded").font(.subheadline).foregroundColor(.gray)
@@ -64,7 +64,7 @@ struct EpisodeDetailView: View {
     private var symptomsCard: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Symptoms")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
             ForEach(episode.symptoms) { symptom in
                 VStack(alignment: .leading, spacing: 4) {
@@ -72,7 +72,7 @@ struct EpisodeDetailView: View {
                         Text(symptom.category.displayName).font(.subheadline)
                         Spacer()
                         Text("\(symptom.severity)/10")
-                            .font(.subheadline.bold())
+                            
                             .foregroundColor(Theme.accent)
                     }
                     if !symptom.specificSymptoms.isEmpty {
@@ -90,7 +90,7 @@ struct EpisodeDetailView: View {
     private var medicationCard: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Medication")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
             if episode.medicationTaken {
                 Text(episode.medicationNames.isEmpty ? "Taken" : episode.medicationNames.joined(separator: ", "))
@@ -110,7 +110,7 @@ struct EpisodeDetailView: View {
     private func notesCard(_ notes: String) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Notes")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
             Text(notes).font(.subheadline)
         }

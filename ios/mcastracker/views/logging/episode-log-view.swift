@@ -53,7 +53,7 @@ struct EpisodeLogView: View {
     private var dateSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Date of Episode")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             DatePicker(
@@ -74,7 +74,7 @@ struct EpisodeLogView: View {
     private var triggersSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Select every potenntial trigger that might have triggered (or worsened) this episode.")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             FlowChips(
@@ -103,7 +103,7 @@ struct EpisodeLogView: View {
     private var sleepSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Sleep the night before")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             HStack(alignment: .center, spacing: 16) {
@@ -150,7 +150,7 @@ struct EpisodeLogView: View {
     private var symptomsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Select every symptom that you experienced during this episode.")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             FlowChips(
@@ -184,7 +184,7 @@ struct EpisodeLogView: View {
     private var overallSeveritySection: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Overall episode severity")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
             SeverityPickerView(label: "Overall", value: $viewModel.overallSeverity)
         }
@@ -196,7 +196,7 @@ struct EpisodeLogView: View {
     private var medicationSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Toggle("Took medication for this episode", isOn: $viewModel.medicationTaken)
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
                 .tint(Theme.primary)
 
@@ -223,7 +223,7 @@ struct EpisodeLogView: View {
     private var notesSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Would you like to add any other notes about this episode? (Optional)")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
             
             // Add your smaller title here
@@ -243,7 +243,7 @@ struct EpisodeLogView: View {
             Task { await viewModel.submit() }
         } label: {
             Text("Save Episode")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
                 .padding()

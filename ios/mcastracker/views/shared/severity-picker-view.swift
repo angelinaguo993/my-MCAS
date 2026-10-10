@@ -15,7 +15,7 @@ struct SeverityPickerView: View {
                     .foregroundColor(Theme.textPrimary)
                 Spacer()
                 Text("\(value)/10")
-                    .font(.subheadline.bold())
+                    
                     .foregroundColor(Theme.accent)
             }
             Slider(value: Binding(

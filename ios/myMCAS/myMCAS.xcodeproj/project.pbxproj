@@ -29,6 +29,7 @@
 		E4251C823072F1C20070618B /* AIanalysisservice.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4251C813072F1C20070618B /* AIanalysisservice.swift */; };
 		E4251C843072F5940070618B /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4251C833072F5940070618B /* Secrets.swift */; };
 		E4696CB63074B15F006CA41F /* severity-trend-chart.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4696CB53074B15F006CA41F /* severity-trend-chart.swift */; };
+		E4696CBD3079ECDE006CA41F /* typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4696CBC3079ECDE006CA41F /* typography.swift */; };
 		E46F70083057127C0063F1FF /* medication.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70073057127C0063F1FF /* medication.swift */; };
 		E46F700C306228920063F1FF /* insights.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F700B306228920063F1FF /* insights.swift */; };
 		E46F70173064E1750063F1FF /* analytics-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F700E3064E1750063F1FF /* analytics-view.swift */; };
@@ -89,6 +90,11 @@
 		E4251C813072F1C20070618B /* AIanalysisservice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AIanalysisservice.swift; sourceTree = "<group>"; };
 		E4251C833072F5940070618B /* Secrets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		E4696CB53074B15F006CA41F /* severity-trend-chart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "severity-trend-chart.swift"; sourceTree = "<group>"; };
+		E4696CB83079EC2F006CA41F /* Nunito-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Nunito-Regular.ttf"; sourceTree = "<group>"; };
+		E4696CB93079EC3D006CA41F /* Nunito-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Nunito-SemiBold.ttf"; sourceTree = "<group>"; };
+		E4696CBA3079EC47006CA41F /* Nunito-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Nunito-Bold.ttf"; sourceTree = "<group>"; };
+		E4696CBB3079ECB1006CA41F /* Nunito-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Nunito-ExtraBold.ttf"; sourceTree = "<group>"; };
+		E4696CBC3079ECDE006CA41F /* typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = typography.swift; sourceTree = "<group>"; };
 		E46F70073057127C0063F1FF /* medication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = medication.swift; sourceTree = "<group>"; };
 		E46F700B306228920063F1FF /* insights.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = insights.swift; sourceTree = "<group>"; };
 		E46F700E3064E1750063F1FF /* analytics-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "analytics-view.swift"; sourceTree = "<group>"; };
@@ -189,6 +195,7 @@
 		E41B1BDE3052598700A467FA /* mcastracker */ = {
 			isa = PBXGroup;
 			children = (
+				E4696CB73079EBC6006CA41F /* resources */,
 				E46F70243069C4FC0063F1FF /* settings */,
 				E46F70213069C4EA0063F1FF /* onboarding */,
 				E41B1BDF3052598700A467FA /* app */,
@@ -285,6 +292,7 @@
 			children = (
 				E46F702B306B6EAA0063F1FF /* user-profile-store.swift */,
 				E41B1BF23052598700A467FA /* theme.swift */,
+				E4696CBC3079ECDE006CA41F /* typography.swift */,
 			);
 			path = utilities;
 			sourceTree = "<group>";
@@ -342,6 +350,17 @@
 				E4696CB53074B15F006CA41F /* severity-trend-chart.swift */,
 			);
 			path = trends;
+			sourceTree = "<group>";
+		};
+		E4696CB73079EBC6006CA41F /* resources */ = {
+			isa = PBXGroup;
+			children = (
+				E4696CBB3079ECB1006CA41F /* Nunito-ExtraBold.ttf */,
+				E4696CB83079EC2F006CA41F /* Nunito-Regular.ttf */,
+				E4696CBA3079EC47006CA41F /* Nunito-Bold.ttf */,
+				E4696CB93079EC3D006CA41F /* Nunito-SemiBold.ttf */,
+			);
+			path = resources;
 			sourceTree = "<group>";
 		};
 		E46F700D3064E1750063F1FF /* analytics */ = {
@@ -540,6 +559,7 @@
 				E46F70173064E1750063F1FF /* analytics-view.swift in Sources */,
 				E4251C803072F1A10070618B /* AIanalysisresult.swift in Sources */,
 				E41B1BFF3052598800A467FA /* endpoints.swift in Sources */,
+				E4696CBD3079ECDE006CA41F /* typography.swift in Sources */,
 				E41B1C093052598800A467FA /* severity-picker-view.swift in Sources */,
 				E46F701A3064E1750063F1FF /* episode-detail-view.swift in Sources */,
 				E46F702C306B6EAA0063F1FF /* user-profile-store.swift in Sources */,

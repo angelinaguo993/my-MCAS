@@ -109,7 +109,7 @@ struct CalendarView: View {
             }
             Spacer()
             Text(displayedMonth.formatted(.dateTime.month(.wide).year()))
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
             Spacer()
             Button { changeMonth(by: 1) } label: {
@@ -123,7 +123,7 @@ struct CalendarView: View {
     private var trendSummaryCard: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("\(selectedTimeframe.rawValue) Summary")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
             
             let totalEpisodes = viewModel.trendEpisodes.count
@@ -135,7 +135,7 @@ struct CalendarView: View {
                         .font(.subheadline)
                         .foregroundColor(.gray)
                     Text("\(totalEpisodes)")
-                        .font(.title2.bold())
+                        .font(.nHeadline)
                         .foregroundColor(Theme.textPrimary)
                 }
                 Spacer()
@@ -144,7 +144,7 @@ struct CalendarView: View {
                         .font(.subheadline)
                         .foregroundColor(.gray)
                     Text(String(format: "%.1f / 10", avgSeverity))
-                        .font(.title2.bold())
+                        .font(.nHeadline)
                         .foregroundColor(Theme.accent)
                 }
             }
@@ -156,7 +156,7 @@ struct CalendarView: View {
     private var mostFrequentTriggersCard: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Most Frequent Triggers")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             let counts = countOccurrences(viewModel.trendEpisodes.flatMap { $0.triggers.map { $0.rawValue } })
@@ -189,7 +189,7 @@ struct CalendarView: View {
     private var mostFrequentSymptomsCard: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Most Frequent Symptoms")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             let counts = countOccurrences(viewModel.trendEpisodes.flatMap { $0.symptoms.map { $0.category.rawValue } })

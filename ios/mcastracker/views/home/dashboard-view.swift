@@ -96,7 +96,7 @@ struct DashboardView: View {
                 .foregroundColor(Theme.textPrimary)
             Spacer()
             Text("\(viewModel.stats?.totalEpisodesLogged ?? 0)")
-                .font(.subheadline.bold())
+                
                 .foregroundColor(Theme.textPrimary)
         }
         .cardStyle()
@@ -107,7 +107,7 @@ struct DashboardView: View {
             showingEpisodeLog = true
         } label: {
             Text("Record Episode")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
                 .padding()
@@ -119,7 +119,7 @@ struct DashboardView: View {
     private func errorBanner(_ message: String) -> some View {
         VStack(spacing: 8) {
             Text("Couldn't load your data")
-                .font(.subheadline.bold())
+                
                 .foregroundColor(Theme.accent)
             Text("The server may be waking up after being idle — this can take up to a minute on the free tier.")
                 .font(.caption)
@@ -138,7 +138,7 @@ struct DashboardView: View {
     private func medicationsUsedCard(_ medications: [FrequencyStat]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Medications You Use")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             if medications.isEmpty {

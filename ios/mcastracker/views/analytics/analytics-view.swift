@@ -90,7 +90,7 @@ struct AnalyticsView: View {
     private func topTriggersCard(_ triggers: [FrequencyStat]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Your Most Common Triggers")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             if triggers.isEmpty {
@@ -111,7 +111,7 @@ struct AnalyticsView: View {
     private func topSymptomsCard(_ symptoms: [FrequencyStat]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Your Most Common Symptoms")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             if symptoms.isEmpty {
@@ -132,7 +132,7 @@ struct AnalyticsView: View {
     private func triggerCooccurrenceCard(_ pairs: [FrequencyStat]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Trigger Combinations")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
             Text("How often pairs of triggers show up together in the same episode")
                 .font(.caption)
@@ -162,7 +162,7 @@ struct AnalyticsView: View {
     private func symptomTriggerPairsCard(_ pairs: [FrequencyStat]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Trigger → Symptom Patterns")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
             Text("Tap a trigger to see which symptoms tend to follow it")
                 .font(.caption)
@@ -233,7 +233,7 @@ struct AnalyticsView: View {
     private func severityByTriggerCard(_ stats: [SeverityComparisonStat]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Triggers That Make Episodes Worse")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
             Text("Average severity with this trigger present vs. without it")
                 .font(.caption)
@@ -292,7 +292,7 @@ struct AnalyticsView: View {
         } else if let aiResult = viewModel.aiResult {
             VStack(spacing: 16) {
                 Text("AI Insights")
-                    .font(.title2.bold())
+                    .font(.nTitle2)
                     .foregroundColor(Theme.textPrimary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.top, 8)
@@ -324,7 +324,7 @@ struct AnalyticsView: View {
                     Image(systemName: "sparkles")
                     Text("Generate AI Insights")
                 }
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(.white)
                 .padding()
                 .frame(maxWidth: .infinity)
@@ -341,7 +341,7 @@ struct AnalyticsView: View {
                 Image(systemName: icon)
                     .foregroundColor(Theme.accent)
                 Text(title)
-                    .font(.headline)
+                    .font(.nHeadline)
                     .foregroundColor(Theme.textPrimary)
             }
 

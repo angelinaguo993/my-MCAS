@@ -56,7 +56,7 @@ struct OnboardingView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Welcome")
-                .font(.largeTitle.bold())
+                .font(.nLargeTitle)
                 .foregroundColor(Theme.textPrimary)
             Text("A few quick questions to get your tracker set up. Please answer every question to the best you can.")
                 .font(.subheadline)
@@ -68,7 +68,7 @@ struct OnboardingView: View {
 
     private var basicInfoSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("About You").font(.headline).foregroundColor(Theme.textPrimary)
+            Text("About You").foregroundColor(Theme.textPrimary)
 
             TextField("Name", text: $name)
                 .textFieldStyle(.roundedBorder)
@@ -117,7 +117,7 @@ struct OnboardingView: View {
     private var medicationsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Medications prescribed by your doctor")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             ChipGrid(
@@ -159,7 +159,7 @@ struct OnboardingView: View {
     private var frequencySection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("How often do you typically have episodes?")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             ChipGrid(
@@ -183,7 +183,7 @@ struct OnboardingView: View {
     private var previousSymptomsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Symptoms you've had before")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             ChipGrid(
@@ -241,7 +241,7 @@ struct OnboardingView: View {
     private var previousTriggersSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Triggers you've had before")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             ChipGrid(
@@ -320,7 +320,7 @@ struct OnboardingView: View {
                 submit()
             } label: {
                 Text("Get Started")
-                    .font(.headline)
+                    .font(.nHeadline)
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
