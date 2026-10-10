@@ -338,7 +338,14 @@ struct AnalyticsView: View {
                 aiInsightCard(
                     title: "Triggers to Avoid", 
                     subtitle: "Based on your logged episodes and notes, these triggers appear to be associated with more severe or frequent episodes.",
-                    items: aiResult.triggersToAvoid.map { Trigger.from(rawValue: $0)?.displayName ?? $0 },
+                    items: aiResult.triggersToAvoid.map { rawValue in
+                        if let trigger = Trigger.from(rawValue: rawValue) {
+                            return trigger.displayName
+                        } else {
+                            // Graceful fallback: converts "high_histamine_food" -> "High Histamine Food"
+                            return rawValue.replacingOccurrences(of: "_", with: " ").capitalized
+                        }
+                    },
                     icon: "exclamationmark.triangle"
                 )
                 aiInsightCard(

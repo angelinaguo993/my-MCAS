@@ -79,8 +79,22 @@ enum Trigger: String, CaseIterable, Codable, Identifiable {
         }
     }
 
-    /// Looks up a Trigger by its raw backend string (e.g. "stress").
+    /// Looks up a trigger by raw backend string
     static func from(rawValue: String) -> Trigger? {
-        Trigger(rawValue: rawValue)
+        let cleaned = rawValue.lowercased()
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .replacingOccurrences(of: " ", with: "_")
+            .replacingOccurrences(of: "-", with: "_")
+        
+        // 1. Check exact rawValue match
+        if let match = Trigger(rawValue: cleaned) {
+            return match
+        }
+        
+        // 2. Check case-insensitive match against rawValues or display names
+        return Trigger.allCases.first {
+            $0.rawValue.lowercased() == cleaned ||
+            $0.displayName.lowercased() == rawValue.lowercased()
+        }
     }
 }
