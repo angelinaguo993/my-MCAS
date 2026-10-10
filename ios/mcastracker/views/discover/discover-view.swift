@@ -8,7 +8,7 @@ struct DiscoverView: View {
             ZStack {
                 Theme.background.ignoresSafeArea()
                 Text("Coming soon")
-                    .font(.subheadline)
+                    .font(.nSubheadline)
                     .foregroundColor(Theme.textPrimary.opacity(0.5))
             }
             .navigationTitle("Discover")

@@ -69,7 +69,7 @@ struct DashboardView: View {
     private var daysSinceCard: some View {
         VStack(spacing: 8) {
             Text("Days Since Last Episode")
-                .font(.subheadline)
+                .font(.nSubheadline)
                 .foregroundColor(Theme.textPrimary.opacity(0.7))
 
             if let days = viewModel.stats?.daysSinceLastEpisode {
@@ -81,7 +81,7 @@ struct DashboardView: View {
                     .font(.system(size: 56, weight: .bold, design: .rounded))
                     .foregroundColor(Theme.primary)
                 Text("No episodes logged yet")
-                    .font(.footnote)
+                    .font(.nFootnote)
                     .foregroundColor(Theme.textPrimary.opacity(0.6))
             }
         }
@@ -92,11 +92,11 @@ struct DashboardView: View {
     private var totalLoggedCard: some View {
         HStack {
             Text("Total episodes logged")
-                .font(.subheadline)
+                .font(.nSubheadline)
                 .foregroundColor(Theme.textPrimary)
             Spacer()
             Text("\(viewModel.stats?.totalEpisodesLogged ?? 0)")
-                
+                .font(.nSubheadlineBold)
                 .foregroundColor(Theme.textPrimary)
         }
         .cardStyle()
@@ -119,16 +119,16 @@ struct DashboardView: View {
     private func errorBanner(_ message: String) -> some View {
         VStack(spacing: 8) {
             Text("Couldn't load your data")
-                
+                .font(.nSubheadlineBold)
                 .foregroundColor(Theme.accent)
             Text("The server may be waking up after being idle — this can take up to a minute on the free tier.")
-                .font(.caption)
+                .font(.nCaption)
                 .multilineTextAlignment(.center)
                 .foregroundColor(Theme.textPrimary.opacity(0.7))
             Button("Try Again") {
                 Task { await viewModel.loadDashboard() }
             }
-            .font(.caption.bold())
+            .font(.nCaptionBold)
             .foregroundColor(Theme.primary)
         }
         .frame(maxWidth: .infinity)
@@ -142,7 +142,7 @@ struct DashboardView: View {
                 .foregroundColor(Theme.textPrimary)
 
             if medications.isEmpty {
-                Text("No medications logged yet").font(.caption).foregroundColor(.gray)
+                Text("No medications logged yet").font(.nCaption).foregroundColor(.gray)
             } else {
                 ForEach(medications) { stat in
                     HStack {
@@ -150,11 +150,11 @@ struct DashboardView: View {
                             .foregroundColor(Theme.primary)
                             .frame(width: 24)
                         Text(stat.name)
-                            .font(.subheadline)
+                            .font(.nSubheadline)
                             .foregroundColor(Theme.textPrimary)
                         Spacer()
                         Text("\(Int(stat.proportion * 100))% helped")
-                            .font(.caption)
+                            .font(.nCaption)
                             .foregroundColor(Theme.success)
                     }
                 }

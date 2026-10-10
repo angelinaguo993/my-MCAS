@@ -54,19 +54,19 @@ struct AnalyticsView: View {
     private func errorBanner(_ message: String) -> some View {
         VStack(spacing: 8) {
             Text("Couldn't load your data")
-                .font(.subheadline.bold())
+                .font(.nSubheadlineBold)
                 .foregroundColor(Theme.accent)
             
             // This line is the crucial change to reveal the true error
             Text(message) 
-                .font(.caption)
+                .font(.nCaption)
                 .multilineTextAlignment(.center)
                 .foregroundColor(Theme.textPrimary.opacity(0.7))
             
             Button("Try Again") {
                 Task { await viewModel.loadInsights() }
             }
-            .font(.caption.bold())
+            .font(.nCaptionBold)
             .foregroundColor(Theme.primary)
         }
         .frame(maxWidth: .infinity)
@@ -76,10 +76,10 @@ struct AnalyticsView: View {
     private func notEnoughDataCard(_ insights: InsightsResponse) -> some View {
         VStack(spacing: 6) {
             Text("Not enough data yet")
-                .font(.subheadline.bold())
+                .font(.nSubheadlineBold)
                 .foregroundColor(Theme.textPrimary)
             Text("Log \(insights.episodesNeeded) more episode\(insights.episodesNeeded == 1 ? "" : "s") to start seeing your patterns.")
-                .font(.caption)
+                .font(.nCaption)
                 .multilineTextAlignment(.center)
                 .foregroundColor(Theme.textPrimary.opacity(0.6))
         }
@@ -94,7 +94,7 @@ struct AnalyticsView: View {
                 .foregroundColor(Theme.textPrimary)
 
             if triggers.isEmpty {
-                Text("No triggers logged yet").font(.caption).foregroundColor(.gray)
+                Text("No triggers logged yet").font(.nCaption).foregroundColor(.gray)
             } else {
                 ForEach(triggers) { stat in
                     insightRow(
@@ -115,7 +115,7 @@ struct AnalyticsView: View {
                 .foregroundColor(Theme.textPrimary)
 
             if symptoms.isEmpty {
-                Text("No symptoms logged yet").font(.caption).foregroundColor(.gray)
+                Text("No symptoms logged yet").font(.nCaption).foregroundColor(.gray)
             } else {
                 ForEach(symptoms) { stat in
                     insightRow(
@@ -135,7 +135,7 @@ struct AnalyticsView: View {
                 .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
             Text("How often pairs of triggers show up together in the same episode")
-                .font(.caption)
+                .font(.nCaption)
                 .foregroundColor(Theme.textPrimary.opacity(0.6))
 
             ForEach(pairs) { stat in
@@ -147,11 +147,11 @@ struct AnalyticsView: View {
                         Trigger.from(rawValue: $0.trimmingCharacters(in: .whitespaces))?.displayName
                         ?? $0.trimmingCharacters(in: .whitespaces)
                     }.joined(separator: " + "))
-                        .font(.subheadline)
+                        .font(.nSubheadline)
                         .foregroundColor(Theme.textPrimary)
                     Spacer()
                     Text("\(Int(stat.proportion * 100))%")
-                        .font(.caption.bold())
+                        .font(.nCaptionBold)
                         .foregroundColor(Theme.accent)
                 }
             }
@@ -165,7 +165,7 @@ struct AnalyticsView: View {
                 .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
             Text("Tap a trigger to see which symptoms tend to follow it")
-                .font(.caption)
+                .font(.nCaption)
                 .foregroundColor(Theme.textPrimary.opacity(0.6))
 
             ForEach(groupedByTrigger(pairs), id: \.trigger) { group in
@@ -177,11 +177,11 @@ struct AnalyticsView: View {
                                     .foregroundColor(Theme.primary)
                                     .frame(width: 24)
                                 Text(symptomNameFromPair(stat.name))
-                                    .font(.subheadline)
+                                    .font(.nSubheadline)
                                     .foregroundColor(Theme.textPrimary)
                                 Spacer()
                                 Text("\(Int(stat.proportion * 100))%")
-                                    .font(.caption.bold())
+                                    .font(.nCaptionBold)
                                     .foregroundColor(Theme.accent)
                             }
                         }
@@ -189,7 +189,7 @@ struct AnalyticsView: View {
                     .padding(.top, 6)
                 } label: {
                     Text(Trigger.from(rawValue: group.trigger)?.displayName ?? group.trigger)
-                        .font(.subheadline.bold())
+                        .font(.nSubheadlineBold)
                         .foregroundColor(Theme.textPrimary)
                 }
                 .tint(Theme.primary)
@@ -236,13 +236,13 @@ struct AnalyticsView: View {
                 .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
             Text("Average severity with this trigger present vs. without it")
-                .font(.caption)
+                .font(.nCaption)
                 .foregroundColor(Theme.textPrimary.opacity(0.6))
 
             ForEach(stats) { stat in
                 VStack(alignment: .leading, spacing: 2) {
                     Text(Trigger.from(rawValue: stat.name)?.displayName ?? stat.name)
-                        .font(.subheadline)
+                        .font(.nSubheadline)
                         .foregroundColor(Theme.textPrimary)
                     HStack {
                         Text("With: \(stat.avgSeverityWith, specifier: "%.1f")")
@@ -250,7 +250,7 @@ struct AnalyticsView: View {
                         Text("Without: \(stat.avgSeverityWithout, specifier: "%.1f")")
                             .foregroundColor(Theme.textPrimary.opacity(0.6))
                     }
-                    .font(.caption)
+                    .font(.nCaption)
                 }
                 .padding(.vertical, 2)
             }
@@ -265,11 +265,11 @@ struct AnalyticsView: View {
                 .foregroundColor(Theme.primary)
                 .frame(width: 24)
             Text(label)
-                .font(.subheadline)
+                .font(.nSubheadline)
                 .foregroundColor(Theme.textPrimary)
             Spacer()
             Text("\(Int(proportion * 100))%")
-                .font(.caption.bold())
+                .font(.nCaptionBold)
                 .foregroundColor(Theme.accent)
         }
     }
@@ -283,7 +283,7 @@ struct AnalyticsView: View {
                 ProgressView()
                     .padding(.bottom, 8)
                 Text("AI is analyzing your notes and triggers...")
-                    .font(.caption)
+                    .font(.nCaption)
                     .foregroundColor(Theme.textPrimary.opacity(0.7))
             }
             .frame(maxWidth: .infinity)
@@ -347,18 +347,18 @@ struct AnalyticsView: View {
 
             if let subtitle = subtitle {
                 Text(subtitle)
-                    .font(.caption)
+                    .font(.nCaption)
                     .foregroundColor(Theme.textPrimary.opacity(0.6))
             }
             
             if items.isEmpty {
                 Text("No specific patterns detected yet.")
-                    .font(.subheadline)
+                    .font(.nSubheadline)
                     .foregroundColor(.gray)
             } else {
                 ForEach(items.indices, id: \.self) { index in
                     Text("• \(items[index])")
-                    .font(.subheadline)
+                    .font(.nSubheadline)
                     .foregroundColor(Theme.textPrimary.opacity(0.8))
                 }
             }

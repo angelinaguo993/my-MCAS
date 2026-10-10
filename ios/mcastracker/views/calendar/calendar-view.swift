@@ -132,7 +132,7 @@ struct CalendarView: View {
             HStack {
                 VStack(alignment: .leading) {
                     Text("Total Episodes")
-                        .font(.subheadline)
+                        .font(.nSubheadline)
                         .foregroundColor(.gray)
                     Text("\(totalEpisodes)")
                         .font(.nHeadline)
@@ -141,7 +141,7 @@ struct CalendarView: View {
                 Spacer()
                 VStack(alignment: .trailing) {
                     Text("Average Severity")
-                        .font(.subheadline)
+                        .font(.nSubheadline)
                         .foregroundColor(.gray)
                     Text(String(format: "%.1f / 10", avgSeverity))
                         .font(.nHeadline)
@@ -163,7 +163,7 @@ struct CalendarView: View {
 
             if counts.isEmpty {
                 Text("No triggers logged in this timeframe")
-                    .font(.caption)
+                    .font(.nCaption)
                     .foregroundColor(.gray)
             } else {
                 ForEach(counts.prefix(5), id: \.name) { item in
@@ -172,11 +172,11 @@ struct CalendarView: View {
                             .foregroundColor(Theme.primary)
                             .frame(width: 24)
                         Text(Trigger.from(rawValue: item.name)?.displayName ?? item.name)
-                            .font(.subheadline)
+                            .font(.nSubheadline)
                             .foregroundColor(Theme.textPrimary)
                         Spacer()
                         Text("\(item.count)")
-                            .font(.caption.bold())
+                            .font(.nCaptionBold)
                             .foregroundColor(Theme.accent)
                     }
                 }
@@ -196,7 +196,7 @@ struct CalendarView: View {
 
             if counts.isEmpty {
                 Text("No symptoms logged in this timeframe")
-                    .font(.caption)
+                    .font(.nCaption)
                     .foregroundColor(.gray)
             } else {
                 ForEach(counts.prefix(5), id: \.name) { item in
@@ -205,11 +205,11 @@ struct CalendarView: View {
                             .foregroundColor(Theme.primary)
                             .frame(width: 24)
                         Text(SymptomCategory(rawValue: item.name)?.displayName ?? item.name)
-                            .font(.subheadline)
+                            .font(.nSubheadline)
                             .foregroundColor(Theme.textPrimary)
                         Spacer()
                         Text("\(item.count)")
-                            .font(.caption.bold())
+                            .font(.nCaptionBold)
                             .foregroundColor(Theme.accent)
                     }
                 }
@@ -266,7 +266,7 @@ struct CalendarView: View {
         } label: {
             VStack(spacing: 2) {
                 Text("\(day)")
-                    .font(.caption)
+                    .font(.nCaption)
                 if hasEpisode && episodesThatDay.count > 1 {
                     Text("\(episodesThatDay.count)")
                         .font(.system(size: 9, weight: .bold))

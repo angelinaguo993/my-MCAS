@@ -17,18 +17,18 @@ struct DayEpisodesListView: View {
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(episode.date.formatted(date: .omitted, time: .shortened))
-                                
+                                .font(.nSubheadlineBold)
                                 .foregroundColor(Theme.textPrimary)
                             if !episode.symptoms.isEmpty {
                                 Text(episode.symptoms.map { $0.category.displayName }.joined(separator: ", "))
-                                    .font(.caption)
+                                    .font(.nCaption)
                                     .foregroundColor(Theme.textPrimary.opacity(0.6))
                                     .lineLimit(1)
                             }
                         }
                         Spacer()
                         Text("\(episode.overallSeverity)/10")
-                            
+                            .font(.nSubheadlineBold)
                             .foregroundColor(Theme.accent)
                     }
                     .padding(.vertical, 4)

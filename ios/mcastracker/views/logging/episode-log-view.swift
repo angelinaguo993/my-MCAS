@@ -23,7 +23,7 @@ struct EpisodeLogView: View {
 
                         if let error = viewModel.errorMessage {
                             Text(error)
-                                .font(.footnote)
+                                .font(.nFootnote)
                                 .foregroundColor(Theme.accent)
                         }
 
@@ -88,7 +88,7 @@ struct EpisodeLogView: View {
                 if let placeholder = trigger.detailPlaceholder {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(trigger.displayName)
-                            .font(.caption.bold())
+                            .font(.nCaptionBold)
                             .foregroundColor(Theme.textPrimary.opacity(0.7))
                         TextField(placeholder, text: viewModel.triggerDetailBinding(for: trigger))
                             .textFieldStyle(.roundedBorder)
@@ -112,7 +112,7 @@ struct EpisodeLogView: View {
                 VStack(alignment: .leading, spacing: 14) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Fell asleep")
-                            .font(.subheadline)
+                            .font(.nSubheadline)
                             .foregroundColor(Theme.textPrimary.opacity(0.7))
                         DatePicker(
                             "Fell asleep",
@@ -126,7 +126,7 @@ struct EpisodeLogView: View {
 
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Woke up")
-                            .font(.subheadline)
+                            .font(.nSubheadline)
                             .foregroundColor(Theme.textPrimary.opacity(0.7))
                         DatePicker(
                             "Woke up",
@@ -228,7 +228,7 @@ struct EpisodeLogView: View {
             
             // Add your smaller title here
             Text("Ex: what symptom lasted the longest, side effects from a medication, etc.")
-                .font(.subheadline)
+                .font(.nSubheadline)
                 .foregroundColor(Theme.textPrimary.opacity(0.7))
             
             TextEditor(text: $viewModel.notes)
@@ -266,7 +266,7 @@ private struct SpecificSymptomChecklist: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Specific symptoms (optional)")
-                .font(.caption)
+                .font(.nCaption)
                 .foregroundColor(Theme.textPrimary.opacity(0.6))
 
             ForEach(category.specificSymptoms, id: \.self) { symptom in
@@ -279,7 +279,7 @@ private struct SpecificSymptomChecklist: View {
                             .foregroundColor(viewModel.isSpecificSymptomSelected(symptom, in: category)
                                              ? Theme.primary : .gray)
                         Text(symptom)
-                            .font(.subheadline)
+                            .font(.nSubheadline)
                             .foregroundColor(Theme.textPrimary)
                         Spacer()
                     }
@@ -307,7 +307,7 @@ private struct FlowChips<Item: Hashable>: View {
                     onTap(item)
                 } label: {
                     Text(label(item))
-                        .font(.caption)
+                        .font(.nCaption)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 8)
                         .frame(maxWidth: .infinity)

@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreText
 
 /// To try another family (e.g. Roboto Slab),
 /// change these four strings and add that family's .ttf files.
@@ -23,4 +24,34 @@ extension Font {
     static let nFootnote = Font.app(AppFont.regular, size: 13, relativeTo: .footnote)
     static let nCaption = Font.app(AppFont.regular, size: 12, relativeTo: .caption)
     static let nCaptionBold = Font.app(AppFont.bold, size: 12, relativeTo: .caption)
+}
+
+enum FontRegistrar {
+    /// Registers every .ttf/.otf inside the app bundle with iOS at launch. This works
+    /// even if the Info.plist "Fonts provided by application" entry is missing or
+    /// misspelled, as long as the files are in Copy Bundle Resources.
+    static func registerBundledFonts() {
+        guard let root = Bundle.main.resourceURL,
+              let enumerator = FileManager.default.enumerator(at: root, includingPropertiesForKeys: nil)
+        else { return }
+
+        let fontURLs = enumerator.allObjects
+            .compactMap { $0 as? URL }
+            .filter { ["ttf", "otf"].contains($0.pathExtension.lowercased()) }
+
+        print("Font files in bundle:", fontURLs.map { $0.lastPathComponent })
+        if fontURLs.isEmpty {
+            print("⚠️ No .ttf/.otf files in the app bundle. Check Build Phases → Copy Bundle Resources.")
+        }
+
+        for url in fontURLs {
+            var error: Unmanaged<CFError>?
+            // An "already registered" error just means Info.plist worked first. Safe to ignore.
+            _ = CTFontManagerRegisterFontsForURL(url as CFURL, .process, &error)
+        }
+
+        for family in UIFont.familyNames.sorted() where family.localizedCaseInsensitiveContains("nunito") {
+            print("FAMILY:", family, UIFont.fontNames(forFamilyName: family))
+        }
+    }
 }

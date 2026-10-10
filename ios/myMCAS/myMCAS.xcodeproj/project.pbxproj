@@ -44,6 +44,10 @@
 		E46F70283069C5200063F1FF /* userprofile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70273069C5200063F1FF /* userprofile.swift */; };
 		E46F702C306B6EAA0063F1FF /* user-profile-store.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F702B306B6EAA0063F1FF /* user-profile-store.swift */; };
 		E4831B2F30732EBD0083CEE5 /* weatherservice.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4831B2E30732EBD0083CEE5 /* weatherservice.swift */; };
+		E48EB4A63079F75000D14C23 /* Nunito-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E4696CBB3079ECB1006CA41F /* Nunito-ExtraBold.ttf */; };
+		E48EB4A73079F76300D14C23 /* Nunito-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E4696CB83079EC2F006CA41F /* Nunito-Regular.ttf */; };
+		E48EB4A83079F76600D14C23 /* Nunito-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E4696CBA3079EC47006CA41F /* Nunito-Bold.ttf */; };
+		E48EB4A93079F76800D14C23 /* Nunito-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E4696CB93079EC3D006CA41F /* Nunito-SemiBold.ttf */; };
 		E4D5E707306E017000ECDADE /* onboarding-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D5E706306E017000ECDADE /* onboarding-view.swift */; };
 /* End PBXBuildFile section */
 
@@ -519,7 +523,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E48EB4A93079F76800D14C23 /* Nunito-SemiBold.ttf in Resources */,
+				E48EB4A63079F75000D14C23 /* Nunito-ExtraBold.ttf in Resources */,
+				E48EB4A83079F76600D14C23 /* Nunito-Bold.ttf in Resources */,
 				E41B1BBA3052586300A467FA /* Preview Assets.xcassets in Resources */,
+				E48EB4A73079F76300D14C23 /* Nunito-Regular.ttf in Resources */,
 				E41B1BB73052586300A467FA /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
