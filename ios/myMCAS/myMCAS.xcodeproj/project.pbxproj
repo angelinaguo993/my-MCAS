@@ -48,6 +48,7 @@
 		E48EB4A73079F76300D14C23 /* Nunito-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E4696CB83079EC2F006CA41F /* Nunito-Regular.ttf */; };
 		E48EB4A83079F76600D14C23 /* Nunito-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E4696CBA3079EC47006CA41F /* Nunito-Bold.ttf */; };
 		E48EB4A93079F76800D14C23 /* Nunito-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E4696CB93079EC3D006CA41F /* Nunito-SemiBold.ttf */; };
+		E48EB4AB3079F8D500D14C23 /* home-hero-header.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48EB4AA3079F8D500D14C23 /* home-hero-header.swift */; };
 		E4D5E707306E017000ECDADE /* onboarding-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D5E706306E017000ECDADE /* onboarding-view.swift */; };
 /* End PBXBuildFile section */
 
@@ -113,6 +114,7 @@
 		E46F70273069C5200063F1FF /* userprofile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = userprofile.swift; path = ../../../../Downloads/mcastracker/models/userprofile.swift; sourceTree = "<group>"; };
 		E46F702B306B6EAA0063F1FF /* user-profile-store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "user-profile-store.swift"; sourceTree = "<group>"; };
 		E4831B2E30732EBD0083CEE5 /* weatherservice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = weatherservice.swift; sourceTree = "<group>"; };
+		E48EB4AA3079F8D500D14C23 /* home-hero-header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "home-hero-header.swift"; sourceTree = "<group>"; };
 		E4D5E706306E017000ECDADE /* onboarding-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "onboarding-view.swift"; path = "../../../../my-MCAS/ios/mcastracker/views/onboarding/onboarding-view.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -144,6 +146,7 @@
 		E41B1BA63052586100A467FA = {
 			isa = PBXGroup;
 			children = (
+				E48EB4AA3079F8D500D14C23 /* home-hero-header.swift */,
 				E41B1BDE3052598700A467FA /* mcastracker */,
 				E41B1BB13052586100A467FA /* myMCAS */,
 				E41B1BC23052586300A467FA /* myMCASTests */,
@@ -582,6 +585,7 @@
 				E4696CB63074B15F006CA41F /* severity-trend-chart.swift in Sources */,
 				E41B1C023052598800A467FA /* symptom.swift in Sources */,
 				E46F7020306632FE0063F1FF /* mcas-trackerapp.swift in Sources */,
+				E48EB4AB3079F8D500D14C23 /* home-hero-header.swift in Sources */,
 				E46F70193064E1750063F1FF /* discover-view.swift in Sources */,
 				E41B1C083052598800A467FA /* theme.swift in Sources */,
 				E46F70283069C5200063F1FF /* userprofile.swift in Sources */,

@@ -1,24 +1,32 @@
 import SwiftUI
 
-/// Home tab: user opens the dashboard, sees days since their last
-/// episode, and taps "Record Episode" to start the survey. Also shows
-/// which medications the user uses (trigger/symptom pattern cards live
-/// on the Analytics tab instead — see analytics-view.swift).
+/// Home tab: greeting header over the gradient, days since last episode,
+/// total episodes, medications, and the Record Episode button.
 struct DashboardView: View {
+    @EnvironmentObject private var profileStore: UserProfileStore
     @StateObject private var viewModel = DashboardViewModel()
     @State private var showingEpisodeLog = false
     @State private var showingSettings = false
-    @EnvironmentObject private var profileStore: UserProfileStore
 
     var body: some View {
         NavigationStack {
             ZStack {
                 Theme.background.ignoresSafeArea()
 
-                if viewModel.isLoading && viewModel.stats == nil {
-                    LoadingView()
-                } else {
-                    ScrollView {
+                // Gradient sits BEHIND the scroll view so it reaches the top of the screen.
+                VStack(spacing: 0) {
+                    GradientHeroBackground()
+                        .frame(height: 460)
+                    Spacer(minLength: 0)
+                }
+                .ignoresSafeArea(edges: .top)
+
+                ScrollView {
+                    VStack(spacing: 0) {
+                        HomeHeroHeader(name: profileStore.profile?.name) {
+                            showingSettings = true
+                        }
+
                         VStack(spacing: 20) {
                             if let error = viewModel.errorMessage {
                                 errorBanner(error)
@@ -33,18 +41,14 @@ struct DashboardView: View {
                         .padding()
                     }
                 }
-            }
-            .navigationTitle(greeting)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        showingSettings = true
-                    } label: {
-                        Image(systemName: "gearshape.fill")
-                            .foregroundColor(Theme.primary)
+                .overlay {
+                    if viewModel.isLoading && viewModel.stats == nil {
+                        LoadingView()
+                            .allowsHitTesting(false)   // never blocks taps on the gear/button
                     }
                 }
             }
+            .toolbar(.hidden, for: .navigationBar)
             .task { await viewModel.loadDashboard() }
             .refreshable { await viewModel.loadDashboard() }
             .sheet(isPresented: $showingEpisodeLog, onDismiss: {
@@ -58,13 +62,7 @@ struct DashboardView: View {
         }
     }
 
-    private var greeting: String {
-        guard let name = profileStore.profile?.name, !name.isEmpty else {
-            return "Home"
-        }
-        return "Welcome, \(name)!"
-    }
-
+    // MARK: Cards
 
     private var daysSinceCard: some View {
         VStack(spacing: 8) {
@@ -74,98 +72,7 @@ struct DashboardView: View {
 
             if let days = viewModel.stats?.daysSinceLastEpisode {
                 Text("\(days)")
-                    .font(.system(size: 56, weight: .bold, design: .rounded))
+                    .font(.app(AppFont.extraBold, size: 56, relativeTo: .largeTitle))
                     .foregroundColor(Theme.primary)
             } else {
                 Text("—")
-                    .font(.system(size: 56, weight: .bold, design: .rounded))
-                    .foregroundColor(Theme.primary)
-                Text("No episodes logged yet")
-                    .font(.nFootnote)
-                    .foregroundColor(Theme.textPrimary.opacity(0.6))
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .cardStyle()
-    }
-
-    private var totalLoggedCard: some View {
-        HStack {
-            Text("Total episodes logged")
-                .font(.nSubheadline)
-                .foregroundColor(Theme.textPrimary)
-            Spacer()
-            Text("\(viewModel.stats?.totalEpisodesLogged ?? 0)")
-                .font(.nSubheadlineBold)
-                .foregroundColor(Theme.textPrimary)
-        }
-        .cardStyle()
-    }
-
-    private var recordButton: some View {
-        Button {
-            showingEpisodeLog = true
-        } label: {
-            Text("Record Episode")
-                .font(.nHeadline)
-                .foregroundColor(.white)
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Theme.accent)
-                .cornerRadius(Theme.cardCornerRadius)
-        }
-    }
-
-    private func errorBanner(_ message: String) -> some View {
-        VStack(spacing: 8) {
-            Text("Couldn't load your data")
-                .font(.nSubheadlineBold)
-                .foregroundColor(Theme.accent)
-            Text("The server may be waking up after being idle — this can take up to a minute on the free tier.")
-                .font(.nCaption)
-                .multilineTextAlignment(.center)
-                .foregroundColor(Theme.textPrimary.opacity(0.7))
-            Button("Try Again") {
-                Task { await viewModel.loadDashboard() }
-            }
-            .font(.nCaptionBold)
-            .foregroundColor(Theme.primary)
-        }
-        .frame(maxWidth: .infinity)
-        .cardStyle()
-    }
-
-    private func medicationsUsedCard(_ medications: [FrequencyStat]) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Medications You Use")
-                .font(.nHeadline)
-                .foregroundColor(Theme.textPrimary)
-
-            if medications.isEmpty {
-                Text("No medications logged yet").font(.nCaption).foregroundColor(.gray)
-            } else {
-                ForEach(medications) { stat in
-                    HStack {
-                        Image(systemName: "pills.fill")
-                            .foregroundColor(Theme.primary)
-                            .frame(width: 24)
-                        Text(stat.name)
-                            .font(.nSubheadline)
-                            .foregroundColor(Theme.textPrimary)
-                        Spacer()
-                        Text("\(Int(stat.proportion * 100))% helped")
-                            .font(.nCaption)
-                            .foregroundColor(Theme.success)
-                    }
-                }
-            }
-        }
-        .cardStyle()
-    }
-}
-
-struct DashboardView_Previews: PreviewProvider {
-    static var previews: some View {
-        DashboardView()
-    }
-}

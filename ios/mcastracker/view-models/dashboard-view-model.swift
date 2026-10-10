@@ -10,28 +10,35 @@ final class DashboardViewModel: ObservableObject {
     func loadDashboard() async {
         isLoading = true
         errorMessage = nil
+        defer { isLoading = false }
 
         var encounteredError = false
 
         do {
             stats = try await APIClient.shared.fetchDashboard()
         } catch {
-            print("DASHBOARD FETCH FAILED: ", error)
+            if isCancellation(error) { return }
+            print("DASHBOARD FETCH FAILED:", error)
             encounteredError = true
         }
 
         do {
             insights = try await APIClient.shared.fetchInsights()
         } catch {
-            print("INSIGHTS FETCH FAILED: ", error)
-            insights = nil  // clear stale data rather than leaving an outdated card on screen
+            if isCancellation(error) { return }
+            print("INSIGHTS FETCH FAILED:", error)
+            insights = nil
             encounteredError = true
         }
 
         if encounteredError {
             errorMessage = "Couldn't load your dashboard. Pull down to try again."
         }
+    }
 
-        isLoading = false
+    /// A request cancelled because its screen was rebuilt isn't a real failure.
+    private func isCancellation(_ error: Error) -> Bool {
+        if error is CancellationError { return true }
+        return (error as? URLError)?.code == .cancelled
     }
 }
