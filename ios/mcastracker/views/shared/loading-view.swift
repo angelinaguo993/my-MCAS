@@ -9,7 +9,7 @@ struct LoadingView: View {
             ProgressView()
                 .tint(Theme.primary)
             Text("Loading...")
-                .font(.footnote)
+                .font(.nFootnote)
                 .foregroundColor(Theme.textPrimary.opacity(0.6))
                 .padding(.top, 4)
         }

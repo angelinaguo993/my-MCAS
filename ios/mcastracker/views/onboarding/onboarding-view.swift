@@ -56,10 +56,10 @@ struct OnboardingView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Welcome")
-                .font(.largeTitle.bold())
+                .font(.nLargeTitle)
                 .foregroundColor(Theme.textPrimary)
             Text("A few quick questions to get your tracker set up. Please answer every question to the best you can.")
-                .font(.subheadline)
+                .font(.nSubheadline)
                 .foregroundColor(Theme.textPrimary.opacity(0.7))
         }
     }
@@ -68,17 +68,17 @@ struct OnboardingView: View {
 
     private var basicInfoSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("About You").font(.headline).foregroundColor(Theme.textPrimary)
+            Text("About You").font(.nHeadline).foregroundColor(Theme.textPrimary)
 
             TextField("Name", text: $name)
                 .textFieldStyle(.roundedBorder)
 
             DatePicker("Birthday", selection: $birthday, displayedComponents: .date)
-                .font(.subheadline)
+                .font(.nSubheadline)
                 .foregroundColor(Theme.textPrimary)
                 .tint(Theme.primary)
 
-            Text("Age").font(.subheadline).foregroundColor(Theme.textPrimary)
+            Text("Age").font(.nSubheadline).foregroundColor(Theme.textPrimary)
             Picker("Age", selection: $age) {
                 Text("Select age").tag(Int?.none)
                 ForEach(ageRange, id: \.self) { value in
@@ -88,7 +88,7 @@ struct OnboardingView: View {
             .pickerStyle(.menu)
             .tint(Theme.primary)
 
-            Text("Sex").font(.subheadline).foregroundColor(Theme.textPrimary)
+            Text("Sex").font(.nSubheadline).foregroundColor(Theme.textPrimary)
             ChipGrid(
                 items: BiologicalSex.allCases,
                 isSelected: { sex == $0 },
@@ -99,7 +99,7 @@ struct OnboardingView: View {
             TextField("City", text: $city)
                 .textFieldStyle(.roundedBorder)
 
-            Text("State").font(.subheadline).foregroundColor(Theme.textPrimary)
+            Text("State").font(.nSubheadline).foregroundColor(Theme.textPrimary)
             Picker("State", selection: $state) {
                 Text("Select state").tag(String?.none)
                 ForEach(usStates, id: \.self) { name in
@@ -117,7 +117,7 @@ struct OnboardingView: View {
     private var medicationsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Medications prescribed by your doctor")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             ChipGrid(
@@ -139,7 +139,7 @@ struct OnboardingView: View {
                 customMedications.append("")
             } label: {
                 Label("Add another medication", systemImage: "plus.circle.fill")
-                    .font(.caption.bold())
+                    .font(.nCaptionBold)
                     .foregroundColor(Theme.primary)
             }
 
@@ -159,7 +159,7 @@ struct OnboardingView: View {
     private var frequencySection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("How often do you typically have episodes?")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             ChipGrid(
@@ -183,7 +183,7 @@ struct OnboardingView: View {
     private var previousSymptomsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Symptoms you've had before")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             ChipGrid(
@@ -226,7 +226,7 @@ struct OnboardingView: View {
                             .foregroundColor(isSpecificSymptomSelected(symptom, in: category)
                                              ? Theme.primary : .gray)
                         Text(symptom)
-                            .font(.subheadline)
+                            .font(.nSubheadline)
                             .foregroundColor(Theme.textPrimary)
                         Spacer()
                     }
@@ -241,7 +241,7 @@ struct OnboardingView: View {
     private var previousTriggersSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Triggers you've had before")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             ChipGrid(
@@ -278,7 +278,7 @@ struct OnboardingView: View {
                 Image(systemName: isOn.wrappedValue ? "checkmark.square.fill" : "square")
                     .foregroundColor(isOn.wrappedValue ? Theme.primary : .gray)
                 Text(label)
-                    .font(.caption)
+                    .font(.nCaption)
                     .foregroundColor(Theme.textPrimary.opacity(0.8))
                 Spacer()
             }
@@ -320,7 +320,7 @@ struct OnboardingView: View {
                 submit()
             } label: {
                 Text("Get Started")
-                    .font(.headline)
+                    .font(.nHeadline)
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
@@ -331,7 +331,7 @@ struct OnboardingView: View {
 
             if !canSubmit {
                 Text("Please answer every question above to continue.")
-                    .font(.caption)
+                    .font(.nCaption)
                     .foregroundColor(Theme.textPrimary.opacity(0.5))
             }
         }
@@ -412,7 +412,7 @@ struct ChipGrid<Item: Hashable>: View {
                     onTap(item)
                 } label: {
                     Text(label(item))
-                        .font(.caption)
+                        .font(.nCaption)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 8)
                         .frame(maxWidth: .infinity)

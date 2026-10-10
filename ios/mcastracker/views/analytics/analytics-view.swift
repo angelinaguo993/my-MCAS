@@ -29,6 +29,12 @@ struct AnalyticsView: View {
                                     if !insights.triggerCooccurrence.isEmpty {
                                         triggerCooccurrenceCard(insights.triggerCooccurrence)
                                     }
+                                    if !insights.symptomTriggerPairs.isEmpty {
+                                        symptomTriggerPairsCard(insights.symptomTriggerPairs)
+                                    }
+                                    if !insights.severityByTrigger.isEmpty {
+                                        severityByTriggerCard(insights.severityByTrigger)
+                                    }
                                     
                                     // MARK: - AI Insights Section
                                     aiInsightsSection
@@ -48,19 +54,19 @@ struct AnalyticsView: View {
     private func errorBanner(_ message: String) -> some View {
         VStack(spacing: 8) {
             Text("Couldn't load your data")
-                .font(.subheadline.bold())
+                .font(.nSubheadlineBold)
                 .foregroundColor(Theme.accent)
             
             // This line is the crucial change to reveal the true error
             Text(message) 
-                .font(.caption)
+                .font(.nCaption)
                 .multilineTextAlignment(.center)
                 .foregroundColor(Theme.textPrimary.opacity(0.7))
             
             Button("Try Again") {
                 Task { await viewModel.loadInsights() }
             }
-            .font(.caption.bold())
+            .font(.nCaptionBold)
             .foregroundColor(Theme.primary)
         }
         .frame(maxWidth: .infinity)
@@ -70,10 +76,10 @@ struct AnalyticsView: View {
     private func notEnoughDataCard(_ insights: InsightsResponse) -> some View {
         VStack(spacing: 6) {
             Text("Not enough data yet")
-                .font(.subheadline.bold())
+                .font(.nSubheadlineBold)
                 .foregroundColor(Theme.textPrimary)
             Text("Log \(insights.episodesNeeded) more episode\(insights.episodesNeeded == 1 ? "" : "s") to start seeing your patterns.")
-                .font(.caption)
+                .font(.nCaption)
                 .multilineTextAlignment(.center)
                 .foregroundColor(Theme.textPrimary.opacity(0.6))
         }
@@ -84,11 +90,11 @@ struct AnalyticsView: View {
     private func topTriggersCard(_ triggers: [FrequencyStat]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Your Most Common Triggers")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             if triggers.isEmpty {
-                Text("No triggers logged yet").font(.caption).foregroundColor(.gray)
+                Text("No triggers logged yet").font(.nCaption).foregroundColor(.gray)
             } else {
                 ForEach(triggers) { stat in
                     insightRow(
@@ -105,11 +111,11 @@ struct AnalyticsView: View {
     private func topSymptomsCard(_ symptoms: [FrequencyStat]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Your Most Common Symptoms")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             if symptoms.isEmpty {
-                Text("No symptoms logged yet").font(.caption).foregroundColor(.gray)
+                Text("No symptoms logged yet").font(.nCaption).foregroundColor(.gray)
             } else {
                 ForEach(symptoms) { stat in
                     insightRow(
@@ -126,10 +132,10 @@ struct AnalyticsView: View {
     private func triggerCooccurrenceCard(_ pairs: [FrequencyStat]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Trigger Combinations")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
             Text("How often pairs of triggers show up together in the same episode")
-                .font(.caption)
+                .font(.nCaption)
                 .foregroundColor(Theme.textPrimary.opacity(0.6))
 
             ForEach(pairs) { stat in
@@ -141,15 +147,115 @@ struct AnalyticsView: View {
                         Trigger.from(rawValue: $0.trimmingCharacters(in: .whitespaces))?.displayName
                         ?? $0.trimmingCharacters(in: .whitespaces)
                     }.joined(separator: " + "))
-                        .font(.subheadline)
+                        .font(.nSubheadline)
                         .foregroundColor(Theme.textPrimary)
                     Spacer()
                     Text("\(Int(stat.proportion * 100))%")
-                        .font(.caption.bold())
+                        .font(.nCaptionBold)
                         .foregroundColor(Theme.accent)
                 }
             }
         }
+        .cardStyle()
+    }
+
+    private func symptomTriggerPairsCard(_ pairs: [FrequencyStat]) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Trigger → Symptom Patterns")
+                .font(.nHeadline)
+                .foregroundColor(Theme.textPrimary)
+            Text("Tap a trigger to see which symptoms tend to follow it")
+                .font(.nCaption)
+                .foregroundColor(Theme.textPrimary.opacity(0.6))
+
+            ForEach(groupedByTrigger(pairs), id: \.trigger) { group in
+                DisclosureGroup {
+                    VStack(alignment: .leading, spacing: 8) {
+                        ForEach(group.symptoms) { stat in
+                            HStack {
+                                Image(systemName: "arrow.right.circle")
+                                    .foregroundColor(Theme.primary)
+                                    .frame(width: 24)
+                                Text(symptomNameFromPair(stat.name))
+                                    .font(.nSubheadline)
+                                    .foregroundColor(Theme.textPrimary)
+                                Spacer()
+                                Text("\(Int(stat.proportion * 100))%")
+                                    .font(.nCaptionBold)
+                                    .foregroundColor(Theme.accent)
+                            }
+                        }
+                    }
+                    .padding(.top, 6)
+                } label: {
+                    Text(Trigger.from(rawValue: group.trigger)?.displayName ?? group.trigger)
+                        .font(.nSubheadlineBold)
+                        .foregroundColor(Theme.textPrimary)
+                }
+                .tint(Theme.primary)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .cardStyle()
+    }
+
+    private struct TriggerSymptomGroup {
+        let trigger: String
+        let symptoms: [FrequencyStat]
+    }
+
+    private func groupedByTrigger(_ pairs: [FrequencyStat]) -> [TriggerSymptomGroup] {
+        var buckets: [String: [FrequencyStat]] = [:]
+        for stat in pairs {
+            let parts = stat.name.split(separator: "→").map { $0.trimmingCharacters(in: .whitespaces) }
+            guard let trigger = parts.first else { continue }
+            buckets[trigger, default: []].append(stat)
+        }
+        return buckets.map { TriggerSymptomGroup(trigger: $0.key, symptoms: $0.value) }
+            .sorted { $0.symptoms.count > $1.symptoms.count }
+    }
+
+    private func symptomNameFromPair(_ raw: String) -> String {
+        let parts = raw.split(separator: "→").map { $0.trimmingCharacters(in: .whitespaces) }
+        guard parts.count == 2 else { return raw }
+        return SymptomCategory(rawValue: parts[1])?.displayName ?? parts[1]
+    }
+
+    private func readablePairName(_ raw: String) -> String {
+        let parts = raw.split(separator: "→").map { $0.trimmingCharacters(in: .whitespaces) }
+        guard parts.count == 2 else { return raw }
+        let triggerName = Trigger.from(rawValue: parts[0])?.displayName ?? parts[0]
+        let symptomName = SymptomCategory(rawValue: parts[1])?.displayName ?? parts[1]
+        return "\(triggerName) → \(symptomName)"
+    }
+
+
+    private func severityByTriggerCard(_ stats: [SeverityComparisonStat]) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Triggers That Make Episodes Worse")
+                .font(.nHeadline)
+                .foregroundColor(Theme.textPrimary)
+            Text("Average severity with this trigger present vs. without it")
+                .font(.nCaption)
+                .foregroundColor(Theme.textPrimary.opacity(0.6))
+
+            ForEach(stats) { stat in
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(Trigger.from(rawValue: stat.name)?.displayName ?? stat.name)
+                        .font(.nSubheadline)
+                        .foregroundColor(Theme.textPrimary)
+                    HStack {
+                        Text("With: \(stat.avgSeverityWith, specifier: "%.1f")")
+                            .foregroundColor(Theme.accent)
+                        Text("Without: \(stat.avgSeverityWithout, specifier: "%.1f")")
+                            .foregroundColor(Theme.textPrimary.opacity(0.6))
+                    }
+                    .font(.nCaption)
+                }
+                .padding(.vertical, 2)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .cardStyle()
     }
 
@@ -159,11 +265,11 @@ struct AnalyticsView: View {
                 .foregroundColor(Theme.primary)
                 .frame(width: 24)
             Text(label)
-                .font(.subheadline)
+                .font(.nSubheadline)
                 .foregroundColor(Theme.textPrimary)
             Spacer()
             Text("\(Int(proportion * 100))%")
-                .font(.caption.bold())
+                .font(.nCaptionBold)
                 .foregroundColor(Theme.accent)
         }
     }
@@ -177,7 +283,7 @@ struct AnalyticsView: View {
                 ProgressView()
                     .padding(.bottom, 8)
                 Text("AI is analyzing your notes and triggers...")
-                    .font(.caption)
+                    .font(.nCaption)
                     .foregroundColor(Theme.textPrimary.opacity(0.7))
             }
             .frame(maxWidth: .infinity)
@@ -186,7 +292,7 @@ struct AnalyticsView: View {
         } else if let aiResult = viewModel.aiResult {
             VStack(spacing: 16) {
                 Text("AI Insights")
-                    .font(.title2.bold())
+                    .font(.nTitle2)
                     .foregroundColor(Theme.textPrimary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.top, 8)
@@ -194,7 +300,7 @@ struct AnalyticsView: View {
                 aiInsightCard(
                     title: "Triggers to Avoid", 
                     subtitle: "Based on your logged episodes and notes, these triggers appear to be associated with more severe or frequent episodes.",
-                    items: aiResult.triggersToAvoid, 
+                    items: aiResult.triggersToAvoid.map { Trigger.from(rawValue: $0)?.displayName ?? $0 },
                     icon: "exclamationmark.triangle"
                 )
                 aiInsightCard(
@@ -218,7 +324,7 @@ struct AnalyticsView: View {
                     Image(systemName: "sparkles")
                     Text("Generate AI Insights")
                 }
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(.white)
                 .padding()
                 .frame(maxWidth: .infinity)
@@ -235,24 +341,24 @@ struct AnalyticsView: View {
                 Image(systemName: icon)
                     .foregroundColor(Theme.accent)
                 Text(title)
-                    .font(.headline)
+                    .font(.nHeadline)
                     .foregroundColor(Theme.textPrimary)
             }
 
             if let subtitle = subtitle {
                 Text(subtitle)
-                    .font(.caption)
+                    .font(.nCaption)
                     .foregroundColor(Theme.textPrimary.opacity(0.6))
             }
             
             if items.isEmpty {
                 Text("No specific patterns detected yet.")
-                    .font(.subheadline)
+                    .font(.nSubheadline)
                     .foregroundColor(.gray)
             } else {
                 ForEach(items.indices, id: \.self) { index in
                     Text("• \(items[index])")
-                    .font(.subheadline)
+                    .font(.nSubheadline)
                     .foregroundColor(Theme.textPrimary.opacity(0.8))
                 }
             }

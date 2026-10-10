@@ -15,6 +15,7 @@ struct EpisodeLogView: View {
                     VStack(alignment: .leading, spacing: 20) {
                         dateSection
                         triggersSection
+                        sleepSection
                         symptomsSection
                         overallSeveritySection
                         medicationSection
@@ -22,7 +23,7 @@ struct EpisodeLogView: View {
 
                         if let error = viewModel.errorMessage {
                             Text(error)
-                                .font(.footnote)
+                                .font(.nFootnote)
                                 .foregroundColor(Theme.accent)
                         }
 
@@ -52,7 +53,7 @@ struct EpisodeLogView: View {
     private var dateSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Date of Episode")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             DatePicker(
@@ -73,21 +74,74 @@ struct EpisodeLogView: View {
     private var triggersSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Select every potenntial trigger that might have triggered (or worsened) this episode.")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             FlowChips(
-                items: Trigger.allCases,
+                items: Trigger.allCases.filter { $0 != .lackOfSleep },
                 isSelected: { viewModel.selectedTriggers.contains($0) },
                 label: { $0.displayName },
                 onTap: { viewModel.toggleTrigger($0) }
             )
 
-            if viewModel.selectedTriggers.contains(.other) {
-                TextField("Describe the trigger", text: $viewModel.otherTriggerDescription)
-                    .textFieldStyle(.roundedBorder)
+            ForEach(Trigger.allCases.filter { viewModel.selectedTriggers.contains($0) }) { trigger in
+                if let placeholder = trigger.detailPlaceholder {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(trigger.displayName)
+                            .font(.nCaptionBold)
+                            .foregroundColor(Theme.textPrimary.opacity(0.7))
+                        TextField(placeholder, text: viewModel.triggerDetailBinding(for: trigger))
+                            .textFieldStyle(.roundedBorder)
+                    }
+                }
             }
         }
+        .cardStyle()
+    }
+
+    // MARK: Sleep
+    private var sleepSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Sleep the night before")
+                .font(.nHeadline)
+                .foregroundColor(Theme.textPrimary)
+
+            HStack(alignment: .center, spacing: 16) {
+                SleepClockView(hoursSlept: viewModel.sleepHours)
+
+                VStack(alignment: .leading, spacing: 14) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Fell asleep")
+                            .font(.nSubheadline)
+                            .foregroundColor(Theme.textPrimary.opacity(0.7))
+                        DatePicker(
+                            "Fell asleep",
+                            selection: viewModel.bedtimeBinding(),
+                            displayedComponents: .hourAndMinute
+                        )
+                        .labelsHidden()
+                        .datePickerStyle(.compact)
+                        .tint(Theme.primary)
+                    }
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Woke up")
+                            .font(.nSubheadline)
+                            .foregroundColor(Theme.textPrimary.opacity(0.7))
+                        DatePicker(
+                            "Woke up",
+                            selection: viewModel.wakeTimeBinding(),
+                            displayedComponents: .hourAndMinute
+                        )
+                        .labelsHidden()
+                        .datePickerStyle(.compact)
+                        .tint(Theme.primary)
+                    }
+                }
+                Spacer(minLength: 0)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .cardStyle()
     }
 
@@ -96,7 +150,7 @@ struct EpisodeLogView: View {
     private var symptomsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Select every symptom that you experienced during this episode.")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             FlowChips(
@@ -130,7 +184,7 @@ struct EpisodeLogView: View {
     private var overallSeveritySection: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Overall episode severity")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
             SeverityPickerView(label: "Overall", value: $viewModel.overallSeverity)
         }
@@ -142,7 +196,7 @@ struct EpisodeLogView: View {
     private var medicationSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Toggle("Took medication for this episode", isOn: $viewModel.medicationTaken)
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
                 .tint(Theme.primary)
 
@@ -169,12 +223,12 @@ struct EpisodeLogView: View {
     private var notesSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Would you like to add any other notes about this episode? (Optional)")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
             
             // Add your smaller title here
             Text("Ex: what symptom lasted the longest, side effects from a medication, etc.")
-                .font(.subheadline)
+                .font(.nSubheadline)
                 .foregroundColor(Theme.textPrimary.opacity(0.7))
             
             TextEditor(text: $viewModel.notes)
@@ -189,7 +243,7 @@ struct EpisodeLogView: View {
             Task { await viewModel.submit() }
         } label: {
             Text("Save Episode")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
                 .padding()
@@ -212,7 +266,7 @@ private struct SpecificSymptomChecklist: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Specific symptoms (optional)")
-                .font(.caption)
+                .font(.nCaption)
                 .foregroundColor(Theme.textPrimary.opacity(0.6))
 
             ForEach(category.specificSymptoms, id: \.self) { symptom in
@@ -225,7 +279,7 @@ private struct SpecificSymptomChecklist: View {
                             .foregroundColor(viewModel.isSpecificSymptomSelected(symptom, in: category)
                                              ? Theme.primary : .gray)
                         Text(symptom)
-                            .font(.subheadline)
+                            .font(.nSubheadline)
                             .foregroundColor(Theme.textPrimary)
                         Spacer()
                     }
@@ -253,7 +307,7 @@ private struct FlowChips<Item: Hashable>: View {
                     onTap(item)
                 } label: {
                     Text(label(item))
-                        .font(.caption)
+                        .font(.nCaption)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 8)
                         .frame(maxWidth: .infinity)
@@ -265,6 +319,50 @@ private struct FlowChips<Item: Hashable>: View {
         }
     }
 }
+
+/// 12-segment ring (hours on a clock face), each filled segment
+/// is about one hour of sleep (rounded), so 7 hours fills 7 segments.
+/// 12+ hours fills the whole ring; the center always shows the exact hours.
+private struct SleepClockView: View {
+    let hoursSlept: Double?
+
+    private let segments = 12
+    private let gap: CGFloat = 0.008
+
+    private var filledSegments: Int {
+        guard let hours = hoursSlept else { return 0 }
+        return min(segments, max(0, Int(hours.rounded())))
+    }
+
+    var body: some View {
+        ZStack {
+            ForEach(0..<segments, id: \.self) { index in
+                Circle()
+                    .trim(
+                        from: CGFloat(index) / CGFloat(segments) + gap,
+                        to: CGFloat(index + 1) / CGFloat(segments) - gap
+                    )
+                    .stroke(
+                        index < filledSegments ? Theme.primary : Color.gray.opacity(0.2),
+                        style: StrokeStyle(lineWidth: 12, lineCap: .butt)
+                    )
+                    .rotationEffect(.degrees(-90)) // start at 12 o'clock
+                    .padding(6)
+            }
+
+            VStack(spacing: 0) {
+                Text(hoursSlept.map { String(format: "%.1f", $0) } ?? "–")
+                    .font(.title3.bold())
+                    .foregroundColor(Theme.textPrimary)
+                Text("hours")
+                    .font(.caption2)
+                    .foregroundColor(Theme.textPrimary.opacity(0.6))
+            }
+        }
+        .frame(width: 110, height: 110)
+    }
+}
+
 
 struct EpisodeLogView_Previews: PreviewProvider {
     static var previews: some View {

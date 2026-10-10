@@ -35,11 +35,11 @@ struct EpisodeDetailView: View {
     private var summaryCard: some View {
         HStack {
             Text("Overall severity")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
             Spacer()
             Text("\(episode.overallSeverity)/10")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.accent)
         }
         .cardStyle()
@@ -48,13 +48,13 @@ struct EpisodeDetailView: View {
     private var triggersCard: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Triggers")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
             if episode.triggers.isEmpty {
-                Text("None recorded").font(.subheadline).foregroundColor(.gray)
+                Text("None recorded").font(.nSubheadline).foregroundColor(.gray)
             } else {
                 ForEach(episode.triggers) { trigger in
-                    Text("• \(trigger.displayName)").font(.subheadline)
+                    Text("• \(trigger.displayName)").font(.nSubheadline)
                 }
             }
         }
@@ -64,20 +64,20 @@ struct EpisodeDetailView: View {
     private var symptomsCard: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Symptoms")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
             ForEach(episode.symptoms) { symptom in
                 VStack(alignment: .leading, spacing: 4) {
                     HStack {
-                        Text(symptom.category.displayName).font(.subheadline)
+                        Text(symptom.category.displayName).font(.nSubheadline)
                         Spacer()
                         Text("\(symptom.severity)/10")
-                            .font(.subheadline.bold())
+                            .font(.nSubheadlineBold)
                             .foregroundColor(Theme.accent)
                     }
                     if !symptom.specificSymptoms.isEmpty {
                         Text(symptom.specificSymptoms.joined(separator: ", "))
-                            .font(.caption)
+                            .font(.nCaption)
                             .foregroundColor(Theme.textPrimary.opacity(0.6))
                     }
                 }
@@ -90,18 +90,18 @@ struct EpisodeDetailView: View {
     private var medicationCard: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Medication")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
             if episode.medicationTaken {
                 Text(episode.medicationNames.isEmpty ? "Taken" : episode.medicationNames.joined(separator: ", "))
-                    .font(.subheadline)
+                    .font(.nSubheadline)
                 if let helped = episode.medicationHelped {
                     Text(helped ? "Helped" : "Didn't help")
-                        .font(.subheadline)
+                        .font(.nSubheadline)
                         .foregroundColor(helped ? Theme.success : Theme.accent)
                 }
             } else {
-                Text("None taken").font(.subheadline).foregroundColor(.gray)
+                Text("None taken").font(.nSubheadline).foregroundColor(.gray)
             }
         }
         .cardStyle()
@@ -110,9 +110,9 @@ struct EpisodeDetailView: View {
     private func notesCard(_ notes: String) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Notes")
-                .font(.headline)
+                .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
-            Text(notes).font(.subheadline)
+            Text(notes).font(.nSubheadline)
         }
         .cardStyle()
     }

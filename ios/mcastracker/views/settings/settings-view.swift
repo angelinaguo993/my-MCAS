@@ -20,11 +20,11 @@ struct SettingsView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
                         VStack(alignment: .leading, spacing: 12) {
-                            Text("Name").font(.subheadline).foregroundColor(Theme.textPrimary)
+                            Text("Name").font(.nSubheadline).foregroundColor(Theme.textPrimary)
                             TextField("Name", text: $name)
                                 .textFieldStyle(.roundedBorder)
 
-                            Text("Birthday").font(.subheadline).foregroundColor(Theme.textPrimary)
+                            Text("Birthday").font(.nSubheadline).foregroundColor(Theme.textPrimary)
                             DatePicker(
                                 "Birthday",
                                 selection: $birthday,
@@ -35,7 +35,7 @@ struct SettingsView: View {
                             .datePickerStyle(.compact)
                             .tint(Theme.primary)
 
-                            Text("Sex").font(.subheadline).foregroundColor(Theme.textPrimary)
+                            Text("Sex").font(.nSubheadline).foregroundColor(Theme.textPrimary)
                             ChipGrid(
                                 items: BiologicalSex.allCases,
                                 isSelected: { sex == $0 },
@@ -43,11 +43,11 @@ struct SettingsView: View {
                                 onTap: { sex = $0 }
                             )
 
-                            Text("City").font(.subheadline).foregroundColor(Theme.textPrimary)
+                            Text("City").font(.nSubheadline).foregroundColor(Theme.textPrimary)
                             TextField("City", text: $city)
                                 .textFieldStyle(.roundedBorder)
 
-                            Text("State").font(.subheadline).foregroundColor(Theme.textPrimary)
+                            Text("State").font(.nSubheadline).foregroundColor(Theme.textPrimary)
                             Picker("State", selection: $state) {
                                 ForEach(usStates, id: \.self) { Text($0) }
                             }

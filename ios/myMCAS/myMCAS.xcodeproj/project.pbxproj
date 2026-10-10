@@ -29,6 +29,7 @@
 		E4251C823072F1C20070618B /* AIanalysisservice.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4251C813072F1C20070618B /* AIanalysisservice.swift */; };
 		E4251C843072F5940070618B /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4251C833072F5940070618B /* Secrets.swift */; };
 		E4696CB63074B15F006CA41F /* severity-trend-chart.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4696CB53074B15F006CA41F /* severity-trend-chart.swift */; };
+		E4696CBD3079ECDE006CA41F /* typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4696CBC3079ECDE006CA41F /* typography.swift */; };
 		E46F70083057127C0063F1FF /* medication.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70073057127C0063F1FF /* medication.swift */; };
 		E46F700C306228920063F1FF /* insights.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F700B306228920063F1FF /* insights.swift */; };
 		E46F70173064E1750063F1FF /* analytics-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F700E3064E1750063F1FF /* analytics-view.swift */; };
@@ -43,6 +44,11 @@
 		E46F70283069C5200063F1FF /* userprofile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F70273069C5200063F1FF /* userprofile.swift */; };
 		E46F702C306B6EAA0063F1FF /* user-profile-store.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46F702B306B6EAA0063F1FF /* user-profile-store.swift */; };
 		E4831B2F30732EBD0083CEE5 /* weatherservice.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4831B2E30732EBD0083CEE5 /* weatherservice.swift */; };
+		E48EB4A63079F75000D14C23 /* Nunito-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E4696CBB3079ECB1006CA41F /* Nunito-ExtraBold.ttf */; };
+		E48EB4A73079F76300D14C23 /* Nunito-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E4696CB83079EC2F006CA41F /* Nunito-Regular.ttf */; };
+		E48EB4A83079F76600D14C23 /* Nunito-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E4696CBA3079EC47006CA41F /* Nunito-Bold.ttf */; };
+		E48EB4A93079F76800D14C23 /* Nunito-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E4696CB93079EC3D006CA41F /* Nunito-SemiBold.ttf */; };
+		E48EB4AB3079F8D500D14C23 /* home-hero-header.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48EB4AA3079F8D500D14C23 /* home-hero-header.swift */; };
 		E4D5E707306E017000ECDADE /* onboarding-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D5E706306E017000ECDADE /* onboarding-view.swift */; };
 /* End PBXBuildFile section */
 
@@ -89,6 +95,11 @@
 		E4251C813072F1C20070618B /* AIanalysisservice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AIanalysisservice.swift; sourceTree = "<group>"; };
 		E4251C833072F5940070618B /* Secrets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		E4696CB53074B15F006CA41F /* severity-trend-chart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "severity-trend-chart.swift"; sourceTree = "<group>"; };
+		E4696CB83079EC2F006CA41F /* Nunito-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Nunito-Regular.ttf"; sourceTree = "<group>"; };
+		E4696CB93079EC3D006CA41F /* Nunito-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Nunito-SemiBold.ttf"; sourceTree = "<group>"; };
+		E4696CBA3079EC47006CA41F /* Nunito-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Nunito-Bold.ttf"; sourceTree = "<group>"; };
+		E4696CBB3079ECB1006CA41F /* Nunito-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Nunito-ExtraBold.ttf"; sourceTree = "<group>"; };
+		E4696CBC3079ECDE006CA41F /* typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = typography.swift; sourceTree = "<group>"; };
 		E46F70073057127C0063F1FF /* medication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = medication.swift; sourceTree = "<group>"; };
 		E46F700B306228920063F1FF /* insights.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = insights.swift; sourceTree = "<group>"; };
 		E46F700E3064E1750063F1FF /* analytics-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "analytics-view.swift"; sourceTree = "<group>"; };
@@ -103,6 +114,7 @@
 		E46F70273069C5200063F1FF /* userprofile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = userprofile.swift; path = ../../../../Downloads/mcastracker/models/userprofile.swift; sourceTree = "<group>"; };
 		E46F702B306B6EAA0063F1FF /* user-profile-store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "user-profile-store.swift"; sourceTree = "<group>"; };
 		E4831B2E30732EBD0083CEE5 /* weatherservice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = weatherservice.swift; sourceTree = "<group>"; };
+		E48EB4AA3079F8D500D14C23 /* home-hero-header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "home-hero-header.swift"; sourceTree = "<group>"; };
 		E4D5E706306E017000ECDADE /* onboarding-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "onboarding-view.swift"; path = "../../../../my-MCAS/ios/mcastracker/views/onboarding/onboarding-view.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -134,6 +146,7 @@
 		E41B1BA63052586100A467FA = {
 			isa = PBXGroup;
 			children = (
+				E48EB4AA3079F8D500D14C23 /* home-hero-header.swift */,
 				E41B1BDE3052598700A467FA /* mcastracker */,
 				E41B1BB13052586100A467FA /* myMCAS */,
 				E41B1BC23052586300A467FA /* myMCASTests */,
@@ -189,6 +202,7 @@
 		E41B1BDE3052598700A467FA /* mcastracker */ = {
 			isa = PBXGroup;
 			children = (
+				E4696CB73079EBC6006CA41F /* resources */,
 				E46F70243069C4FC0063F1FF /* settings */,
 				E46F70213069C4EA0063F1FF /* onboarding */,
 				E41B1BDF3052598700A467FA /* app */,
@@ -285,6 +299,7 @@
 			children = (
 				E46F702B306B6EAA0063F1FF /* user-profile-store.swift */,
 				E41B1BF23052598700A467FA /* theme.swift */,
+				E4696CBC3079ECDE006CA41F /* typography.swift */,
 			);
 			path = utilities;
 			sourceTree = "<group>";
@@ -342,6 +357,17 @@
 				E4696CB53074B15F006CA41F /* severity-trend-chart.swift */,
 			);
 			path = trends;
+			sourceTree = "<group>";
+		};
+		E4696CB73079EBC6006CA41F /* resources */ = {
+			isa = PBXGroup;
+			children = (
+				E4696CBB3079ECB1006CA41F /* Nunito-ExtraBold.ttf */,
+				E4696CB83079EC2F006CA41F /* Nunito-Regular.ttf */,
+				E4696CBA3079EC47006CA41F /* Nunito-Bold.ttf */,
+				E4696CB93079EC3D006CA41F /* Nunito-SemiBold.ttf */,
+			);
+			path = resources;
 			sourceTree = "<group>";
 		};
 		E46F700D3064E1750063F1FF /* analytics */ = {
@@ -500,7 +526,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E48EB4A93079F76800D14C23 /* Nunito-SemiBold.ttf in Resources */,
+				E48EB4A63079F75000D14C23 /* Nunito-ExtraBold.ttf in Resources */,
+				E48EB4A83079F76600D14C23 /* Nunito-Bold.ttf in Resources */,
 				E41B1BBA3052586300A467FA /* Preview Assets.xcassets in Resources */,
+				E48EB4A73079F76300D14C23 /* Nunito-Regular.ttf in Resources */,
 				E41B1BB73052586300A467FA /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -540,6 +570,7 @@
 				E46F70173064E1750063F1FF /* analytics-view.swift in Sources */,
 				E4251C803072F1A10070618B /* AIanalysisresult.swift in Sources */,
 				E41B1BFF3052598800A467FA /* endpoints.swift in Sources */,
+				E4696CBD3079ECDE006CA41F /* typography.swift in Sources */,
 				E41B1C093052598800A467FA /* severity-picker-view.swift in Sources */,
 				E46F701A3064E1750063F1FF /* episode-detail-view.swift in Sources */,
 				E46F702C306B6EAA0063F1FF /* user-profile-store.swift in Sources */,
@@ -554,6 +585,7 @@
 				E4696CB63074B15F006CA41F /* severity-trend-chart.swift in Sources */,
 				E41B1C023052598800A467FA /* symptom.swift in Sources */,
 				E46F7020306632FE0063F1FF /* mcas-trackerapp.swift in Sources */,
+				E48EB4AB3079F8D500D14C23 /* home-hero-header.swift in Sources */,
 				E46F70193064E1750063F1FF /* discover-view.swift in Sources */,
 				E41B1C083052598800A467FA /* theme.swift in Sources */,
 				E46F70283069C5200063F1FF /* userprofile.swift in Sources */,

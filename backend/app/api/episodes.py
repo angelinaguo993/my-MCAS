@@ -52,6 +52,8 @@ def create_episode(payload: EpisodeCreate, db: Session = Depends(get_db)):
         medication_names=payload.medication_names,
         medication_helped=payload.medication_helped,
         notes=payload.notes,
+        sleep_hours=payload.sleep_hours,
+        date=payload.date or datetime.now(timezone.utc)
     )
     db.add(episode)
     db.commit()

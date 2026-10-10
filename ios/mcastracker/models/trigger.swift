@@ -13,7 +13,11 @@ enum Trigger: String, CaseIterable, Codable, Identifiable {
     case alcohol = "alcohol"
     case lackOfSleep = "lack_of_sleep"
     case friction = "friction"
+    case drugs = "drugs"
+    case venoms = "venoms"
+    case allergies = "allergies"
     case other = "other"
+
 
     var id: String { rawValue }
 
@@ -25,9 +29,13 @@ enum Trigger: String, CaseIterable, Codable, Identifiable {
         case .stress: return "Stress"
         case .exercise: return "Exercise / exertion"
         case .fragrance: return "Fragrance / chemical exposure"
-        case .alcohol: return "Alcohol"
+        case .alcohol: return "Alcohol / beverages"
         case .lackOfSleep: return "Lack of sleep"
         case .friction: return "Skin friction / pressure"
+        case .drugs: return "Drugs (opioids, NSAIDS, antibiotics, etc.)"
+        case .venoms: return "Venoms (insect stings, snake bites, spider bites, etc.)"
+        case .allergies: return "Allergies (pollen, dust, pet dander, etc.)"
+
         case .other: return "Other"
         }
     }
@@ -44,7 +52,30 @@ enum Trigger: String, CaseIterable, Codable, Identifiable {
         case .alcohol: return "wineglass.fill"
         case .lackOfSleep: return "bed.double.fill"
         case .friction: return "hand.raised.fill"
+        case .drugs: return "pills"
+        case .venoms: return "skull"
+        case .allergies: return "leaf.fill"
+        
         case .other: return "questionmark.circle.fill"
+        }
+    }
+
+    /// Placeholder for the detail box shown when this trigger is selected
+    var detailPlaceholder: String? {
+        switch self {
+            case .highHistamineFood: return "What did you eat prior to this episode?"
+            case .alcohol: return "What did you drink prior to this episode?"
+            case .fragrance: return "What scent or product may have caused this episode?"
+            case .exercise: return "What activity did you do prior/while experiencing this episode?"
+            case .heat: return nil
+            case .cold: return nil
+            case .stress: return "What was stressful?"
+            case .friction: return "Where on your skin?"
+            case .lackOfSleep: return nil
+            case .drugs: return "What drug(s) or other medication did you take prior to this episode?"
+            case .venoms: return "What bit or stung you prior/while experiencing this episode?"
+            case .allergies: return "What allergen(s) may have caused this episode?"
+            case .other: return "Describe the trigger"
         }
     }
 

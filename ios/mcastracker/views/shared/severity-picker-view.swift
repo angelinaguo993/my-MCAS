@@ -11,11 +11,11 @@ struct SeverityPickerView: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
                 Text(label)
-                    .font(.subheadline)
+                    .font(.nSubheadline)
                     .foregroundColor(Theme.textPrimary)
                 Spacer()
                 Text("\(value)/10")
-                    .font(.subheadline.bold())
+                    .font(.nSubheadlineBold)
                     .foregroundColor(Theme.accent)
             }
             Slider(value: Binding(

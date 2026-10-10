@@ -6,7 +6,7 @@ tables — each episode only has a handful of each, and this keeps the
 schema simple to start. Can be normalized into real tables later if the
 analysis engine needs to query across episodes at the trigger/symptom level.
 """
-from sqlalchemy import Column, Integer, String, DateTime, JSON, Boolean
+from sqlalchemy import Column, Integer, String, DateTime, JSON, Boolean, Float
 from datetime import datetime, timezone
 from app.db.database import Base
 
@@ -30,3 +30,6 @@ class Episode(Base):
     medication_helped = Column(Boolean, nullable=True)
 
     notes = Column(String, nullable=True)
+
+    sleep_hours = Column(Float, nullable=True)  # hours of sleep the night before
+    
