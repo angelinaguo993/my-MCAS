@@ -5,6 +5,7 @@ import SwiftUI
 /// effectiveness stays on the Home tab for now, per the current layout.
 struct AnalyticsView: View {
     @StateObject private var viewModel = AnalyticsViewModel()
+    @State private var showingExport = false
 
     var body: some View {
         NavigationStack {
@@ -19,6 +20,7 @@ struct AnalyticsView: View {
                             if let error = viewModel.errorMessage {
                                 errorBanner(error)
                             }
+                            doctorSummaryCard
 
                             if let insights = viewModel.insights {
                                 if !insights.hasEnoughData {
@@ -47,7 +49,12 @@ struct AnalyticsView: View {
             }
             .navigationTitle("Analytics")
             .task { await viewModel.loadInsights() }
-            .refreshable { await viewModel.loadInsights() }
+            .refreshable { 
+                await viewModel.loadInsights() 
+            }
+            .sheet(isPresented: $showingExport) {
+                ExportReportView()
+            }
         }
     }
 
@@ -193,6 +200,37 @@ struct AnalyticsView: View {
                         .foregroundColor(Theme.textPrimary)
                 }
                 .tint(Theme.primary)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .cardStyle()
+    }
+
+    private var doctorSummaryCard: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 10) {
+                Image(systemName: "doc.text.fill")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(Theme.accent)
+                    .frame(width: 32, height: 32)
+                    .background(Theme.accent.opacity(0.12), in: Circle())
+                Text("Doctor-Ready Summary")
+                    .font(.nHeadline)
+                    .foregroundColor(Theme.textPrimary)
+            }
+            Text("Turn your logged episodes into a clean PDF with patterns, medication history, and a full log to bring to your next appointment.")
+                .font(.nCaption)
+                .foregroundColor(Theme.textPrimary.opacity(0.7))
+            Button {
+                showingExport = true
+            } label: {
+                Text("Create summary")
+                    .font(.nSubheadlineBold)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(Theme.accent)
+                    .clipShape(Capsule())
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

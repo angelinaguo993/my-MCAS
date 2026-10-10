@@ -100,6 +100,13 @@ final class APIClient {
         return try decoder.decode(InsightsResponse.self, from: data)
     }
 
+    /// Fetch all episodes for for doctor pdf generation.
+    func fetchAllEpisodes() async throws -> [Episode] {
+        let (data, response) = try await session.data(from: Endpoints.episodes)
+        try validate(response, data)
+        return try decoder.decode([Episode].self, from: data)
+    }
+
     private func validate(_ response: URLResponse, _ data: Data) throws {
         guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
             let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
