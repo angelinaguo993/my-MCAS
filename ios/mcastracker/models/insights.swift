@@ -1,7 +1,6 @@
 import Foundation
 
-/// Mirrors the backend's FrequencyStat (see episode_schema.py) — one
-/// trigger/symptom/medication's frequency, with a confidence interval.
+/// represents the frequency of a trigger, symptom, or medication, with a confidence interval
 struct FrequencyStat: Codable, Identifiable {
     var id: String { name }
     let name: String
@@ -28,7 +27,7 @@ struct TrendInfo: Codable {
     }
 }
 
-/// Mirrors the backend's InsightsResponse — the full output of GET /insights.
+/// represents the average severity of episodes with vs. without a trigger
 struct InsightsResponse: Codable {
     let hasEnoughData: Bool
     let totalEpisodes: Int

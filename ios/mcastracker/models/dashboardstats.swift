@@ -1,6 +1,6 @@
 import Foundation
 
-/// Mirrors the backend's DashboardResponse — powers the "days since last
+/// mirrors backend DashboardResponse -> powers "days since last
 /// episode" card on the dashboard.
 struct DashboardStats: Codable {
     var daysSinceLastEpisode: Int?

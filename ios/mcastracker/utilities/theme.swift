@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Central place for the app's design system so colors/fonts are never
-/// hardcoded inline in views — change a color once here, it updates everywhere.
+/// app design system (colors and fonts all here)
+/// change colors and fonts HERE!!
 enum Theme {
     static let primary = Color(hex: "5BC0EB")
     static let background = Color(hex: "FDECEF")
@@ -14,7 +14,7 @@ enum Theme {
 }
 
 extension Color {
-    /// Lets us write Color(hex: "5BC0EB") instead of manually converting RGB.
+    // initializes color from hex
     init(hex: String) {
         let scanner = Scanner(string: hex)
         var rgb: UInt64 = 0
@@ -28,7 +28,7 @@ extension Color {
     }
 }
 
-/// Reusable card container so every screen's "cards" look consistent.
+/// reusable card container (makes every card look similar)
 struct CardBackground: ViewModifier {
     func body(content: Content) -> some View {
         content

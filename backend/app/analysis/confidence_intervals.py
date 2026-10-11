@@ -1,6 +1,6 @@
 import math
 
-#   Calculate the Wilson score interval for a given number of successes and total trials.
+#   Calculates Wilson score interval for given num of successes and total trials
 
 def wilson_score_interval(successes: int, total: int) -> dict:
     if total == 0:

@@ -12,7 +12,7 @@ struct Episode: Identifiable, Codable, Equatable {
     var foodEaten: String? = nil
     var notes: String? = nil
     var weatherSummary: String? = nil
-    var sleepHours: Double? = nil  // hours of sleep the night before
+    var sleepHours: Double? = nil
 
     enum CodingKeys: String, CodingKey {
         case id, date, triggers, symptoms
@@ -29,7 +29,6 @@ struct Episode: Identifiable, Codable, Equatable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        // Handle ID as either an Int or String from the backend
         if let intId = try? container.decode(Int.self, forKey: .id) {
             id = String(intId)
         } else if let stringId = try? container.decode(String.self, forKey: .id) {

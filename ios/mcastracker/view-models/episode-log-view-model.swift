@@ -3,6 +3,7 @@ import SwiftUI
 
 @MainActor
 final class EpisodeLogViewModel: ObservableObject {
+    // episode details
     @Published var selectedTriggers: Set<Trigger> = []
     @Published var otherTriggerDescription: String = ""
     @Published var triggerDetails: [Trigger: String] = [:]
@@ -12,21 +13,22 @@ final class EpisodeLogViewModel: ObservableObject {
     @Published var specificSymptoms: [SymptomCategory: Set<String>] = [:]
     @Published var overallSeverity: Int = 5
 
+    // meds from episode
     @Published var medicationTaken: Bool = false
     @Published var selectedMedications: Set<String> = []
     @Published var otherMedicationName: String = ""
     @Published var medicationHelped: Bool = false
     @Published var notes: String = ""
 
+    // did episode submit successfully to db?
     @Published var isSubmitting = false
     @Published var errorMessage: String?
     @Published var didSubmitSuccessfully = false
 
-    // Sleep
+    // sleep deets from episode
     @Published var bedtime: Date = Calendar.current.date(bySettingHour: 23, minute: 0, second: 0, of: Date()) ?? Date()
     @Published var wakeTime: Date = Calendar.current.date(bySettingHour: 7, minute: 0, second: 0, of: Date()) ?? Date()
     @Published var didEditSleep = false
-
 
     func toggleTrigger(_ trigger: Trigger) {
         if selectedTriggers.contains(trigger) {
@@ -78,7 +80,6 @@ final class EpisodeLogViewModel: ObservableObject {
     }
 
 
-    // Sleep- bedtime, waketime, hours of slep 
     func bedtimeBinding() -> Binding<Date> {
         Binding(
             get: { self.bedtime },
@@ -93,7 +94,6 @@ final class EpisodeLogViewModel: ObservableObject {
         )
     }
 
-    /// Hours slept, or nil if the user hasn't set a time yet.
     var sleepHours: Double? {
         guard didEditSleep else { return nil }
         let cal = Calendar.current
@@ -106,8 +106,7 @@ final class EpisodeLogViewModel: ObservableObject {
         return Double(diff) / 60.0
     }
 
-    /// For category .other, reuses the same specificSymptoms storage to hold
-    /// one free-typed description instead of a checked list from a fixed set.
+    /// "other" category- reuses specificSymptoms storage for free-type descrip
     func otherSymptomDescriptionBinding() -> Binding<String> {
         Binding(
             get: { self.specificSymptoms[.other]?.first ?? "" },
@@ -136,7 +135,6 @@ final class EpisodeLogViewModel: ObservableObject {
         isSubmitting = true
         errorMessage = nil
 
-        // 1. Fetch weather for the user's location
         let userCity = UserDefaults.standard.string(forKey: "userCity") ?? "Seattle"
         let weather = await WeatherService.shared.fetchWeather(for: userCity)
 
@@ -162,7 +160,6 @@ final class EpisodeLogViewModel: ObservableObject {
             medicationNames.append(otherMedicationName)
         }
 
-        // 2. Properly structured Episode initialization with all commas and parameters
         let episode = Episode(
             id: UUID().uuidString,
             date: episodeDate,

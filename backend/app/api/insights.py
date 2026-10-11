@@ -1,7 +1,6 @@
 """
-GET /insights -> the analysis engine's output: top triggers, symptom
-patterns, medication effectiveness, and basic stats, all computed from
-the user's full episode history.
+pulls out top triggers, symptom, patterns, medication effectiveness, basic stats, 
+from database history
 """
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session

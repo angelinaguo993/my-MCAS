@@ -1,8 +1,7 @@
 import SwiftUI
 import CoreText
 
-/// To try another family (e.g. Roboto Slab),
-/// change these four strings and add that family's .ttf files.
+/// to change font family: update these FOUR STRINGS, add those family's .ttf files to ios/resources
 enum AppFont {
     static let regular = "Nunito-Regular"
     static let semiBold = "Nunito-SemiBold"
@@ -11,7 +10,6 @@ enum AppFont {
 }
 
 extension Font {
-    /// `relativeTo` keeps Dynamic Type (the user's text-size setting) working.
     static func app(_ name: String, size: CGFloat, relativeTo style: Font.TextStyle = .body) -> Font {
         .custom(name, size: size, relativeTo: style)
     }
@@ -27,9 +25,6 @@ extension Font {
 }
 
 enum FontRegistrar {
-    /// Registers every .ttf/.otf inside the app bundle with iOS at launch. This works
-    /// even if the Info.plist "Fonts provided by application" entry is missing or
-    /// misspelled, as long as the files are in Copy Bundle Resources.
     static func registerBundledFonts() {
         guard let root = Bundle.main.resourceURL,
               let enumerator = FileManager.default.enumerator(at: root, includingPropertiesForKeys: nil)
@@ -46,7 +41,7 @@ enum FontRegistrar {
 
         for url in fontURLs {
             var error: Unmanaged<CFError>?
-            // An "already registered" error just means Info.plist worked first. Safe to ignore.
+            // "already registered" error- means Info.plist worked first, can just ignore :)
             _ = CTFontManagerRegisterFontsForURL(url as CFURL, .process, &error)
         }
 

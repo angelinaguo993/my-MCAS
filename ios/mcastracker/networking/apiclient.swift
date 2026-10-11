@@ -1,8 +1,6 @@
 import Foundation
 
-/// One place for every network call the app makes. Views/ViewModels call
-/// these functions instead of using URLSession directly, so error handling
-/// and JSON decoding stay consistent everywhere.
+/// place for every network call the app makes
 enum APIError: Error, LocalizedError {
     case badResponse(statusCode: Int, body: String)
     case decodingFailed
@@ -67,14 +65,14 @@ final class APIClient {
         return e
     }()
 
-    /// Flow 1: dashboard's "days since last episode" card.
+    /// flow 1: dashboard's "days since last episode" card
     func fetchDashboard() async throws -> DashboardStats {
         let (data, response) = try await session.data(from: Endpoints.dashboard)
         try validate(response, data)
         return try decoder.decode(DashboardStats.self, from: data)
     }
 
-    /// Flow 2: submitting the episode survey.
+    /// flow 2: submitting the episode survey
     func submitEpisode(_ episode: Episode) async throws -> Episode {
         var request = URLRequest(url: Endpoints.episodes)
         request.httpMethod = "POST"
@@ -86,18 +84,25 @@ final class APIClient {
         return try decoder.decode(Episode.self, from: data)
     }
 
-    /// Flow 3: calendar view — episodes for a given month.
+    /// flow 3: calendar view (episodes for a given month)
     func fetchEpisodes(year: Int, month: Int) async throws -> [Episode] {
         let (data, response) = try await session.data(from: Endpoints.episodes(year: year, month: month))
         try validate(response, data)
         return try decoder.decode([Episode].self, from: data)
     }
 
-    /// Dashboard's trigger/symptom/medication summary cards.
+    /// dashboard's trigger/symptom/medication summary cards
     func fetchInsights() async throws -> InsightsResponse {
         let (data, response) = try await session.data(from: Endpoints.insights)
         try validate(response, data)
         return try decoder.decode(InsightsResponse.self, from: data)
+    }
+
+    /// flow 4: fetches all ep for doctor pdf generation
+    func fetchAllEpisodes() async throws -> [Episode] {
+        let (data, response) = try await session.data(from: Endpoints.episodes)
+        try validate(response, data)
+        return try decoder.decode([Episode].self, from: data)
     }
 
     private func validate(_ response: URLResponse, _ data: Data) throws {

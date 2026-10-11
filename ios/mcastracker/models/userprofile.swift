@@ -42,10 +42,9 @@ enum EpisodeFrequency: String, CaseIterable, Codable, Identifiable {
     }
 }
 
-/// The user's profile — collected once during onboarding, editable later
-/// from Settings. This app has no login system, so there's exactly one
-/// profile per install, stored locally on the device (not synced to the
-/// backend — see UserProfileStore).
+
+/// user profile- data collected first in onboarding, user can edit later on if needed thru settings
+/// stored locally on device, not synced to backend (no login)
 struct UserProfile: Codable, Equatable {
     var name: String = ""
     var age: Int? = nil
@@ -63,7 +62,6 @@ struct UserProfile: Codable, Equatable {
     var otherTriggerDescription: String? = nil
 }
 
-/// The 50 US states plus DC, used for the state picker during onboarding.
 let usStates = [
     "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
     "Connecticut", "Delaware", "District of Columbia", "Florida", "Georgia",

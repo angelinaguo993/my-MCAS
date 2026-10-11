@@ -1,10 +1,9 @@
 import SwiftUI
 
-/// Analytics tab: "most common triggers," "most common symptoms," and
-/// AI-driven pattern-detection insights. Medication
-/// effectiveness stays on the Home tab for now, per the current layout.
+/// analytics tab: "most common triggers," "most common symptoms," and AI-driven pattern-detection insights
 struct AnalyticsView: View {
     @StateObject private var viewModel = AnalyticsViewModel()
+    @State private var showingExport = false
 
     var body: some View {
         NavigationStack {
@@ -19,6 +18,7 @@ struct AnalyticsView: View {
                             if let error = viewModel.errorMessage {
                                 errorBanner(error)
                             }
+                            doctorSummaryCard
 
                             if let insights = viewModel.insights {
                                 if !insights.hasEnoughData {
@@ -47,7 +47,12 @@ struct AnalyticsView: View {
             }
             .navigationTitle("Analytics")
             .task { await viewModel.loadInsights() }
-            .refreshable { await viewModel.loadInsights() }
+            .refreshable { 
+                await viewModel.loadInsights() 
+            }
+            .sheet(isPresented: $showingExport) {
+                ExportReportView()
+            }
         }
     }
 
@@ -57,7 +62,6 @@ struct AnalyticsView: View {
                 .font(.nSubheadlineBold)
                 .foregroundColor(Theme.accent)
             
-            // This line is the crucial change to reveal the true error
             Text(message) 
                 .font(.nCaption)
                 .multilineTextAlignment(.center)
@@ -199,6 +203,37 @@ struct AnalyticsView: View {
         .cardStyle()
     }
 
+    private var doctorSummaryCard: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 10) {
+                Image(systemName: "doc.text.fill")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(Theme.accent)
+                    .frame(width: 32, height: 32)
+                    .background(Theme.accent.opacity(0.12), in: Circle())
+                Text("Doctor-Ready Summary")
+                    .font(.nHeadline)
+                    .foregroundColor(Theme.textPrimary)
+            }
+            Text("Turn your logged episodes into a clean PDF with patterns, medication history, and a full log to bring to your next appointment.")
+                .font(.nCaption)
+                .foregroundColor(Theme.textPrimary.opacity(0.7))
+            Button {
+                showingExport = true
+            } label: {
+                Text("Create summary")
+                    .font(.nSubheadlineBold)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(Theme.accent)
+                    .clipShape(Capsule())
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .cardStyle()
+    }
+
     private struct TriggerSymptomGroup {
         let trigger: String
         let symptoms: [FrequencyStat]
@@ -274,7 +309,7 @@ struct AnalyticsView: View {
         }
     }
     
-    // MARK: - AI View Components
+    // MARK: - AI view components
     
     @ViewBuilder
     private var aiInsightsSection: some View {
@@ -300,7 +335,14 @@ struct AnalyticsView: View {
                 aiInsightCard(
                     title: "Triggers to Avoid", 
                     subtitle: "Based on your logged episodes and notes, these triggers appear to be associated with more severe or frequent episodes.",
-                    items: aiResult.triggersToAvoid.map { Trigger.from(rawValue: $0)?.displayName ?? $0 },
+                    items: aiResult.triggersToAvoid.map { rawValue in
+                        if let trigger = Trigger.from(rawValue: rawValue) {
+                            return trigger.displayName
+                        } else {
+                            // e.g.converts "high_histamine_food" -> "High Histamine Food"
+                            return rawValue.replacingOccurrences(of: "_", with: " ").capitalized
+                        }
+                    },
                     icon: "exclamationmark.triangle"
                 )
                 aiInsightCard(

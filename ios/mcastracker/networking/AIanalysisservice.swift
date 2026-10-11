@@ -5,15 +5,13 @@ class AIAnalysisService {
     private let apiKey = Secrets.openRouterAPIKey
     private let endpoint = URL(string: "https://openrouter.ai/api/v1/chat/completions")!
 
-    /// `insights` is optional so this still works even before 5+ episodes
+    /// insights is optional so this still works even before 5+ episodes
     /// exist (when /insights returns no computed stats yet).
     func fetchAnalysis(for episodes: [Episode], insights: InsightsResponse?) async throws -> AIAnalysisResult {
         let episodeDataString = episodes.map {
             "Date: \($0.date), Triggers: \($0.triggers.map { $0.displayName }), Meds Taken: \($0.medicationNames), Helped: \($0.medicationHelped ?? false), Notes: \($0.notes ?? "None")"
         }.joined(separator: "\n")
 
-        // Ground the AI in real computed stats instead of letting it
-        // free-associate patterns from raw text alone.
         var statsContext = ""
         if let insights = insights, insights.hasEnoughData {
             if !insights.triggerCooccurrence.isEmpty {

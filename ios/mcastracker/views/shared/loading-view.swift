@@ -1,8 +1,6 @@
 import SwiftUI
 
-/// Shown while waiting on a network call (dashboard fetch, episode submit,
-/// calendar fetch). One component so every screen's loading state looks
-/// and behaves the same.
+/// loading view when waiting on network call
 struct LoadingView: View {
     var body: some View {
         VStack {

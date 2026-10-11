@@ -92,11 +92,11 @@ def trigger_cooccurrence(episodes: list) -> list[dict]:
 
 def symptom_trigger_pairing(episodes: list) -> list[dict]:
     """
-    For each (trigger, symptom category) pair, how often do they appear
-    together in the same episode? Different from trigger_cooccurrence —
+    analyzes how often a trigger and symptom appear
+    together in the same episode. Different from trigger_cooccurrence —>
     this pairs a trigger against a symptom, not two triggers against
     each other (e.g. "high_histamine_food" tends to come with "gi"
-    symptoms, "fragrance" tends to come with "respiratory").
+    symptoms, "fragrance" tends to come with "respiratory", etc)
     """
     total = len(episodes)
     if total == 0:
@@ -125,8 +125,8 @@ def symptom_trigger_pairing(episodes: list) -> list[dict]:
 
 def severity_by_trigger(episodes: list) -> list[dict]:
     """
-    For each trigger, compares average severity on episodes where it was
-    present vs. episodes where it wasn't — analyzes if a trigger makes the episode worse or not."
+    compares average severity for each trigger on episodes where it was
+    present vs. episodes where it wasn't -> analyzes if a trigger makes the episode worse or not."
     """
     all_triggers = set()
     for ep in episodes:

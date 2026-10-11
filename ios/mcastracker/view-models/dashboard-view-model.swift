@@ -36,7 +36,6 @@ final class DashboardViewModel: ObservableObject {
         }
     }
 
-    /// A request cancelled because its screen was rebuilt isn't a real failure.
     private func isCancellation(_ error: Error) -> Bool {
         if error is CancellationError { return true }
         return (error as? URLError)?.code == .cancelled

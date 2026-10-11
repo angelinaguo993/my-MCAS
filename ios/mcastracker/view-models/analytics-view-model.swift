@@ -2,12 +2,12 @@ import Foundation
 
 @MainActor
 final class AnalyticsViewModel: ObservableObject {
-    // Existing properties
+    // existing properties
     @Published var insights: InsightsResponse?
     @Published var isLoading = false
     @Published var errorMessage: String?
     
-    // New AI properties
+    // new AI properties
     @Published var aiResult: AIAnalysisResult?
     @Published var isAILoading = false
     private let aiService = AIAnalysisService()
@@ -29,16 +29,16 @@ final class AnalyticsViewModel: ObservableObject {
         errorMessage = nil
         
         do {
-            // 1. Get the current year and month
+            // 1. get the current year and month
             let now = Date()
             let calendar = Calendar.current
             let currentYear = calendar.component(.year, from: now)
             let currentMonth = calendar.component(.month, from: now)
             
-            // 2. Pass them into the fetch method
+            // 2. pass into the fetch method
             let episodes = try await APIClient.shared.fetchEpisodes(year: currentYear, month: currentMonth) 
             
-            // 3. Send the episodes to OpenRouter
+            // 3. send the episodes to OpenRouter
             aiResult = try await aiService.fetchAnalysis(for: episodes, insights: insights)
         } catch {
             print("Decoding error: \(error)")

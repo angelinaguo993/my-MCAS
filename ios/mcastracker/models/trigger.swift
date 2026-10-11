@@ -1,9 +1,7 @@
 import Foundation
 
-/// Common MCAS triggers a user can multi-select while logging an episode.
-/// Kept as an enum for now (fixed list) — swap for a user-editable list later
-/// if you want people to add their own custom triggers.
 enum Trigger: String, CaseIterable, Codable, Identifiable {
+    /// categories of triggers
     case highHistamineFood = "high_histamine_food"
     case heat = "heat"
     case cold = "cold"
@@ -40,7 +38,7 @@ enum Trigger: String, CaseIterable, Codable, Identifiable {
         }
     }
 
-    /// SF Symbol shown alongside this trigger on the dashboard's insights cards.
+    /// graphic shown alongside each category of triggers in the UI
     var iconName: String {
         switch self {
         case .highHistamineFood: return "fork.knife"
@@ -60,7 +58,6 @@ enum Trigger: String, CaseIterable, Codable, Identifiable {
         }
     }
 
-    /// Placeholder for the detail box shown when this trigger is selected
     var detailPlaceholder: String? {
         switch self {
             case .highHistamineFood: return "What did you eat prior to this episode?"
@@ -79,8 +76,19 @@ enum Trigger: String, CaseIterable, Codable, Identifiable {
         }
     }
 
-    /// Looks up a Trigger by its raw backend string (e.g. "stress").
     static func from(rawValue: String) -> Trigger? {
-        Trigger(rawValue: rawValue)
+        let cleaned = rawValue.lowercased()
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .replacingOccurrences(of: " ", with: "_")
+            .replacingOccurrences(of: "-", with: "_")
+        
+        if let match = Trigger(rawValue: cleaned) {
+            return match
+        }
+        
+        return Trigger.allCases.first {
+            $0.rawValue.lowercased() == cleaned ||
+            $0.displayName.lowercased() == rawValue.lowercased()
+        }
     }
 }

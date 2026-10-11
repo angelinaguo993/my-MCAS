@@ -4,8 +4,6 @@ import SwiftUI
 struct MCASTrackerApp: App {
     @StateObject private var profileStore = UserProfileStore()
 
-
-
     init() {
         FontRegistrar.registerBundledFonts()
         Self.styleNavigationBar()
@@ -20,21 +18,21 @@ struct MCASTrackerApp: App {
         if let font = UIFont(name: AppFont.extraBold, size: 34) {
             large[.font] = font
         } else {
-            print("⚠️ Font not found: \(AppFont.extraBold)")
+            print("Font not found: \(AppFont.extraBold)")
         }
         if let font = UIFont(name: AppFont.bold, size: 17) {
             inline[.font] = font
         } else {
-            print("⚠️ Font not found: \(AppFont.bold)")
+            print("Font not found: \(AppFont.bold)")
         }
 
-        // Style used once the user scrolls and the bar gets its blurred background
+        // style used once the user scrolls and the bar gets its blurred background
         let scrolled = UINavigationBarAppearance()
         scrolled.configureWithDefaultBackground()
         scrolled.largeTitleTextAttributes = large
         scrolled.titleTextAttributes = inline
 
-        // Style used when the large title sits at the top of the screen
+        // style used when the large title sits at the top of the screen
         let atTop = UINavigationBarAppearance()
         atTop.configureWithTransparentBackground()
         atTop.largeTitleTextAttributes = large
@@ -65,8 +63,7 @@ struct MCASTrackerApp: App {
     }
 }
 
-/// Ties together the four tabs: Home (logging), Analytics (patterns),
-/// Calendar (history), Discover (facts/articles, placeholder for now).
+// tying together 4 tabs: Home (logging), Analytics (patterns), Calendar (history), Discover (facts/articles)
 struct RootTabView: View {
     var body: some View {
         TabView {
