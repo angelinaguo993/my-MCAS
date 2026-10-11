@@ -36,7 +36,7 @@ struct SettingsView: View {
                             .tint(Theme.primary)
 
                             Text("Sex").font(.nSubheadline).foregroundColor(Theme.textPrimary)
-                            ChipGrid(
+                            ChoiceChips(
                                 items: BiologicalSex.allCases,
                                 isSelected: { sex == $0 },
                                 label: { $0.displayName },

@@ -54,6 +54,8 @@
 		E4FBA6CB307ADCD800F6D5CC /* doctor-report-pdf.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FBA6CA307ADCD800F6D5CC /* doctor-report-pdf.swift */; };
 		E4FBA6CD307ADD6100F6D5CC /* export-report-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FBA6CC307ADD6100F6D5CC /* export-report-view.swift */; };
 		E4FBA6CF307AE0C000F6D5CC /* discover-content.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FBA6CE307AE0C000F6D5CC /* discover-content.swift */; };
+		E4FBA6D1307B098000F6D5CC /* chipgrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FBA6D0307B098000F6D5CC /* chipgrid.swift */; };
+		E4FBA6D3307C3AB100F6D5CC /* choicechips.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FBA6D2307C3AB100F6D5CC /* choicechips.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -124,6 +126,8 @@
 		E4FBA6CA307ADCD800F6D5CC /* doctor-report-pdf.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "doctor-report-pdf.swift"; sourceTree = "<group>"; };
 		E4FBA6CC307ADD6100F6D5CC /* export-report-view.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "export-report-view.swift"; sourceTree = "<group>"; };
 		E4FBA6CE307AE0C000F6D5CC /* discover-content.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "discover-content.swift"; sourceTree = "<group>"; };
+		E4FBA6D0307B098000F6D5CC /* chipgrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = chipgrid.swift; sourceTree = "<group>"; };
+		E4FBA6D2307C3AB100F6D5CC /* choicechips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = choicechips.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -327,6 +331,7 @@
 				E41B1BF73052598700A467FA /* dashboard */,
 				E41B1BF93052598700A467FA /* history */,
 				E41B1BFC3052598700A467FA /* logging */,
+				E4FBA6D0307B098000F6D5CC /* chipgrid.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -336,6 +341,7 @@
 			children = (
 				E41B1BF53052598700A467FA /* severity-picker-view.swift */,
 				E41B1BF63052598700A467FA /* loading-view.swift */,
+				E4FBA6D2307C3AB100F6D5CC /* choicechips.swift */,
 			);
 			path = shared;
 			sourceTree = "<group>";
@@ -598,6 +604,7 @@
 				E4251C823072F1C20070618B /* AIanalysisservice.swift in Sources */,
 				E41B1C043052598800A467FA /* dashboardstats.swift in Sources */,
 				E4696CB63074B15F006CA41F /* severity-trend-chart.swift in Sources */,
+				E4FBA6D3307C3AB100F6D5CC /* choicechips.swift in Sources */,
 				E41B1C023052598800A467FA /* symptom.swift in Sources */,
 				E4FBA6CB307ADCD800F6D5CC /* doctor-report-pdf.swift in Sources */,
 				E46F7020306632FE0063F1FF /* mcas-trackerapp.swift in Sources */,
@@ -606,6 +613,7 @@
 				E41B1C083052598800A467FA /* theme.swift in Sources */,
 				E46F70283069C5200063F1FF /* userprofile.swift in Sources */,
 				E41B1C073052598800A467FA /* episode-log-view-model.swift in Sources */,
+				E4FBA6D1307B098000F6D5CC /* chipgrid.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

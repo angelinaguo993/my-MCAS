@@ -4,6 +4,7 @@ import SwiftUI
 /// and links to the sources they came from
 struct DiscoverView: View {
     @State private var category: DiscoverCategory = .all
+    @State private var selectedCategories: Set<DiscoverCategory> = []
 
     private var visibleFacts: [DiscoverFact] {
         category == .all
@@ -23,11 +24,12 @@ struct DiscoverView: View {
                             Text("Browse")
                                 .font(.nTitle2)
                                 .foregroundColor(Theme.textPrimary)
-                            ChipGrid(
-                                items: DiscoverCategory.allCases,
-                                isSelected: { category == $0 },
-                                label: { $0.title },
-                                onTap: { category = $0 }
+                            ChoiceChips(
+                                ChoiceChips(
+                                    items: DiscoverCategory.allCases,
+                                    selectedItems: $selectedCategories,
+                                    titleKeyPath: { $0.displayName } // or { $0.rawValue } depending on your enum setup
+                                )  
                             )
                         }
 

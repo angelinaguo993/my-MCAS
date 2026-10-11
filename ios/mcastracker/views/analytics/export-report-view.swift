@@ -138,7 +138,7 @@ struct ExportReportView: View {
             Text("Time range")
                 .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
-            ChipGrid(
+            ChoiceChips(
                 items: ReportPeriod.allCases,
                 isSelected: { viewModel.period == $0 },
                 label: { $0.label },
