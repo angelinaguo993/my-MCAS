@@ -1,8 +1,7 @@
 import SwiftUI
 
-/// Reached via the gear icon on Home. Only edits the basic profile
-/// fields (name, birthday, sex, city/state) — medications/frequency/
-/// history are set once during onboarding and aren't editable here.
+/// Reached via the gear icon on Home, medications/frequency/
+/// history are set once during onboarding and aren't editable here
 struct SettingsView: View {
     @EnvironmentObject private var profileStore: UserProfileStore
     @Environment(\.dismiss) private var dismiss

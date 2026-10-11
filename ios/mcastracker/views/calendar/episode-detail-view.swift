@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Shown when the user taps a day on the calendar with a logged episode.
+/// shown when user taps on single episode in calendar day list
 struct EpisodeDetailView: View {
     let episode: Episode
     @Environment(\.dismiss) private var dismiss

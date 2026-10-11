@@ -223,7 +223,7 @@ struct ExportReportView: View {
     }
 }
 
-/// Shows generated PDF inside app so user can check before sharing.
+/// shows generated PDF inside app so user can check before sharing.
 private struct PDFPreview: UIViewRepresentable {
     let url: URL
 

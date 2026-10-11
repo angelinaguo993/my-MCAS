@@ -1,8 +1,6 @@
 import SwiftUI
 
-/// Reusable 1-10 severity slider. Used for overall episode severity and
-/// per-symptom severity, so this is one component instead of duplicated
-/// slider code on every screen that needs a severity rating.
+/// Reusable 1-10 severity slider
 struct SeverityPickerView: View {
     let label: String
     @Binding var value: Int

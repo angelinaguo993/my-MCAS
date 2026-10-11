@@ -1,9 +1,6 @@
 import SwiftUI
 
-/// Shown when a calendar day has more than one logged episode — lists all
-/// of them, and tapping one opens its full detail. If a day has exactly
-/// one episode, CalendarView skips straight to EpisodeDetailView instead
-/// of showing this intermediate list.
+/// opens up all logged episodes in list view for a given day
 struct DayEpisodesListView: View {
     let date: Date
     let episodes: [Episode]

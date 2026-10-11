@@ -62,7 +62,6 @@ struct AnalyticsView: View {
                 .font(.nSubheadlineBold)
                 .foregroundColor(Theme.accent)
             
-            // This line is the crucial change to reveal the true error
             Text(message) 
                 .font(.nCaption)
                 .multilineTextAlignment(.center)
@@ -310,7 +309,7 @@ struct AnalyticsView: View {
         }
     }
     
-    // MARK: - AI View Components
+    // MARK: - AI view components
     
     @ViewBuilder
     private var aiInsightsSection: some View {
@@ -340,7 +339,7 @@ struct AnalyticsView: View {
                         if let trigger = Trigger.from(rawValue: rawValue) {
                             return trigger.displayName
                         } else {
-                            // Graceful fallback: converts "high_histamine_food" -> "High Histamine Food"
+                            // e.g.converts "high_histamine_food" -> "High Histamine Food"
                             return rawValue.replacingOccurrences(of: "_", with: " ").capitalized
                         }
                     },

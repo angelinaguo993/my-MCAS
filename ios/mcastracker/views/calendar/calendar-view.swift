@@ -7,7 +7,6 @@ struct CalendarView: View {
     @State private var selectedDayDate: Date?
     @State private var selectedSingleEpisode: Episode?
     
-    // View state trackers
     @State private var viewMode: CalendarViewMode = .calendar
     @State private var selectedTimeframe: TrendTimeframe = .oneMonth // Default to 1 month
 
@@ -39,7 +38,6 @@ struct CalendarView: View {
                     }
 
                     if viewMode == .calendar {
-                        // === CALENDAR UI ===
                         monthHeader
 
                         if viewModel.isLoading {
@@ -49,7 +47,6 @@ struct CalendarView: View {
                                 .cardStyle()
                         }
                     } else {
-                        // === TRENDS UI ===
                         VStack(spacing: 16) {
                             // Sub-Toggle: 1W / 1M / 3M
                             Picker("Timeframe", selection: $selectedTimeframe) {
@@ -68,7 +65,7 @@ struct CalendarView: View {
                             } else {
                                 ScrollView {
                                     VStack(spacing: 20) {
-                                        // Feeds the filtered trendEpisodes array to the chart
+                                        // feeds filtered trendEpisodes array to the chart
                                         SeverityTrendChart(episodes: viewModel.trendEpisodes)
                                         
                                         trendSummaryCard
@@ -302,7 +299,6 @@ struct CalendarView: View {
             let month = calendar.component(.month, from: displayedMonth)
             await viewModel.loadMonth(year: year, month: month)
         } else {
-            // Tell the view model to fetch the custom timeframe array
             await viewModel.loadTrends(timeframe: selectedTimeframe)
         }
     }

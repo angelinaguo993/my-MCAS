@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Home tab: greeting header over the gradient, days since last episode,
-/// total episodes, medications, and the Record Episode button.
+/// total episodes, medications, and record ep button
 struct DashboardView: View {
     @EnvironmentObject private var profileStore: UserProfileStore
     @StateObject private var viewModel = DashboardViewModel()
@@ -13,7 +13,6 @@ struct DashboardView: View {
             ZStack {
                 Theme.background.ignoresSafeArea()
 
-                // Gradient sits BEHIND the scroll view so it reaches the top of the screen.
                 VStack(spacing: 0) {
                     GradientHeroBackground()
                         .frame(height: 460)
@@ -44,7 +43,7 @@ struct DashboardView: View {
                 .overlay {
                     if viewModel.isLoading && viewModel.stats == nil {
                         LoadingView()
-                            .allowsHitTesting(false)   // never blocks taps on the gear/button
+                            .allowsHitTesting(false)
                     }
                 }
             }
@@ -107,7 +106,6 @@ struct DashboardView: View {
                 .font(.subheadline)
                 .foregroundColor(Theme.textPrimary.opacity(0.7))
 
-            // Pulls from insights model where total episodes count is tracked
             Text("\(viewModel.insights?.totalEpisodes ?? 0)")
                 .font(.title.bold())
                 .foregroundColor(Theme.textPrimary)
@@ -127,20 +125,17 @@ struct DashboardView: View {
 
             ForEach(Array(meds.enumerated()), id: \.element.name) { index, stat in
                 HStack {
-                    // Left side: Medication name
                     Text(stat.name)
                         .font(.body)
                         .foregroundColor(Theme.textPrimary)
                     
                     Spacer()
                     
-                    // Right side: Percentage of effectiveness / helpfulness
                     Text("\(Int(stat.proportion * 100))% effective")
                         .font(.subheadline.weight(.semibold))
                         .foregroundColor(Theme.accent)
                 }
                 
-                // Add a divider for all rows except the last one
                 if index < meds.count - 1 {
                     Divider()
                 }

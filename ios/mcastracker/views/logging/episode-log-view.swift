@@ -1,8 +1,5 @@
 import SwiftUI
 
-/// Core Flow 2: the structured survey covering triggers, symptoms, and
-/// medication. Presented as a sheet from the dashboard's "Record Episode"
-/// button.
 struct EpisodeLogView: View {
     @StateObject private var viewModel = EpisodeLogViewModel()
     @Environment(\.dismiss) private var dismiss
@@ -160,9 +157,7 @@ struct EpisodeLogView: View {
                 onTap: { viewModel.toggleSymptom($0) }
             )
 
-            // A severity slider + specific-symptom checklist appears for each
-            // category the user selected, since severity and exact symptoms
-            // can differ a lot by system (e.g. mild skin, severe GI).
+            // A severity slider + specific-symptom checklist appears for each category the user selected
             ForEach(SymptomCategory.allCases.filter { viewModel.selectedSymptomCategories.contains($0) }) { category in
                 VStack(alignment: .leading, spacing: 10) {
                     SeverityPickerView(label: category.displayName, value: viewModel.severityBinding(for: category))
@@ -254,11 +249,7 @@ struct EpisodeLogView: View {
     }
 }
 
-/// Checklist of specific symptoms (e.g. "Hives", "Itching") shown under a
-/// category once it's selected — lets the user get more granular than just
-/// "skin symptoms happened," which is what actually makes cross-episode
-/// pattern detection (e.g. "GI flares specifically involve diarrhea, not
-/// bloating") possible later.
+/// checklist of specific symptoms for a given symptom category 
 private struct SpecificSymptomChecklist: View {
     let category: SymptomCategory
     @ObservedObject var viewModel: EpisodeLogViewModel
@@ -290,8 +281,7 @@ private struct SpecificSymptomChecklist: View {
     }
 }
 
-/// Small reusable "chip" multi-select grid — used for both the triggers
-/// list and the symptom-category list above.
+
 private struct FlowChips<Item: Hashable>: View {
     let items: [Item]
     let isSelected: (Item) -> Bool
@@ -320,9 +310,7 @@ private struct FlowChips<Item: Hashable>: View {
     }
 }
 
-/// 12-segment ring (hours on a clock face), each filled segment
-/// is about one hour of sleep (rounded), so 7 hours fills 7 segments.
-/// 12+ hours fills the whole ring; the center always shows the exact hours.
+/// clock view that visualizes how many hours of sleep the user got the night before the episode
 private struct SleepClockView: View {
     let hoursSlept: Double?
 
