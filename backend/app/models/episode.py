@@ -1,11 +1,7 @@
 """
-Database model for a logged MCAS episode.
-
-Triggers and symptoms are stored as JSON columns rather than separate
-tables — each episode only has a handful of each, and this keeps the
-schema simple to start. Can be normalized into real tables later if the
-analysis engine needs to query across episodes at the trigger/symptom level.
+Database model for a logged MCAS episode (triggers + symptoms stored as json columns)
 """
+
 from sqlalchemy import Column, Integer, String, DateTime, JSON, Boolean, Float
 from datetime import datetime, timezone
 from app.db.database import Base

@@ -41,7 +41,7 @@ final class HistoryViewModel: ObservableObject {
         var fetchedEpisodes: [Episode] = []
         
         do {
-            // Fetch 3 months for the long view, or 2 months for shorter views (in case 1 week crosses a month boundary)
+            // Fetch 3 months for the long view or 2 months for shorter views (in case 1 week crosses a month boundary)
             let monthsToFetch = timeframe == .threeMonths ? 3 : 2
             
             for i in 0..<monthsToFetch {
@@ -53,7 +53,7 @@ final class HistoryViewModel: ObservableObject {
                 }
             }
             
-            // Calculate the strict start date based on the user's toggle
+            // calculate start date based on user's toggle selection
             let startDate: Date
             switch timeframe {
             case .oneWeek:
@@ -64,7 +64,7 @@ final class HistoryViewModel: ObservableObject {
                 startDate = calendar.date(byAdding: .month, value: -3, to: now) ?? now
             }
             
-            // Deduplicate (in case the API returns overlaps) and filter to exact date range
+            // Deduplicate (in case API returns overlaps) and filter to exact date range
             var seenIds = Set<String>()
             var deduplicated: [Episode] = []
             for ep in fetchedEpisodes {

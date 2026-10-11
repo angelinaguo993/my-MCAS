@@ -1,8 +1,6 @@
 import SwiftUI
 
-/// Analytics tab: "most common triggers," "most common symptoms," and
-/// AI-driven pattern-detection insights. Medication
-/// effectiveness stays on the Home tab for now, per the current layout.
+/// analytics tab: "most common triggers," "most common symptoms," and AI-driven pattern-detection insights
 struct AnalyticsView: View {
     @StateObject private var viewModel = AnalyticsViewModel()
     @State private var showingExport = false

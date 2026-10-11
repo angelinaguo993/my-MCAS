@@ -1,11 +1,6 @@
 import Foundation
 
-/// Holds the user's profile in memory and persists it to UserDefaults as
-/// JSON. This app has no accounts/login, so "the user" just means
-/// whoever has this device — one profile per install, stored locally
-/// only. (Not synced to the backend; the backend's episode data has no
-/// concept of "whose" episodes they are, since there's only ever one
-/// user per install.)
+/// stores user profile and onboarding completion in UserDefaults, can access anywhere in the app
 @MainActor
 final class UserProfileStore: ObservableObject {
     @Published var profile: UserProfile?
@@ -22,13 +17,13 @@ final class UserProfileStore: ObservableObject {
         }
     }
 
-    /// Used by Settings to save edits to an existing profile.
+    /// save new edits to existing profile.
     func save(_ profile: UserProfile) {
         self.profile = profile
         persist(profile)
     }
 
-    /// Used once, when the onboarding survey is submitted.
+    /// used once when onboarding survey is submitted
     func completeOnboarding(with profile: UserProfile) {
         self.profile = profile
         persist(profile)

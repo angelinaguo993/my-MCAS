@@ -1,17 +1,14 @@
-"""
-Pydantic schemas — these define what the API accepts and returns.
-Kept separate from the SQLAlchemy models (app/models) so the DB shape
-and the API contract can evolve independently.
-"""
+# pydantic schemas define what the API accepts and returns.
+
 from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import Optional
 
 
 class SymptomEntry(BaseModel):
-    category: str  # "skin" | "gi" | "respiratory" | "cardiovascular" | "neurological" | "general"
+    category: str  # "skin", "gi", "respiratory", "cardiovascular", "neurological", "general"
     severity: int = Field(ge=1, le=10)
-    specific_symptoms: list[str] = []  # e.g. ["Hives", "Itching"] for category "skin"
+    specific_symptoms: list[str] = []  # e.g. "hives", "itching" for category "skin"
 
 
 class EpisodeCreate(BaseModel):
@@ -24,7 +21,7 @@ class EpisodeCreate(BaseModel):
     medication_helped: Optional[bool] = None
     notes: Optional[str] = None
     sleep_hours: Optional[float] = None
-    date: Optional[datetime] = None  # if not provided, server will use current UTC time
+    date: Optional[datetime] = None  # if not provided, server uses current UTC time
 
 
 class EpisodeResponse(EpisodeCreate):
@@ -33,7 +30,7 @@ class EpisodeResponse(EpisodeCreate):
     date: datetime
 
     class Config:
-        from_attributes = True  # lets this build directly from a SQLAlchemy Episode
+        from_attributes = True
 
 
 class DashboardResponse(BaseModel):
@@ -58,7 +55,7 @@ class SeverityComparisonStat(BaseModel):
 class TrendInfo(BaseModel):
     episodes_last_14_days: int
     episodes_prior_14_days: int
-    direction: str  # "up" | "down" | "flat"
+    direction: str
 
 
 class InsightsResponse(BaseModel):

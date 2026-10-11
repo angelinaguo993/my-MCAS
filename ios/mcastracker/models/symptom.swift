@@ -1,9 +1,7 @@
 import Foundation
 
-/// The organ-system categories an MCAS episode's symptoms can fall into.
-/// Kept as an enum (not free-text) so the analysis engine can reliably
-/// group/compare symptoms across episodes.
 enum SymptomCategory: String, CaseIterable, Codable, Identifiable {
+    /// categories of symptoms
     case skin
     case gi
     case respiratory
@@ -26,13 +24,7 @@ enum SymptomCategory: String, CaseIterable, Codable, Identifiable {
         }
     }
 
-    /// The specific, checkable symptoms shown once this category is selected.
-    /// Keeping this as a fixed list (rather than free text) means the analysis
-    /// engine can compare specific symptoms across episodes, not just categories.
-    /// ".other" has no fixed list — the View shows a text field for it instead,
-    /// and that typed description gets stored using this same specificSymptoms
-    /// array on SymptomEntry (see below), just with free text instead of a
-    /// pick from this list.
+    /// checkable list of symptoms for each category when selected
     var specificSymptoms: [String] {
         switch self {
         case .skin:
@@ -52,7 +44,7 @@ enum SymptomCategory: String, CaseIterable, Codable, Identifiable {
         }
     }
     
-    /// SF Symbol shown alongside this category on the dashboard's insights cards.
+    /// graphic shown alongside each category of symptoms in the UI
     var iconName: String {
         switch self {
         case .skin: return "bandage.fill"
@@ -66,11 +58,6 @@ enum SymptomCategory: String, CaseIterable, Codable, Identifiable {
     }
 }
 
-/// One symptom entry within an episode — a category, its own severity, and
-/// which specific symptoms within that category occurred (e.g. category
-/// "skin" with specificSymptoms ["Hives", "Itching"]). Specific symptoms are
-/// optional — a user can log just the category + severity without checking
-/// any boxes if they don't want to get that granular.
 struct SymptomEntry: Identifiable, Codable, Equatable {
     var id = UUID()
     var category: SymptomCategory

@@ -35,9 +35,8 @@ struct DiscoverArticle: Identifiable {
     let url: URL
 }
 
-/// Hand-written facts, paraphrased from the linked sources. This is static on purpose:
-/// nothing here needs a server, and each item points to where it came from. To update
-/// the content later, edit this file (or move it to a JSON file the backend serves).
+/// ALL STATIC
+/// fact cards, articles, fact of the day
 enum DiscoverContent {
     static let lastReviewed = "October 2026"
 
@@ -188,7 +187,7 @@ enum DiscoverContent {
         )
     ]
 
-    /// Changes once a day, and skips the safety card so the hero is never alarming.
+    /// changing daily fact (will have to add more facts to pool if do not want to repeat facts)
     static func factOfTheDay(for date: Date = Date()) -> DiscoverFact {
         let pool = facts.filter { $0.category != .safety }
         let day = Calendar.current.ordinality(of: .day, in: .year, for: date) ?? 0

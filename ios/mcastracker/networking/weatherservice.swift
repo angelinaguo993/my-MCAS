@@ -3,6 +3,7 @@ import Foundation
 class WeatherService {
     static let shared = WeatherService()
     
+    // Fetches the current weather for a given city using Open-Meteo API
     func fetchWeather(for city: String) async -> String? {
         guard let encodedCity = city.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
               let geoUrl = URL(string: "https://geocoding-api.open-meteo.com/v1/search?name=\(encodedCity)&count=1") else {
@@ -10,19 +11,19 @@ class WeatherService {
         }
         
         do {
-            // 1. Get latitude and longitude from city name
+            // 1. lat and long
             let (geoData, _) = try await URLSession.shared.data(from: geoUrl)
             let geoResponse = try JSONDecoder().decode(GeoResponse.self, from: geoData)
             guard let location = geoResponse.results?.first else { return nil }
             
-            // 2. Fetch current weather for those coordinates
+            // 2. fetch weather from coordinates from 1
             let weatherUrlString = "https://api.open-meteo.com/v1/forecast?latitude=\(location.latitude)&longitude=\(location.longitude)&current=temperature_2m,relative_humidity_2m"
             guard let weatherUrl = URL(string: weatherUrlString) else { return nil }
             
             let (weatherData, _) = try await URLSession.shared.data(from: weatherUrl)
             let weatherResponse = try JSONDecoder().decode(WeatherResponse.self, from: weatherData)
             
-            // Convert Celsius to Fahrenheit (Open-Meteo returns Celsius by default)
+            // celsius -> farenheit
             let tempF = (weatherResponse.current.temperature_2m * 9/5) + 32
             let humidity = weatherResponse.current.relative_humidity_2m
             
@@ -34,7 +35,7 @@ class WeatherService {
     }
 }
 
-// MARK: - Decoding Helpers
+// decoding helpers
 private struct GeoResponse: Codable {
     let results: [GeoResult]?
 }

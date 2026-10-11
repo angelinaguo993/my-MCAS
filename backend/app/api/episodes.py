@@ -1,10 +1,3 @@
-"""
-Routes covering all three core flows:
-  - GET  /dashboard              -> "days since last episode" card
-  - POST /episodes               -> submit the survey
-  - GET  /episodes                -> list for the calendar view
-  - GET  /episodes/{episode_id}   -> single episode detail (tap a calendar day)
-"""
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import extract
@@ -17,7 +10,7 @@ from app.schemas.episode_schema import EpisodeCreate, EpisodeResponse, Dashboard
 
 router = APIRouter()
 
-
+# gets dashboard data- days since last ep, last ep data, total ep logged
 @router.get("/dashboard", response_model=DashboardResponse)
 def get_dashboard(db: Session = Depends(get_db)):
     latest = db.query(Episode).order_by(Episode.date.desc()).first()
@@ -41,7 +34,7 @@ def get_dashboard(db: Session = Depends(get_db)):
         total_episodes_logged=total,
     )
 
-
+# ability to create new ep in database
 @router.post("/episodes", response_model=EpisodeResponse, status_code=201)
 def create_episode(payload: EpisodeCreate, db: Session = Depends(get_db)):
     episode = Episode(

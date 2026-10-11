@@ -1,6 +1,6 @@
 import Foundation
 
-/// Everything the doctor PDF reports
+/// everything the doctor PDF reports
 struct DoctorReport {
 
     struct Count: Identifiable {
@@ -34,15 +34,15 @@ struct DoctorReport {
     }
 
     struct SleepComparison {
-        let shortEpisodes: Int             // slept under 6 hours
+        let shortEpisodes: Int
         let shortAverageSeverity: Double
-        let longEpisodes: Int             // slept 7+ hours
+        let longEpisodes: Int
         let longAverageSeverity: Double
     }
 
     let periodLabel: String
     let generatedAt: Date
-    let episodes: [Episode]               // newest first
+    let episodes: [Episode] /// newest ep always go first
 
     let episodeCount: Int
     let averageSeverity: Double?
@@ -72,7 +72,8 @@ struct DoctorReport {
         let total = sorted.count
         let calendar = Calendar.current
 
-        // MARK: Overview
+        // MARK: User
+        // Overview of user's episodes
 
         let severities = sorted.map { $0.overallSeverity }
         let avgSeverity: Double? = severities.isEmpty ? nil : Self.average(severities)
@@ -96,6 +97,7 @@ struct DoctorReport {
         let prior = allEpisodes.filter { $0.date >= day28 && $0.date < day14 }.count
 
         // MARK: Sleep
+        // Sleep hours and severity comparison for short vs. long sleep
 
         let sleepValues = sorted.compactMap { $0.sleepHours }
         let avgSleep: Double? = sleepValues.isEmpty
@@ -114,6 +116,7 @@ struct DoctorReport {
         }
 
         // MARK: Triggers
+        // Analysis of trigger frequencies and their impact on severity
 
         var triggerCounts: [Trigger: Int] = [:]
         var pairCounts: [String: Int] = [:]
@@ -138,7 +141,7 @@ struct DoctorReport {
             triggerNameCounts[trigger.displayName] = count
         }
 
-        // Average severity with vs. without each trigger (needs 2+ episodes with it).
+        // Average severity with vs. without each trigger (needs 2+ episodes with it)
         var comparisons: [SeverityComparison] = []
         for (trigger, count) in triggerCounts where count >= 2 {
             let withTrigger = sorted.filter { $0.triggers.contains(trigger) }.map { $0.overallSeverity }
@@ -246,8 +249,8 @@ struct DoctorReport {
         return Array(sortedCounts.prefix(limit))
     }
 
-    /// Wilson 95% score interval, the same math the backend's /insights uses.
-    /// Gives an honest range for small samples instead of a falsely precise percentage.
+    /// Wilson score interval (same as backend)
+    /// gives honest range for small samples - more precise than finding avg
     static func wilson(successes: Int, total: Int) -> (lower: Double, upper: Double) {
         guard total > 0 else { return (0, 0) }
         let z = 1.96
