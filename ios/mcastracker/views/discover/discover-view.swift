@@ -3,8 +3,8 @@ import SwiftUI
 /// Discover tab: "did you know" fact that changes daily, browsable fact cards,
 /// and links to the sources they came from
 struct DiscoverView: View {
-    @State private var category: DiscoverCategory = .all
-    @State private var selectedCategories: Set<DiscoverCategory> = []
+    @State private var category: DiscoverCategory = .all    
+    @State private var selectedCategories: Set<DiscoverCategory> = [.all]
 
     private var visibleFacts: [DiscoverFact] {
         category == .all
@@ -25,11 +25,20 @@ struct DiscoverView: View {
                                 .font(.nTitle2)
                                 .foregroundColor(Theme.textPrimary)
                             ChoiceChips(
-                                ChoiceChips(
-                                    items: DiscoverCategory.allCases,
-                                    selectedItems: $selectedCategories,
-                                    titleKeyPath: { $0.displayName } // or { $0.rawValue } depending on your enum setup
-                                )  
+                                items: DiscoverCategory.allCases,
+                                isSelected: { category in
+                                    selectedCategories.contains(category)
+                                },
+                                label: { category in
+                                    category.displayName
+                                },
+                                onTap: { category in
+                                    if selectedCategories.contains(category) {
+                                        selectedCategories.remove(category)
+                                    } else {
+                                        selectedCategories.insert(category)
+                                    }
+                                }
                             )
                         }
 

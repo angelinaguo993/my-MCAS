@@ -2,6 +2,7 @@ import SwiftUI
 
 struct EpisodeLogView: View {
     @StateObject private var viewModel = EpisodeLogViewModel()
+    @EnvironmentObject private var profileStore: UserProfileStore
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -235,7 +236,9 @@ struct EpisodeLogView: View {
 
     private var submitButton: some View {
         Button {
-            Task { await viewModel.submit() }
+            Task { 
+                await viewModel.submit(profileStore: profileStore) 
+            }
         } label: {
             Text("Save Episode")
                 .font(.nHeadline)

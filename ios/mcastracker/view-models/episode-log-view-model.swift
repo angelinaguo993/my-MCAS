@@ -126,7 +126,7 @@ final class EpisodeLogViewModel: ObservableObject {
         !selectedSymptomCategories.isEmpty
     }
 
-    func submit() async {
+    func submit(profileStore: UserProfileStore) async {
         guard canSubmit else {
             errorMessage = "Log at least one symptom before saving."
             return
@@ -170,13 +170,21 @@ final class EpisodeLogViewModel: ObservableObject {
             medicationNames: medicationTaken ? medicationNames : [],
             medicationHelped: medicationTaken ? medicationHelped : nil,
             notes: combinedNotes.isEmpty ? nil : combinedNotes,
-            weatherSummary: weather, // <-- Included cleanly with a comma above it
+            weatherSummary: weather,
             sleepHours: sleepHours
         )
 
         do {
             _ = try await APIClient.shared.submitEpisode(episode)
             didSubmitSuccessfully = true
+            
+            // Register any medications taken in this episode directly to the store
+            if medicationTaken {
+                for medication in medicationNames {
+                    profileStore.registerMedicationIfNeeded(medication)
+                }
+            }
+            
         } catch {
             print("SUBMIT EPISODE FAILED:", error)
             errorMessage = "Couldn't save this episode. Check your connection and try again."

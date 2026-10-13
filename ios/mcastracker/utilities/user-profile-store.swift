@@ -36,4 +36,15 @@ final class UserProfileStore: ObservableObject {
             UserDefaults.standard.set(data, forKey: profileKey)
         }
     }
+
+    /// automatically adds a medication to the profile's list if it isn't already tracked
+    func registerMedicationIfNeeded(_ medication: String) {
+        let trimmed = medication.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty, var currentProfile = profile else { return }
+        
+        if !currentProfile.prescribedMedications.contains(trimmed) {
+            currentProfile.prescribedMedications.append(trimmed)
+            save(currentProfile)
+        }
+    }
 }
