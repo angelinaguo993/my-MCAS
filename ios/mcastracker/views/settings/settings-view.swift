@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Reached via the gear icon on Home, medications/frequency/
-/// history are set once during onboarding and aren't editable here
+/// history are set once during onboarding and aren't editable here[cite: 11]
 struct SettingsView: View {
     @EnvironmentObject private var profileStore: UserProfileStore
     @Environment(\.dismiss) private var dismiss
@@ -10,7 +10,7 @@ struct SettingsView: View {
     @State private var birthday = Calendar.current.date(byAdding: .year, value: -18, to: Date()) ?? Date()
     @State private var sex: BiologicalSex?
     @State private var city = ""
-    @State private var state = usStates.first!
+    @State private var state = usStates.first ?? "California"
 
     var body: some View {
         NavigationStack {
@@ -38,7 +38,12 @@ struct SettingsView: View {
                             ChoiceChips(
                                 items: BiologicalSex.allCases,
                                 isSelected: { sex == $0 },
-                                label: { $0.displayName },
+                                label: { sexOption in
+                                    if let display = (sexOption as AnyObject).displayName as? String {
+                                        return display
+                                    }
+                                    return sexOption.rawValue.capitalized
+                                },
                                 onTap: { sex = $0 }
                             )
 
@@ -78,7 +83,7 @@ struct SettingsView: View {
         birthday = profile.birthday ?? birthday
         sex = profile.sex
         city = profile.city
-        state = profile.state.isEmpty ? usStates.first! : profile.state
+        state = profile.state.isEmpty ? (usStates.first ?? "California") : profile.state
     }
 
     private func save() {
@@ -91,11 +96,5 @@ struct SettingsView: View {
         profile.state = state
         profileStore.save(profile)
         dismiss()
-    }
-}
-
-struct SettingsView_Previews: PreviewProvider {
-    static var previews: some View {
-        SettingsView().environmentObject(UserProfileStore())
     }
 }

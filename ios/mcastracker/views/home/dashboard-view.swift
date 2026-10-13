@@ -32,9 +32,7 @@ struct DashboardView: View {
                             }
                             daysSinceCard
                             totalLoggedCard
-                            if let insights = viewModel.insights, insights.hasEnoughData {
-                                medicationsUsedCard(insights.medicationEffectiveness)
-                            }
+                            medicationsSummaryCard
                             recordButton
                         }
                         .padding()
@@ -117,28 +115,62 @@ struct DashboardView: View {
         .shadow(radius: 2)
     }
 
-    private func medicationsUsedCard(_ meds: [FrequencyStat]) -> some View {
+    private var medicationsSummaryCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Medication Summary")
                 .font(.headline)
                 .foregroundColor(Theme.textPrimary)
 
-            ForEach(Array(meds.enumerated()), id: \.element.name) { index, stat in
-                HStack {
-                    Text(stat.name)
-                        .font(.body)
-                        .foregroundColor(Theme.textPrimary)
+            // 1. Show medications tracked from onboarding or episodes
+            if let prescribedMeds = profileStore.profile?.prescribedMedications, !prescribedMeds.isEmpty {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Tracked Medications")
+                        .font(.caption.bold())
+                        .foregroundColor(Theme.textPrimary.opacity(0.6))
                     
-                    Spacer()
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 120), spacing: 8)], spacing: 8) {
+                        ForEach(prescribedMeds, id: \.self) { med in
+                            Text(med)
+                                .font(.subheadline)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .frame(maxWidth: .infinity)
+                                .background(Theme.primary.opacity(0.12))
+                                .foregroundColor(Theme.textPrimary)
+                                .cornerRadius(8)
+                        }
+                    }
+                }
+            }
+
+            // 2. Show effectiveness stats if available from insights
+            if let insights = viewModel.insights, insights.hasEnoughData, !insights.medicationEffectiveness.isEmpty {
+                Divider()
+                Text("Effectiveness")
+                    .font(.caption.bold())
+                    .foregroundColor(Theme.textPrimary.opacity(0.6))
+
+                ForEach(Array(insights.medicationEffectiveness.enumerated()), id: \.element.name) { index, stat in
+                    HStack {
+                        Text(stat.name)
+                            .font(.body)
+                            .foregroundColor(Theme.textPrimary)
+                        
+                        Spacer()
+                        
+                        Text("\(Int(stat.proportion * 100))% effective")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundColor(Theme.accent)
+                    }
                     
-                    Text("\(Int(stat.proportion * 100))% effective")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundColor(Theme.accent)
+                    if index < insights.medicationEffectiveness.count - 1 {
+                        Divider()
+                    }
                 }
-                
-                if index < meds.count - 1 {
-                    Divider()
-                }
+            } else if (profileStore.profile?.prescribedMedications ?? []).isEmpty {
+                Text("No medications added yet.")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

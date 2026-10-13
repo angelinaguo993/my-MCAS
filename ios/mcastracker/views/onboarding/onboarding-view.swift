@@ -292,9 +292,11 @@ struct OnboardingView: View {
     private func completeOnboarding() {
         let mappedSex: BiologicalSex? = {
             switch sex {
-            case "Female": return .female
-            case "Male": return .male
-            default: return nil
+                case "Female": return .female
+                case "Male": return .male
+                case "Intersex": return .intersex
+                case "Prefer not to say": return .preferNotToSay
+                default: return nil
             }
         }()
 
