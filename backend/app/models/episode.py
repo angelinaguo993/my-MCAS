@@ -12,6 +12,8 @@ class Episode(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     date = Column(DateTime, default=lambda: datetime.now(timezone.utc), index=True)
+    end_date = Column(DateTime, nullable=True)
+    weather_summary = Column(String, nullable=True)
 
     # Triggers: list of strings, e.g. ["high_histamine_food", "stress", "heat"]
     triggers = Column(JSON, default=list)

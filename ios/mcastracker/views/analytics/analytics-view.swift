@@ -1,9 +1,17 @@
 import SwiftUI
 
+private enum AnalyticsPattern: String, CaseIterable, Identifiable {
+    case triggers = "Triggers"
+    case symptoms = "Symptoms"
+    var id: String { rawValue }
+}
+
 /// analytics tab: "most common triggers," "most common symptoms," and AI-driven pattern-detection insights
 struct AnalyticsView: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @StateObject private var viewModel = AnalyticsViewModel()
     @State private var showingExport = false
+    @State private var selectedPattern: AnalyticsPattern = .triggers
 
     var body: some View {
         NavigationStack {
@@ -14,18 +22,17 @@ struct AnalyticsView: View {
                     LoadingView()
                 } else {
                     ScrollView {
-                        VStack(spacing: 20) {
+                        VStack(alignment: .leading, spacing: 20) {
+                            pageIntroduction
                             if let error = viewModel.errorMessage {
                                 errorBanner(error)
                             }
-                            doctorSummaryCard
 
                             if let insights = viewModel.insights {
                                 if !insights.hasEnoughData {
                                     notEnoughDataCard(insights)
                                 } else {
-                                    topTriggersCard(insights.topTriggers)
-                                    topSymptomsCard(insights.topSymptomCategories)
+                                    patternOverviewCard(insights)
                                     if !insights.triggerCooccurrence.isEmpty {
                                         triggerCooccurrenceCard(insights.triggerCooccurrence)
                                     }
@@ -40,6 +47,7 @@ struct AnalyticsView: View {
                                     aiInsightsSection
                                 }
                             }
+                            doctorSummaryCard
                         }
                         .padding()
                     }
@@ -56,79 +64,138 @@ struct AnalyticsView: View {
         }
     }
 
-    private func errorBanner(_ message: String) -> some View {
-        VStack(spacing: 8) {
-            Text("Couldn't load your data")
-                .font(.nSubheadlineBold)
-                .foregroundColor(Theme.accent)
-            
-            Text(message) 
+    private var pageIntroduction: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Your patterns")
+                .font(.nTitle2)
+                .foregroundColor(Theme.textPrimary)
+            Text("Explore what appears in the episodes you’ve logged.")
+                .font(.nSubheadline)
+                .foregroundColor(Theme.textPrimary.opacity(0.75))
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.top, 4)
+    }
+
+    private func patternOverviewCard(_ insights: InsightsResponse) -> some View {
+        let stats = selectedPattern == .triggers ? insights.topTriggers : insights.topSymptomCategories
+
+        return VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("Pattern Frequency")
+                    .font(.nHeadline)
+                    .foregroundColor(Theme.textPrimary)
+                Spacer()
+                Image(systemName: "note.text")
+                    .font(.title3)
+                    .foregroundColor(Theme.accent)
+            }
+
+            Text("Frequency across your logged episodes")
                 .font(.nCaption)
-                .multilineTextAlignment(.center)
                 .foregroundColor(Theme.textPrimary.opacity(0.7))
-            
-            Button("Try Again") {
+
+            Picker("Pattern type", selection: $selectedPattern) {
+                ForEach(AnalyticsPattern.allCases) { pattern in
+                    Text(pattern.rawValue).tag(pattern)
+                }
+            }
+            .pickerStyle(.segmented)
+
+            if stats.isEmpty {
+                Text(selectedPattern == .triggers ? "No triggers logged in these episodes yet." : "No symptoms logged in these episodes yet.")
+                    .font(.nSubheadline)
+                    .foregroundColor(Theme.textPrimary.opacity(0.7))
+            } else {
+                ForEach(stats.prefix(5)) { stat in
+                    patternRow(stat, kind: selectedPattern)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .cardStyle()
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.18), value: selectedPattern)
+    }
+
+    private func patternRow(_ stat: FrequencyStat, kind: AnalyticsPattern) -> some View {
+        DisclosureGroup {
+            VStack(alignment: .leading, spacing: 4) {
+                let occurrenceCount = Int((stat.proportion * Double(stat.sampleSize)).rounded())
+                Text("Reported in \(occurrenceCount) of \(stat.sampleSize) episodes.")
+                    .font(.nCaption)
+                    .foregroundColor(Theme.textPrimary.opacity(0.8))
+                Text("Estimated frequency range: \(Int((stat.lower * 100).rounded()))–\(Int((stat.upper * 100).rounded()))%.")
+                    .font(.nCaption)
+                    .foregroundColor(Theme.textPrimary.opacity(0.7))
+            }
+            .padding(.top, 6)
+        } label: {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 10) {
+                    Image(systemName: kind == .triggers
+                          ? (Trigger.from(rawValue: stat.name)?.iconName ?? "sparkles")
+                          : (SymptomCategory(rawValue: stat.name)?.iconName ?? "waveform.path.ecg"))
+                        .foregroundColor(Theme.primary)
+                        .frame(width: 24)
+                    Text(kind == .triggers
+                         ? (Trigger.from(rawValue: stat.name)?.displayName ?? stat.name)
+                         : (SymptomCategory(rawValue: stat.name)?.displayName ?? stat.name))
+                        .font(.nSubheadlineBold)
+                        .foregroundColor(Theme.textPrimary)
+                    Spacer(minLength: 8)
+                    Text("\(Int((stat.proportion * 100).rounded()))%")
+                        .font(.nCaptionBold)
+                        .foregroundColor(Theme.accent)
+                }
+                ProgressView(value: min(max(stat.proportion, 0), 1))
+                    .tint(Theme.accent)
+                    .accessibilityLabel("Frequency")
+                    .accessibilityValue("\(Int((stat.proportion * 100).rounded())) percent")
+            }
+        }
+        .tint(Theme.primary)
+    }
+
+    private func errorBanner(_ message: String) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: "arrow.clockwise.circle.fill")
+                .font(.title3)
+                .foregroundColor(Theme.accent)
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Couldn't load your data")
+                    .font(.nSubheadlineBold)
+                    .foregroundColor(Theme.textPrimary)
+                Text(message)
+                    .font(.nCaption)
+                    .foregroundColor(Theme.textPrimary.opacity(0.7))
+            }
+            Spacer(minLength: 4)
+            Button("Retry") {
                 Task { await viewModel.loadInsights() }
             }
             .font(.nCaptionBold)
             .foregroundColor(Theme.primary)
+            .frame(minHeight: 44)
         }
-        .frame(maxWidth: .infinity)
         .cardStyle()
     }
 
     private func notEnoughDataCard(_ insights: InsightsResponse) -> some View {
-        VStack(spacing: 6) {
-            Text("Not enough data yet")
-                .font(.nSubheadlineBold)
-                .foregroundColor(Theme.textPrimary)
-            Text("Log \(insights.episodesNeeded) more episode\(insights.episodesNeeded == 1 ? "" : "s") to start seeing your patterns.")
-                .font(.nCaption)
-                .multilineTextAlignment(.center)
-                .foregroundColor(Theme.textPrimary.opacity(0.6))
-        }
-        .frame(maxWidth: .infinity)
-        .cardStyle()
-    }
-
-    private func topTriggersCard(_ triggers: [FrequencyStat]) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Your Most Common Triggers")
-                .font(.nHeadline)
-                .foregroundColor(Theme.textPrimary)
-
-            if triggers.isEmpty {
-                Text("No triggers logged yet").font(.nCaption).foregroundColor(.gray)
-            } else {
-                ForEach(triggers) { stat in
-                    insightRow(
-                        icon: Trigger.from(rawValue: stat.name)?.iconName ?? "questionmark.circle.fill",
-                        label: Trigger.from(rawValue: stat.name)?.displayName ?? stat.name,
-                        proportion: stat.proportion
-                    )
-                }
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: "chart.xyaxis.line")
+                .font(.title3)
+                .foregroundColor(Theme.primary)
+                .frame(width: 42, height: 42)
+                .background(Theme.primary.opacity(0.15), in: Circle())
+            VStack(alignment: .leading, spacing: 5) {
+                Text("Your patterns are taking shape")
+                    .font(.nSubheadlineBold)
+                    .foregroundColor(Theme.textPrimary)
+                Text("Log \(insights.episodesNeeded) more episode\(insights.episodesNeeded == 1 ? "" : "s") to start seeing patterns in your entries.")
+                    .font(.nCaption)
+                    .foregroundColor(Theme.textPrimary.opacity(0.7))
             }
-        }
-        .cardStyle()
-    }
-
-    private func topSymptomsCard(_ symptoms: [FrequencyStat]) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Your Most Common Symptoms")
-                .font(.nHeadline)
-                .foregroundColor(Theme.textPrimary)
-
-            if symptoms.isEmpty {
-                Text("No symptoms logged yet").font(.nCaption).foregroundColor(.gray)
-            } else {
-                ForEach(symptoms) { stat in
-                    insightRow(
-                        icon: SymptomCategory(rawValue: stat.name)?.iconName ?? "questionmark.circle.fill",
-                        label: SymptomCategory(rawValue: stat.name)?.displayName ?? stat.name,
-                        proportion: stat.proportion
-                    )
-                }
-            }
+            Spacer(minLength: 0)
         }
         .cardStyle()
     }
@@ -204,34 +271,49 @@ struct AnalyticsView: View {
     }
 
     private var doctorSummaryCard: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(spacing: 10) {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .top, spacing: 12) {
                 Image(systemName: "doc.text.fill")
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.title2)
                     .foregroundColor(Theme.accent)
-                    .frame(width: 32, height: 32)
+                    .frame(width: 48, height: 48)
                     .background(Theme.accent.opacity(0.12), in: Circle())
-                Text("Doctor-Ready Summary")
-                    .font(.nHeadline)
-                    .foregroundColor(Theme.textPrimary)
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Doctor-Ready Summary")
+                        .font(.nHeadline)
+                        .foregroundColor(Theme.textPrimary)
+                    Text("Turn your logged episodes into a clean PDF with patterns, medication history, and a full log to bring to your next appointment.")
+                        .font(.nCaption)
+                        .foregroundColor(Theme.textPrimary.opacity(0.78))
+                }
             }
-            Text("Turn your logged episodes into a clean PDF with patterns, medication history, and a full log to bring to your next appointment.")
-                .font(.nCaption)
-                .foregroundColor(Theme.textPrimary.opacity(0.7))
             Button {
                 showingExport = true
             } label: {
-                Text("Create summary")
+                HStack {
+                    Text("Create summary")
+                    Spacer()
+                    Image(systemName: "arrow.right")
+                }
                     .font(.nSubheadlineBold)
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
+                    .frame(minHeight: 44)
+                    .padding(.horizontal, 14)
                     .background(Theme.accent)
-                    .clipShape(Capsule())
+                    .clipShape(RoundedRectangle(cornerRadius: Theme.cardCornerRadius, style: .continuous))
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .cardStyle()
+        .padding(Theme.cardPadding)
+        .background(
+            LinearGradient(
+                colors: [Theme.primary.opacity(0.2), Theme.accent.opacity(0.1)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            ),
+            in: RoundedRectangle(cornerRadius: Theme.cardCornerRadius, style: .continuous)
+        )
     }
 
     private struct TriggerSymptomGroup {
@@ -255,15 +337,6 @@ struct AnalyticsView: View {
         guard parts.count == 2 else { return raw }
         return SymptomCategory(rawValue: parts[1])?.displayName ?? parts[1]
     }
-
-    private func readablePairName(_ raw: String) -> String {
-        let parts = raw.split(separator: "→").map { $0.trimmingCharacters(in: .whitespaces) }
-        guard parts.count == 2 else { return raw }
-        let triggerName = Trigger.from(rawValue: parts[0])?.displayName ?? parts[0]
-        let symptomName = SymptomCategory(rawValue: parts[1])?.displayName ?? parts[1]
-        return "\(triggerName) → \(symptomName)"
-    }
-
 
     private func severityByTriggerCard(_ stats: [SeverityComparisonStat]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -294,21 +367,6 @@ struct AnalyticsView: View {
         .cardStyle()
     }
 
-    private func insightRow(icon: String, label: String, proportion: Double) -> some View {
-        HStack {
-            Image(systemName: icon)
-                .foregroundColor(Theme.primary)
-                .frame(width: 24)
-            Text(label)
-                .font(.nSubheadline)
-                .foregroundColor(Theme.textPrimary)
-            Spacer()
-            Text("\(Int(proportion * 100))%")
-                .font(.nCaptionBold)
-                .foregroundColor(Theme.accent)
-        }
-    }
-    
     // MARK: - AI view components
     
     @ViewBuilder
@@ -344,6 +402,18 @@ struct AnalyticsView: View {
                         }
                     },
                     icon: "exclamationmark.triangle"
+                )
+                aiInsightCard(
+                    title: "What's New (Last 2 Weeks)",
+                    subtitle: "Recently appearing patterns compared with your earlier logs.",
+                    items: aiResult.whatsNew,
+                    icon: "sparkles"
+                )
+                aiInsightCard(
+                    title: "Weather Comparison",
+                    subtitle: "Archived local weather on episode days compared with days without a logged episode.",
+                    items: aiResult.weatherInsights,
+                    icon: "cloud.sun"
                 )
                 aiInsightCard(
                     title: "Medication Insights", 
@@ -396,7 +466,7 @@ struct AnalyticsView: View {
             if items.isEmpty {
                 Text("No specific patterns detected yet.")
                     .font(.nSubheadline)
-                    .foregroundColor(.gray)
+                    .foregroundColor(Theme.textPrimary.opacity(0.7))
             } else {
                 ForEach(items.indices, id: \.self) { index in
                     Text("• \(items[index])")

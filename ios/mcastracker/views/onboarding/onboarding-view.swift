@@ -31,7 +31,7 @@ struct OnboardingView: View {
 
     // 5. Triggers State
     @State private var selectedTriggers: Set<String> = []
-    let triggerOptions = ["High Histamine Food", "Lack of Sleep", "Stress", "Heat, Sun/Sunlight", "Exercise", "Alcohol", "Odors / Chemicals (perfumes, scents)", "Friction / Pressure", "Cold", "Drugs (NSAIDs, antibiotics, opioids, etc.)", "Venoms (insect stings, snake bites, spider bites, etc.)", "Allergies (pollen, dust, pet dander, etc.)", "Other"]
+    let triggerOptions = ["High Histamine Food", "Lack of Sleep", "Stress", "Heat, Sun/Sunlight", "Exercise", "Alcohol", "Odors / Chemicals (perfumes, scents)", "Friction / Pressure", "Cold", "Barometric pressure changes", "Drugs (NSAIDs, antibiotics, opioids, etc.)", "Venoms (insect stings, snake bites, spider bites, etc.)", "Allergies (pollen, dust, pet dander, etc.)", "Other"]
 
     var body: some View {
         ZStack {
@@ -306,7 +306,28 @@ struct OnboardingView: View {
             sex: mappedSex,
             city: city,
             state: state,
-            prescribedMedications: Array(prescribedMedications)
+            prescribedMedications: Array(prescribedMedications),
+            previousSymptoms: SymptomCategory.allCases.filter { category in
+                !Set(category.specificSymptoms.map { $0.lowercased() }).isDisjoint(with: Set(selectedSymptoms.map { $0.lowercased() }))
+            },
+            previousSpecificSymptoms: Array(selectedSymptoms.union(customSymptoms)),
+            otherSymptomDescription: customSymptoms.isEmpty ? nil : customSymptoms.joined(separator: ", "),
+            previousTriggers: selectedTriggers.compactMap { selected in
+                switch selected {
+                case "High Histamine Food": return .highHistamineFood
+                case "Lack of Sleep": return .lackOfSleep
+                case "Heat, Sun/Sunlight": return .heat
+                case "Odors / Chemicals (perfumes, scents)": return .fragrance
+                case "Friction / Pressure": return .friction
+                case "Barometric pressure changes": return .barometricPressure
+                case "Drugs (NSAIDs, antibiotics, opioids, etc.)": return .drugs
+                case "Venoms (insect stings, snake bites, spider bites, etc.)": return .venoms
+                case "Allergies (pollen, dust, pet dander, etc.)": return .allergies
+                case "Other": return .other
+                default: return Trigger.allCases.first { $0.displayName.localizedCaseInsensitiveContains(selected) }
+                }
+            },
+            otherTriggerDescription: selectedTriggers.contains("Other") ? "Other trigger previously reported" : nil
         )
         
         profileStore.completeOnboarding(with: profile)

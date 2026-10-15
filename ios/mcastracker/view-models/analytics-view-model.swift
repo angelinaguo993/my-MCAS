@@ -36,10 +36,22 @@ final class AnalyticsViewModel: ObservableObject {
             let currentMonth = calendar.component(.month, from: now)
             
             // 2. pass into the fetch method
-            let episodes = try await APIClient.shared.fetchEpisodes(year: currentYear, month: currentMonth) 
+            var episodes = try await APIClient.shared.fetchEpisodes(year: currentYear, month: currentMonth)
+            if let previousMonthDate = calendar.date(byAdding: .month, value: -1, to: now) {
+                let previous = try await APIClient.shared.fetchEpisodes(
+                    year: calendar.component(.year, from: previousMonthDate),
+                    month: calendar.component(.month, from: previousMonthDate)
+                )
+                let missingPreviousEpisodes = previous.filter { previousEpisode in
+                    !episodes.contains(where: { $0.id == previousEpisode.id })
+                }
+                episodes.append(contentsOf: missingPreviousEpisodes)
+            }
             
             // 3. send the episodes to OpenRouter
-            aiResult = try await aiService.fetchAnalysis(for: episodes, insights: insights)
+            let profile = UserDefaults.standard.data(forKey: "userProfile")
+                .flatMap { try? JSONDecoder().decode(UserProfile.self, from: $0) }
+            aiResult = try await aiService.fetchAnalysis(for: episodes, insights: insights, profile: profile)
         } catch {
             print("Decoding error: \(error)")
             errorMessage = "AI Analysis failed: \(error.localizedDescription)"

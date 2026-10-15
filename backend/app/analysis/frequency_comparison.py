@@ -28,10 +28,12 @@ def symptom_category_frequencies(episodes: list) -> list[dict]:
 
     counts = Counter()
     for ep in episodes:
+        categories_in_episode = set()
         for symptom in ep.symptoms or []:
             category = symptom.get("category")
             if category:
-                counts[category] += 1
+                categories_in_episode.add(category)
+        counts.update(categories_in_episode)
 
     results = []
     for category, count in counts.items():

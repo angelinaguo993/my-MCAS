@@ -8,6 +8,7 @@ final class EpisodeLogViewModel: ObservableObject {
     @Published var otherTriggerDescription: String = ""
     @Published var triggerDetails: [Trigger: String] = [:]
     @Published var episodeDate: Date = Date()
+    @Published var episodeEndDate: Date = Date()
     @Published var selectedSymptomCategories: Set<SymptomCategory> = []
     @Published var symptomSeverities: [SymptomCategory: Int] = [:]
     @Published var specificSymptoms: [SymptomCategory: Set<String>] = [:]
@@ -163,6 +164,7 @@ final class EpisodeLogViewModel: ObservableObject {
         let episode = Episode(
             id: UUID().uuidString,
             date: episodeDate,
+            endDate: episodeEndDate < episodeDate ? episodeDate : episodeEndDate,
             triggers: Array(selectedTriggers),
             symptoms: symptoms,
             overallSeverity: overallSeverity,

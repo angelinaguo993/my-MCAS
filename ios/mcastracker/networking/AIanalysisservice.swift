@@ -7,12 +7,25 @@ class AIAnalysisService {
 
     /// insights is optional so this still works even before 5+ episodes
     /// exist (when /insights returns no computed stats yet).
-    func fetchAnalysis(for episodes: [Episode], insights: InsightsResponse?) async throws -> AIAnalysisResult {
+    func fetchAnalysis(for episodes: [Episode], insights: InsightsResponse?, profile: UserProfile? = nil) async throws -> AIAnalysisResult {
         let episodeDataString = episodes.map {
-            "Date: \($0.date), Triggers: \($0.triggers.map { $0.displayName }), Meds Taken: \($0.medicationNames), Helped: \($0.medicationHelped ?? false), Notes: \($0.notes ?? "None")"
+            "Date/time: \($0.date) to \($0.endDate ?? $0.date), Triggers: \($0.triggers.map { $0.displayName }), Symptoms: \($0.symptoms.map { "\($0.category.displayName): \($0.specificSymptoms.joined(separator: ", "))" }), Weather: \($0.weatherSummary ?? "not recorded"), Meds Taken: \($0.medicationNames), Helped: \($0.medicationHelped ?? false), Notes: \($0.notes ?? "None")"
         }.joined(separator: "\n")
 
+        let priorHistory = profile.map { profile in
+            "\n\nUser-reported history from onboarding (these are prior, potentially unlogged episodes; do not count them as dated/logged episodes):\nPreviously reported triggers: \(profile.previousTriggers.map(\.displayName).joined(separator: ", "))\nPreviously reported symptoms: \((profile.previousSymptoms.map(\.displayName) + profile.previousSpecificSymptoms + [profile.otherSymptomDescription ?? ""]).filter { !$0.isEmpty }.joined(separator: ", "))"
+        } ?? ""
+        let profileCity = profile?.city.trimmingCharacters(in: .whitespacesAndNewlines)
+        let city = (profileCity?.isEmpty == false ? profileCity : nil)
+            ?? UserDefaults.standard.string(forKey: "userCity")
+            ?? "Seattle"
+        let weatherComparison = await WeatherService.shared.comparisonContext(for: episodes, city: city)
+            .map { "\n\n\($0)" } ?? ""
+
         var statsContext = ""
+        if let trend = insights?.recentTrend {
+            statsContext += "\n\nComputed recent trend: \(trend.episodesLast14Days) episodes in the last 14 days vs \(trend.episodesPrior14Days) in the prior 14 days (\(trend.direction))."
+        }
         if let insights = insights, insights.hasEnoughData {
             if !insights.triggerCooccurrence.isEmpty {
                 let pairs = insights.triggerCooccurrence.map {
@@ -42,10 +55,12 @@ class AIAnalysisService {
           "triggersToAvoid": ["trigger 1", "trigger 2"],
           "medicationInsights": ["insight 1"],
           "notesAnalysis": ["pattern found in notes, grounded in the data given"]
+          ,"whatsNew": ["new trigger or symptom appearing in the recent 14 days, with comparison to earlier logs"],
+          "weatherInsights": ["descriptive episode-day versus no-logged-episode-day weather comparison, with sample counts"]
         }
         """
 
-        let userMessage = episodeDataString + statsContext
+        let userMessage = "Logged episodes (including episode weather when available):\n" + episodeDataString + statsContext + priorHistory + weatherComparison + "\n\nFor what'sNew, explain which triggers/symptoms are driving an upward recent trend when supported. Compare the most recent 14 days with earlier logged episodes. Include only triggers/symptoms present recently but absent from earlier logs; onboarding history is separate context and is not a dated observation. If no such items or too little data, return an empty list. Use onboarding history to contextualize whether a logged trigger/symptom has also been reported in prior unlogged episodes. Put the weather comparison in weatherInsights and describe pressure, temperature, or humidity differences with their sample counts; do not imply causation. If data is unavailable or insufficient, return an empty weatherInsights list. Days without a log are not confirmed symptom-free."
 
         let requestBody: [String: Any] = [
             "model": "openai/gpt-4o-mini",

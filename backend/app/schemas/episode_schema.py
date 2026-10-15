@@ -22,6 +22,8 @@ class EpisodeCreate(BaseModel):
     notes: Optional[str] = None
     sleep_hours: Optional[float] = None
     date: Optional[datetime] = None  # if not provided, server uses current UTC time
+    end_date: Optional[datetime] = None
+    weather_summary: Optional[str] = None
 
 
 class EpisodeResponse(EpisodeCreate):

@@ -1,7 +1,6 @@
 import SwiftUI
 
-/// Home tab: greeting header over the gradient, days since last episode,
-/// total episodes, medications, and record ep button
+/// Home tab: record an episode first, then review a concise tracking overview.
 struct DashboardView: View {
     @EnvironmentObject private var profileStore: UserProfileStore
     @StateObject private var viewModel = DashboardViewModel()
@@ -10,44 +9,69 @@ struct DashboardView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Theme.background.ignoresSafeArea()
+            GeometryReader { geometry in
+                ZStack(alignment: .top) {
+                    Theme.background.ignoresSafeArea()
 
-                VStack(spacing: 0) {
                     GradientHeroBackground()
-                        .frame(height: 460)
-                    Spacer(minLength: 0)
-                }
-                .ignoresSafeArea(edges: .top)
+                        .frame(height: min(max(geometry.size.height * 0.42, 280), 380))
+                        .ignoresSafeArea(edges: .top)
 
-                ScrollView {
-                    VStack(spacing: 0) {
-                        HomeHeroHeader(name: profileStore.profile?.name) {
-                            showingSettings = true
-                        }
-
-                        VStack(spacing: 20) {
-                            if let error = viewModel.errorMessage {
-                                errorBanner(error)
+                    ScrollView {
+                        VStack(spacing: 0) {
+                            HomeHeroHeader(name: profileStore.profile?.name) {
+                                showingSettings = true
                             }
-                            daysSinceCard
-                            totalLoggedCard
-                            medicationsSummaryCard
-                            recordButton
+
+                            VStack(alignment: .leading, spacing: 20) {
+                                recordButton
+
+                                if let message = viewModel.statsErrorMessage {
+                                    HStack(alignment: .top) {
+                                        Image(systemName: "arrow.clockwise.circle")
+                                            .foregroundColor(Theme.primary)
+                                        Text(message)
+                                            .font(.caption)
+                                            .foregroundColor(Theme.textPrimary)
+                                        Spacer(minLength: 8)
+                                        Button("Retry") {
+                                            Task { await viewModel.loadStats() }
+                                        }
+                                        .font(.caption.weight(.semibold))
+                                        .frame(minHeight: 44)
+                                    }
+                                }
+
+                                HStack(alignment: .firstTextBaseline) {
+                                    Text("Your overview")
+                                        .font(.headline)
+                                        .foregroundColor(Theme.textPrimary)
+                                    Spacer()
+                                    if let updatedAt = viewModel.statsUpdatedAt {
+                                        Text("Updated \(updatedAt.formatted(date: .omitted, time: .shortened))")
+                                            .font(.caption)
+                                            .foregroundColor(Theme.textPrimary.opacity(0.65))
+                                            .accessibilityLabel("Episode overview updated at \(updatedAt.formatted(date: .omitted, time: .shortened))")
+                                    }
+                                }
+
+                                episodeSummaryCard
+                                medicationsSummaryCard
+                            }
+                            .padding()
                         }
-                        .padding()
                     }
-                }
-                .overlay {
-                    if viewModel.isLoading && viewModel.stats == nil {
-                        LoadingView()
-                            .allowsHitTesting(false)
+                    .refreshable { await viewModel.loadDashboard() }
+                    .overlay {
+                        if viewModel.isLoading && viewModel.stats == nil && viewModel.insights == nil {
+                            LoadingView()
+                                .allowsHitTesting(false)
+                        }
                     }
                 }
             }
             .toolbar(.hidden, for: .navigationBar)
             .task { await viewModel.loadDashboard() }
-            .refreshable { await viewModel.loadDashboard() }
             .sheet(isPresented: $showingEpisodeLog, onDismiss: {
                 Task { await viewModel.loadDashboard() }
             }) {
@@ -59,60 +83,72 @@ struct DashboardView: View {
         }
     }
 
-    // MARK: - Cards & Components
+    private var episodeSummaryCard: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("Days Since Last Episode")
+                    .font(.subheadline)
+                    .foregroundColor(Theme.textPrimary)
+                Spacer(minLength: 12)
+                if let days = viewModel.stats?.daysSinceLastEpisode {
+                    Text("\(days)")
+                        .font(.system(.title2, design: .rounded).weight(.bold))
+                        .foregroundColor(Theme.primary)
+                        .contentTransition(.numericText())
+                        .accessibilityLabel("\(days) days since last episode")
+                } else if viewModel.statsErrorMessage != nil {
+                    Text("Unavailable")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundColor(Theme.textPrimary.opacity(0.7))
+                } else if viewModel.stats != nil {
+                    Text("—")
+                        .font(.title2.weight(.semibold))
+                        .foregroundColor(Theme.textPrimary.opacity(0.7))
+                        .accessibilityLabel("No episodes recorded yet")
+                } else {
+                    ProgressView()
+                        .tint(Theme.primary)
+                        .accessibilityLabel("Loading episode timing")
+                }
+            }
 
-    private func errorBanner(_ message: String) -> some View {
-        HStack {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundColor(.red)
-            Text(message)
-                .font(.footnote)
-                .foregroundColor(Theme.textPrimary)
-            Spacer()
-        }
-        .padding()
-        .background(Color.red.opacity(0.1))
-        .cornerRadius(10)
-    }
+            if viewModel.stats?.daysSinceLastEpisode != nil {
+                Text("A tracking reference, not a measure of progress.")
+                    .font(.caption)
+                    .foregroundColor(Theme.textPrimary.opacity(0.65))
+            } else if viewModel.stats?.totalEpisodesLogged == 0 {
+                Text("Your day count will appear after your first episode log.")
+                    .font(.caption)
+                    .foregroundColor(Theme.textPrimary.opacity(0.65))
+            }
 
-    private var daysSinceCard: some View {
-        VStack(spacing: 8) {
-            Text("Days Since Last Episode")
-                .font(.subheadline)
-                .foregroundColor(Theme.textPrimary.opacity(0.7))
+            Divider()
 
-            if let days = viewModel.stats?.daysSinceLastEpisode {
-                Text("\(days)")
-                    .font(.system(size: 56, weight: .bold))
-                    .foregroundColor(Theme.primary)
-            } else {
-                Text("—")
-                    .font(.system(size: 56, weight: .bold))
-                    .foregroundColor(Theme.primary)
+            HStack(alignment: .firstTextBaseline) {
+                Text("Total Episodes Logged")
+                    .font(.subheadline)
+                    .foregroundColor(Theme.textPrimary)
+                Spacer(minLength: 12)
+                if let stats = viewModel.stats {
+                    Text("\(stats.totalEpisodesLogged)")
+                        .font(.system(.title3, design: .rounded).weight(.bold))
+                        .foregroundColor(Theme.textPrimary)
+                } else if viewModel.statsErrorMessage != nil {
+                    Text("Unavailable")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundColor(Theme.textPrimary.opacity(0.7))
+                } else {
+                    ProgressView()
+                        .tint(Theme.primary)
+                        .accessibilityLabel("Loading episode total")
+                }
             }
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .background(Color(.systemBackground))
-        .cornerRadius(12)
-        .shadow(radius: 2)
-    }
-
-    private var totalLoggedCard: some View {
-        VStack(spacing: 8) {
-            Text("Total Episodes Logged")
-                .font(.subheadline)
-                .foregroundColor(Theme.textPrimary.opacity(0.7))
-
-            Text("\(viewModel.insights?.totalEpisodes ?? 0)")
-                .font(.title.bold())
-                .foregroundColor(Theme.textPrimary)
-        }
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
-        .shadow(radius: 2)
+        .clipShape(RoundedRectangle(cornerRadius: Theme.cardCornerRadius, style: .continuous))
+        .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 2)
     }
 
     private var medicationsSummaryCard: some View {
@@ -121,82 +157,143 @@ struct DashboardView: View {
                 .font(.headline)
                 .foregroundColor(Theme.textPrimary)
 
-            // 1. Show medications tracked from onboarding or episodes
-            if let prescribedMeds = profileStore.profile?.prescribedMedications, !prescribedMeds.isEmpty {
+            let prescribedMeds = profileStore.profile?.prescribedMedications ?? []
+            if prescribedMeds.isEmpty {
+                Text("Add medications you want to track alongside your episodes.")
+                    .font(.subheadline)
+                    .foregroundColor(Theme.textPrimary.opacity(0.75))
+                Button {
+                    showingSettings = true
+                } label: {
+                    Label("Add medications", systemImage: "plus")
+                        .font(.subheadline.weight(.semibold))
+                        .frame(minHeight: 44)
+                }
+                .accessibilityHint("Opens settings where you can add medications to your tracking list")
+            } else {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Tracked Medications")
                         .font(.caption.bold())
-                        .foregroundColor(Theme.textPrimary.opacity(0.6))
-                    
+                        .foregroundColor(Theme.textPrimary.opacity(0.65))
+
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 120), spacing: 8)], spacing: 8) {
                         ForEach(prescribedMeds, id: \.self) { med in
                             Text(med)
                                 .font(.subheadline)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.horizontal, 10)
-                                .padding(.vertical, 6)
-                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 8)
                                 .background(Theme.primary.opacity(0.12))
                                 .foregroundColor(Theme.textPrimary)
-                                .cornerRadius(8)
+                                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                         }
                     }
                 }
+                Button("Edit tracked medications") {
+                    showingSettings = true
+                }
+                .font(.caption.weight(.semibold))
+                .frame(minHeight: 44, alignment: .leading)
             }
 
-            // 2. Show effectiveness stats if available from insights
-            if let insights = viewModel.insights, insights.hasEnoughData, !insights.medicationEffectiveness.isEmpty {
-                Divider()
-                Text("Effectiveness")
-                    .font(.caption.bold())
-                    .foregroundColor(Theme.textPrimary.opacity(0.6))
+            Divider()
 
-                ForEach(Array(insights.medicationEffectiveness.enumerated()), id: \.element.name) { index, stat in
-                    HStack {
-                        Text(stat.name)
-                            .font(.body)
-                            .foregroundColor(Theme.textPrimary)
-                        
-                        Spacer()
-                        
-                        Text("\(Int(stat.proportion * 100))% effective")
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundColor(Theme.accent)
+            if let message = viewModel.insightsErrorMessage, viewModel.insights != nil {
+                HStack(alignment: .top) {
+                    Text(message)
+                        .font(.caption)
+                        .foregroundColor(Theme.textPrimary.opacity(0.8))
+                    Spacer(minLength: 8)
+                    Button("Retry") {
+                        Task { await viewModel.loadInsights() }
                     }
-                    
-                    if index < insights.medicationEffectiveness.count - 1 {
-                        Divider()
-                    }
+                    .font(.caption.weight(.semibold))
+                    .frame(minHeight: 44)
                 }
-            } else if (profileStore.profile?.prescribedMedications ?? []).isEmpty {
-                Text("No medications added yet.")
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
+            }
+
+            if let insights = viewModel.insights {
+                if let updatedAt = viewModel.insightsUpdatedAt {
+                    Text("Pattern data updated \(updatedAt.formatted(date: .omitted, time: .shortened))")
+                        .font(.caption)
+                        .foregroundColor(Theme.textPrimary.opacity(0.65))
+                }
+                if !insights.medicationEffectiveness.isEmpty {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Patterns in your logs")
+                            .font(.caption.bold())
+                            .foregroundColor(Theme.textPrimary.opacity(0.65))
+                        Text("Self-reported associations only; these don’t show whether a medication is medically effective.")
+                            .font(.caption)
+                            .foregroundColor(Theme.textPrimary.opacity(0.7))
+
+                        ForEach(Array(insights.medicationEffectiveness.enumerated()), id: \.element.name) { index, stat in
+                            HStack(alignment: .firstTextBaseline) {
+                                Text(stat.name)
+                                    .font(.body)
+                                    .foregroundColor(Theme.textPrimary)
+                                Spacer(minLength: 12)
+                                Text("\(Int((stat.proportion * 100).rounded()))% marked helpful · \(stat.sampleSize) uses")
+                                    .font(.subheadline.weight(.semibold))
+                                    .foregroundColor(Theme.textPrimary)
+                                    .multilineTextAlignment(.trailing)
+                            }
+                            .accessibilityElement(children: .combine)
+                            .accessibilityLabel("\(stat.name): marked helpful in \(Int((stat.proportion * Double(stat.sampleSize)).rounded())) of \(stat.sampleSize) logged uses")
+
+                            if index < insights.medicationEffectiveness.count - 1 {
+                                Divider()
+                            }
+                        }
+                    }
+                } else if !insights.hasEnoughData {
+                    Text("Log \(insights.episodesNeeded) more episode\(insights.episodesNeeded == 1 ? "" : "s") to see patterns in your logs.")
+                        .font(.subheadline)
+                        .foregroundColor(Theme.textPrimary.opacity(0.75))
+                } else {
+                    Text("Medication patterns will appear when you record medication details with an episode.")
+                        .font(.subheadline)
+                        .foregroundColor(Theme.textPrimary.opacity(0.75))
+                }
+            } else if let message = viewModel.insightsErrorMessage {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(message)
+                        .font(.subheadline)
+                        .foregroundColor(Theme.textPrimary)
+                    Button("Retry medication patterns") {
+                        Task { await viewModel.loadInsights() }
+                    }
+                    .font(.subheadline.weight(.semibold))
+                    .frame(minHeight: 44, alignment: .leading)
+                }
+            } else {
+                ProgressView("Loading medication patterns…")
+                    .font(.caption)
+                    .tint(Theme.primary)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .background(Color(.systemBackground))
-        .cornerRadius(12)
-        .shadow(radius: 2)
+        .clipShape(RoundedRectangle(cornerRadius: Theme.cardCornerRadius, style: .continuous))
+        .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 2)
     }
 
     private var recordButton: some View {
         Button {
             showingEpisodeLog = true
         } label: {
-            HStack {
-                Image(systemName: "plus.circle.fill")
-                    .font(.title2)
-                Text("Record Episode")
-                    .font(.headline)
-            }
-            .foregroundColor(.white)
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(Theme.accent)
-            .cornerRadius(12)
+            Label("Record Episode", systemImage: "plus.circle.fill")
+                .font(.headline)
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity, minHeight: 52)
+                .background(Theme.accent)
+                .clipShape(RoundedRectangle(cornerRadius: Theme.cardCornerRadius, style: .continuous))
         }
+        .accessibilityHint("Opens a form to record an episode")
     }
+
 }
 
 struct DashboardView_Previews: PreviewProvider {

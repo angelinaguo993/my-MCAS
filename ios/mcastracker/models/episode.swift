@@ -3,6 +3,7 @@ import Foundation
 struct Episode: Identifiable, Codable, Equatable {
     var id: String
     var date: Date = Date()
+    var endDate: Date? = nil
     var triggers: [Trigger] = []
     var symptoms: [SymptomEntry] = []
     var overallSeverity: Int = 5   // 1-10
@@ -16,6 +17,7 @@ struct Episode: Identifiable, Codable, Equatable {
 
     enum CodingKeys: String, CodingKey {
         case id, date, triggers, symptoms
+        case endDate = "end_date"
         case overallSeverity = "overall_severity"
         case medicationTaken = "medication_taken"
         case medicationNames = "medication_names"
@@ -38,6 +40,7 @@ struct Episode: Identifiable, Codable, Equatable {
         }
 
         date = try container.decodeIfPresent(Date.self, forKey: .date) ?? Date()
+        endDate = try container.decodeIfPresent(Date.self, forKey: .endDate)
         triggers = try container.decodeIfPresent([Trigger].self, forKey: .triggers) ?? []
         symptoms = try container.decodeIfPresent([SymptomEntry].self, forKey: .symptoms) ?? []
         overallSeverity = try container.decodeIfPresent(Int.self, forKey: .overallSeverity) ?? 5
@@ -53,6 +56,7 @@ struct Episode: Identifiable, Codable, Equatable {
     init(
         id: String = UUID().uuidString,
         date: Date = Date(),
+        endDate: Date? = nil,
         triggers: [Trigger] = [],
         symptoms: [SymptomEntry] = [],
         overallSeverity: Int = 5,
@@ -66,6 +70,7 @@ struct Episode: Identifiable, Codable, Equatable {
     ) {
         self.id = id
         self.date = date
+        self.endDate = endDate
         self.triggers = triggers
         self.symptoms = symptoms
         self.overallSeverity = overallSeverity

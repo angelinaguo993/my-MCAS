@@ -3,7 +3,11 @@ import SwiftUI
 /// shown when user taps on single episode in calendar day list
 struct EpisodeDetailView: View {
     let episode: Episode
+    var onDelete: (Episode) -> Void = { _ in }
     @Environment(\.dismiss) private var dismiss
+    @State private var confirmingDelete = false
+    @State private var isDeleting = false
+    @State private var deleteError: String?
 
     var body: some View {
         NavigationStack {
@@ -28,7 +32,48 @@ struct EpisodeDetailView: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Done") { dismiss() }
                 }
+                ToolbarItem(placement: .primaryAction) {
+                    Button(role: .destructive) {
+                        confirmingDelete = true
+                    } label: {
+                        Image(systemName: "trash")
+                    }
+                    .disabled(isDeleting || Int(episode.id) == nil)
+                    .accessibilityLabel("Delete episode")
+                }
             }
+            .confirmationDialog(
+                "Delete this episode?",
+                isPresented: $confirmingDelete,
+                titleVisibility: .visible
+            ) {
+                Button("Delete Episode", role: .destructive, action: deleteEpisode)
+                Button("Cancel", role: .cancel) { }
+            } message: {
+                Text("This permanently removes the episode from your history.")
+            }
+            .alert("Couldn't delete episode", isPresented: Binding(
+                get: { deleteError != nil },
+                set: { if !$0 { deleteError = nil } }
+            )) {
+                Button("OK", role: .cancel) { deleteError = nil }
+            } message: {
+                Text(deleteError ?? "Please try again.")
+            }
+        }
+    }
+
+    private func deleteEpisode() {
+        isDeleting = true
+        Task {
+            do {
+                try await APIClient.shared.deleteEpisode(id: episode.id)
+                onDelete(episode)
+                dismiss()
+            } catch {
+                deleteError = "Your episode is still in history. Check your connection and try again."
+            }
+            isDeleting = false
         }
     }
 

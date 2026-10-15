@@ -40,6 +40,9 @@ struct EpisodeLogView: View {
             .onChange(of: viewModel.didSubmitSuccessfully) { didSucceed in
                 if didSucceed { dismiss() }
             }
+            .onChange(of: viewModel.episodeDate) { newStart in
+                if viewModel.episodeEndDate < newStart { viewModel.episodeEndDate = newStart }
+            }
             .overlay {
                 if viewModel.isSubmitting { LoadingView() }
             }
@@ -50,17 +53,24 @@ struct EpisodeLogView: View {
 
     private var dateSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Date of Episode")
+            Text("Date and time of episode")
                 .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             DatePicker(
-                "Date of Episode",
+                "Starts",
                 selection: $viewModel.episodeDate,
                 in: ...Date(),
-                displayedComponents: .date
+                displayedComponents: [.date, .hourAndMinute]
             )
-            .labelsHidden()
+            .datePickerStyle(.compact)
+            .tint(Theme.primary)
+            DatePicker(
+                "Ends",
+                selection: $viewModel.episodeEndDate,
+                in: viewModel.episodeDate...Date(),
+                displayedComponents: [.date, .hourAndMinute]
+            )
             .datePickerStyle(.compact)
             .tint(Theme.primary)
         }

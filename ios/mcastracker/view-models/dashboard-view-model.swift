@@ -5,34 +5,43 @@ final class DashboardViewModel: ObservableObject {
     @Published var stats: DashboardStats?
     @Published var insights: InsightsResponse?
     @Published var isLoading = false
-    @Published var errorMessage: String?
+    @Published var statsErrorMessage: String?
+    @Published var insightsErrorMessage: String?
+    @Published var statsUpdatedAt: Date?
+    @Published var insightsUpdatedAt: Date?
 
     func loadDashboard() async {
         isLoading = true
-        errorMessage = nil
         defer { isLoading = false }
 
-        var encounteredError = false
+        async let statsLoad: Void = loadStats()
+        async let insightsLoad: Void = loadInsights()
+        _ = await (statsLoad, insightsLoad)
+    }
 
+    func loadStats() async {
         do {
             stats = try await APIClient.shared.fetchDashboard()
+            statsUpdatedAt = Date()
+            statsErrorMessage = nil
         } catch {
             if isCancellation(error) { return }
-            print("DASHBOARD FETCH FAILED:", error)
-            encounteredError = true
+            statsErrorMessage = stats == nil
+                ? "Episode totals are unavailable right now."
+                : "Couldn’t refresh episode totals. Showing the last loaded values."
         }
+    }
 
+    func loadInsights() async {
         do {
             insights = try await APIClient.shared.fetchInsights()
+            insightsUpdatedAt = Date()
+            insightsErrorMessage = nil
         } catch {
             if isCancellation(error) { return }
-            print("INSIGHTS FETCH FAILED:", error)
-            insights = nil
-            encounteredError = true
-        }
-
-        if encounteredError {
-            errorMessage = "Couldn't load your dashboard. Pull down to try again."
+            insightsErrorMessage = insights == nil
+                ? "Medication patterns are unavailable right now."
+                : "Couldn’t refresh medication patterns. Showing the last loaded values."
         }
     }
 
