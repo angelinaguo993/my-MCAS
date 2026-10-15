@@ -11,3 +11,8 @@ Secrets.swift
 # Xcode user-specific state (not real code, shouldn't be tracked)
 *.xcuserstate
 xcuserdata/
+# Local AI agent and assistant configuration
+/.agents/
+/.claude/
+/.codex/
+/.impeccable/
