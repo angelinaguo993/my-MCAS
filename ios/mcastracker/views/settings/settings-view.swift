@@ -19,6 +19,7 @@ struct SettingsView: View {
     @State private var city = ""
     @State private var state = usStates.first ?? "California"
     @State private var medications: [String] = []
+    @State private var customMedicationOptions: [String] = []
     @State private var newMedication = ""
     @State private var medicationError: String?
 
@@ -28,6 +29,8 @@ struct SettingsView: View {
                 Theme.background.ignoresSafeArea()
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
+                        medicationsSection
+
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Name").font(.nSubheadline).foregroundColor(Theme.textPrimary)
                             TextField("Name", text: $name)
@@ -48,12 +51,7 @@ struct SettingsView: View {
                             ChoiceChips(
                                 items: BiologicalSex.allCases,
                                 isSelected: { sex == $0 },
-                                label: { sexOption in
-                                    if let display = (sexOption as AnyObject).displayName as? String {
-                                        return display
-                                    }
-                                    return sexOption.rawValue.capitalized
-                                },
+                                label: { $0.displayName },
                                 onTap: { sex = $0 }
                             )
 
@@ -69,8 +67,6 @@ struct SettingsView: View {
                             .tint(Theme.primary)
                         }
                         .cardStyle()
-
-                        medicationsSection
                     }
                     .padding()
                 }
@@ -97,6 +93,9 @@ struct SettingsView: View {
         city = profile.city
         state = profile.state.isEmpty ? (usStates.first ?? "California") : profile.state
         medications = profile.prescribedMedications
+        customMedicationOptions = profile.prescribedMedications.filter { medication in
+            !defaultMedications.contains(where: { $0.localizedCaseInsensitiveCompare(medication) == .orderedSame })
+        }
     }
 
     private func save() {
@@ -120,54 +119,33 @@ struct SettingsView: View {
             Text("Choose the medication types you want to track. You can also add a specific medication by name.")
                 .font(.nCaption)
                 .foregroundColor(Theme.textPrimary.opacity(0.75))
+            Text("Tap a chip to add or remove it from your tracked medications.")
+                .font(.nCaption)
+                .foregroundColor(Theme.textPrimary.opacity(0.75))
 
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 135), spacing: 8)], spacing: 8) {
-                ForEach(defaultMedications, id: \.self) { medication in
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 140), spacing: 8)], alignment: .leading, spacing: 8) {
+                ForEach(defaultMedications + customMedicationOptions, id: \.self) { medication in
                     let isSelected = containsMedication(medication)
                     Button {
                         toggleMedication(medication)
                     } label: {
                         HStack(spacing: 6) {
-                            Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                            if isSelected { Image(systemName: "checkmark") }
                             Text(medication)
                                 .multilineTextAlignment(.leading)
-                            Spacer(minLength: 0)
                         }
-                        .font(.nCaptionBold)
-                        .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                        .padding(.horizontal, 10)
-                        .background(isSelected ? Theme.primary : Color.gray.opacity(0.12))
+                        .font(.subheadline)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(isSelected ? Theme.accent : Color.gray.opacity(0.15))
                         .foregroundColor(isSelected ? .white : Theme.textPrimary)
-                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        .cornerRadius(20)
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(medication)
                     .accessibilityValue(isSelected ? "Tracked" : "Not tracked")
                     .accessibilityAddTraits(isSelected ? .isSelected : [])
                 }
-            }
-
-            let customMedications = medications.filter { medication in
-                !defaultMedications.contains(where: { $0.localizedCaseInsensitiveCompare(medication) == .orderedSame })
-            }
-            ForEach(customMedications, id: \.self) { medication in
-                HStack(spacing: 12) {
-                    Text(medication)
-                        .font(.nSubheadline)
-                        .foregroundColor(Theme.textPrimary)
-                        .fixedSize(horizontal: false, vertical: true)
-                    Spacer(minLength: 8)
-                    Button {
-                        medications.removeAll { $0 == medication }
-                    } label: {
-                        Image(systemName: "minus.circle")
-                            .font(.title3)
-                            .foregroundColor(Theme.accent)
-                            .frame(width: 44, height: 44)
-                    }
-                    .accessibilityLabel("Remove \(medication)")
-                }
-                Divider()
             }
 
             HStack(spacing: 8) {
@@ -203,6 +181,9 @@ struct SettingsView: View {
             return
         }
         medicationError = nil
+        if !customMedicationOptions.contains(where: { $0.localizedCaseInsensitiveCompare(medication) == .orderedSame }) {
+            customMedicationOptions.append(medication)
+        }
         medications.append(medication)
         newMedication = ""
     }

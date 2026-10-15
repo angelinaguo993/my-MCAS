@@ -43,6 +43,13 @@ struct MCASTrackerApp: App {
         bar.compactAppearance = scrolled
         bar.scrollEdgeAppearance = atTop
 
+        let tabBarAppearance = UITabBarAppearance()
+        tabBarAppearance.configureWithOpaqueBackground()
+        tabBarAppearance.backgroundColor = UIColor(Theme.background)
+        let tabBar = UITabBar.appearance()
+        tabBar.standardAppearance = tabBarAppearance
+        tabBar.scrollEdgeAppearance = tabBarAppearance
+
         // Tab bar labels
         if let tab = UIFont(name: AppFont.semiBold, size: 10) {
             UITabBarItem.appearance().setTitleTextAttributes([.font: tab], for: .normal)

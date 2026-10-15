@@ -31,7 +31,7 @@ struct OnboardingView: View {
 
     // 5. Triggers State
     @State private var selectedTriggers: Set<String> = []
-    let triggerOptions = ["High Histamine Food", "Lack of Sleep", "Stress", "Heat, Sun/Sunlight", "Exercise", "Alcohol", "Odors / Chemicals (perfumes, scents)", "Friction / Pressure", "Cold", "Barometric pressure changes", "Drugs (NSAIDs, antibiotics, opioids, etc.)", "Venoms (insect stings, snake bites, spider bites, etc.)", "Allergies (pollen, dust, pet dander, etc.)", "Other"]
+    let triggerOptions = ["High Histamine Food", "Lack of Sleep", "Stress", "Heat, Sun/Sunlight", "Exercise", "Alcohol", "Odors / Chemicals (perfumes, scents)", "Friction / Pressure", "Cold", "Drugs (NSAIDs, antibiotics, opioids, etc.)", "Venoms (insect stings, snake bites, spider bites, etc.)", "Allergies (pollen, dust, pet dander, etc.)", "Other"]
 
     var body: some View {
         ZStack {

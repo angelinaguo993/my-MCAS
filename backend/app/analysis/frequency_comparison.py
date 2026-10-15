@@ -147,6 +147,9 @@ def severity_by_trigger(episodes: list) -> list[dict]:
         avg_with = sum(with_trigger) / len(with_trigger)
         avg_without = sum(without_trigger) / len(without_trigger) if without_trigger else avg_with
 
+        if avg_with <= avg_without:
+            continue
+
         results.append({
             "name": trigger,
             "avg_severity_with": round(avg_with, 1),

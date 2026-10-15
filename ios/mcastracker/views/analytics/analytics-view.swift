@@ -39,8 +39,11 @@ struct AnalyticsView: View {
                                     if !insights.symptomTriggerPairs.isEmpty {
                                         symptomTriggerPairsCard(insights.symptomTriggerPairs)
                                     }
-                                    if !insights.severityByTrigger.isEmpty {
-                                        severityByTriggerCard(insights.severityByTrigger)
+                                    let worseningTriggers = insights.severityByTrigger.filter {
+                                        $0.avgSeverityWith > $0.avgSeverityWithout
+                                    }
+                                    if !worseningTriggers.isEmpty {
+                                        severityByTriggerCard(worseningTriggers)
                                     }
                                     
                                     // MARK: - AI Insights Section
@@ -409,12 +412,7 @@ struct AnalyticsView: View {
                     items: aiResult.whatsNew,
                     icon: "sparkles"
                 )
-                aiInsightCard(
-                    title: "Weather Comparison",
-                    subtitle: "Archived local weather on episode days compared with days without a logged episode.",
-                    items: aiResult.weatherInsights,
-                    icon: "cloud.sun"
-                )
+                weatherComparisonCard(aiResult.weatherInsights)
                 aiInsightCard(
                     title: "Medication Insights", 
                     subtitle: "Based on your logged episodes and notes, these medications appear to be more effective for you personally.*",
@@ -472,6 +470,42 @@ struct AnalyticsView: View {
                     Text("• \(items[index])")
                     .font(.nSubheadline)
                     .foregroundColor(Theme.textPrimary.opacity(0.8))
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .cardStyle()
+    }
+
+    private func weatherComparisonCard(_ items: [String]) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: "cloud.sun").foregroundColor(Theme.accent)
+                Text("Weather Comparison")
+                    .font(.nHeadline)
+                    .foregroundColor(Theme.textPrimary)
+            }
+            Text("Archived local weather on episode days compared with days without a logged episode.")
+                .font(.nCaption)
+                .foregroundColor(Theme.textPrimary.opacity(0.6))
+
+            if items.isEmpty {
+                Text("No specific patterns detected yet.")
+                    .font(.nSubheadline)
+                    .foregroundColor(Theme.textPrimary.opacity(0.7))
+            } else {
+                ForEach(Array(items.prefix(3).enumerated()), id: \.offset) { _, item in
+                    HStack(alignment: .firstTextBaseline, spacing: 8) {
+                        Text("•").foregroundColor(Theme.accent)
+                        Text(item).foregroundColor(Theme.textPrimary)
+                    }
+                    .font(.nSubheadline)
+                }
+                if items.count > 3 {
+                    Text(items.dropFirst(3).joined(separator: " "))
+                        .font(.nSubheadline)
+                        .foregroundColor(Theme.textPrimary.opacity(0.8))
+                        .padding(.top, 2)
                 }
             }
         }

@@ -86,13 +86,13 @@ struct EpisodeLogView: View {
                 .foregroundColor(Theme.textPrimary)
 
             FlowChips(
-                items: Trigger.allCases.filter { $0 != .lackOfSleep },
+                items: Trigger.allCases.filter { $0 != .lackOfSleep && $0 != .barometricPressure },
                 isSelected: { viewModel.selectedTriggers.contains($0) },
                 label: { $0.displayName },
                 onTap: { viewModel.toggleTrigger($0) }
             )
 
-            ForEach(Trigger.allCases.filter { viewModel.selectedTriggers.contains($0) }) { trigger in
+            ForEach(Trigger.allCases.filter { $0 != .barometricPressure && viewModel.selectedTriggers.contains($0) }) { trigger in
                 if let placeholder = trigger.detailPlaceholder {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(trigger.displayName)
