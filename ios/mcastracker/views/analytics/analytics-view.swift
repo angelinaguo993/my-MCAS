@@ -208,19 +208,24 @@ struct AnalyticsView: View {
             Text("Trigger Combinations")
                 .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
-            Text("How often pairs of triggers show up together in the same episode")
+            Text("How often pairs of triggers show up together in the same episode. Try to avoid being in contact with both of these triggers at the same time.")
                 .font(.nCaption)
                 .foregroundColor(Theme.textPrimary.opacity(0.6))
 
             ForEach(pairs) { stat in
+                let parts = stat.name.split(separator: "+").map { $0.trimmingCharacters(in: .whitespaces) }
+                let formattedParts = parts.enumerated().map { index, rawPart -> String in
+                    let name = Trigger.from(rawValue: rawPart)?.displayName 
+                        ?? rawPart.replacingOccurrences(of: "_", with: " ").capitalized
+                    // Keep the first trigger capitalized, lowercase any subsequent triggers
+                    return index == 0 ? name : name.lowercased()
+                }
+
                 HStack {
                     Image(systemName: "link")
                         .foregroundColor(Theme.primary)
                         .frame(width: 24)
-                    Text(stat.name.split(separator: "+").map {
-                        Trigger.from(rawValue: $0.trimmingCharacters(in: .whitespaces))?.displayName
-                        ?? $0.trimmingCharacters(in: .whitespaces)
-                    }.joined(separator: " + "))
+                    Text(formattedParts.joined(separator: " + "))
                         .font(.nSubheadline)
                         .foregroundColor(Theme.textPrimary)
                     Spacer()
@@ -238,35 +243,31 @@ struct AnalyticsView: View {
             Text("Trigger → Symptom Patterns")
                 .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
-            Text("Tap a trigger to see which symptoms tend to follow it")
+            Text("Clear connections detected from your entries. The trigger on the left appears to lead to the symptom on the right in your logged episodes.")
                 .font(.nCaption)
                 .foregroundColor(Theme.textPrimary.opacity(0.6))
 
-            ForEach(groupedByTrigger(pairs), id: \.trigger) { group in
-                DisclosureGroup {
-                    VStack(alignment: .leading, spacing: 8) {
-                        ForEach(group.symptoms) { stat in
-                            HStack {
-                                Image(systemName: "arrow.right.circle")
-                                    .foregroundColor(Theme.primary)
-                                    .frame(width: 24)
-                                Text(symptomNameFromPair(stat.name))
-                                    .font(.nSubheadline)
-                                    .foregroundColor(Theme.textPrimary)
-                                Spacer()
-                                Text("\(Int(stat.proportion * 100))%")
-                                    .font(.nCaptionBold)
-                                    .foregroundColor(Theme.accent)
-                            }
-                        }
-                    }
-                    .padding(.top, 6)
-                } label: {
-                    Text(Trigger.from(rawValue: group.trigger)?.displayName ?? group.trigger)
-                        .font(.nSubheadlineBold)
-                        .foregroundColor(Theme.textPrimary)
-                }
-                .tint(Theme.primary)
+            ForEach(pairs.prefix(3)) { stat in
+                let parts = stat.name.split(separator: "→").map { $0.trimmingCharacters(in: .whitespaces) }
+                let triggerRaw = parts.first ?? ""
+                let symptomRaw = parts.count >= 2 ? parts[1] : stat.name
+                
+                let triggerName = Trigger.from(rawValue: triggerRaw)?.displayName 
+                    ?? triggerRaw.replacingOccurrences(of: "_", with: " ").capitalized
+                
+                // Lowercase the symptom name so it reads naturally inside the sentence card
+                let symptomName = (SymptomCategory(rawValue: symptomRaw)?.displayName 
+                    ?? symptomRaw.replacingOccurrences(of: "_", with: " ").capitalized).lowercased()
+                
+                let occurrenceCount = Int((stat.proportion * Double(stat.sampleSize)).rounded())
+                let percentage = Int((stat.proportion * 100).rounded())
+
+                PatternInsightCard(
+                    triggerName: triggerName,
+                    topSymptom: symptomName,
+                    occurrenceCount: max(1, occurrenceCount),
+                    percentage: percentage
+                )
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -282,7 +283,7 @@ struct AnalyticsView: View {
                     .frame(width: 48, height: 48)
                     .background(Theme.accent.opacity(0.12), in: Circle())
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("Doctor-Ready Summary")
+                    Text("Doctor-Ready PDF Summary")
                         .font(.nHeadline)
                         .foregroundColor(Theme.textPrimary)
                     Text("Turn your logged episodes into a clean PDF with patterns, medication history, and a full log to bring to your next appointment.")
@@ -291,6 +292,7 @@ struct AnalyticsView: View {
                 }
             }
             Button {
+                Haptics.play(.medium)
                 showingExport = true
             } label: {
                 HStack {
@@ -306,6 +308,7 @@ struct AnalyticsView: View {
                     .background(Theme.accent)
                     .clipShape(RoundedRectangle(cornerRadius: Theme.cardCornerRadius, style: .continuous))
             }
+            .buttonStyle(ScaleSpringButtonStyle())
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(Theme.cardPadding)
@@ -428,6 +431,7 @@ struct AnalyticsView: View {
             }
         } else {
             Button(action: {
+                Haptics.play(.medium)
                 Task { await viewModel.generateAIInsights() }
             }) {
                 HStack {
@@ -441,6 +445,7 @@ struct AnalyticsView: View {
                 .background(Theme.accent)
                 .cornerRadius(10)
             }
+            .buttonStyle(ScaleSpringButtonStyle())
             .padding(.top, 8)
         }
     }
@@ -517,5 +522,69 @@ struct AnalyticsView: View {
 struct AnalyticsView_Previews: PreviewProvider {
     static var previews: some View {
         AnalyticsView()
+    }
+}
+
+
+struct ScaleSpringButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.96 : 1.0)
+            .animation(.spring(response: 0.3, dampingFraction: 0.6), value: configuration.isPressed)
+    }
+}
+
+struct Haptics {
+    static func play(_ style: UIImpactFeedbackGenerator.FeedbackStyle) {
+        let generator = UIImpactFeedbackGenerator(style: style)
+        generator.prepare()
+        generator.impactOccurred()
+    }
+    
+    static func notification(_ type: UINotificationFeedbackGenerator.FeedbackType) {
+        let generator = UINotificationFeedbackGenerator()
+        generator.prepare()
+        generator.notificationOccurred(type)
+    }
+}
+
+struct PatternInsightCard: View {
+    let triggerName: String
+    let topSymptom: String
+    let occurrenceCount: Int
+    let percentage: Int
+    
+    var body: some View {
+        HStack(alignment: .center, spacing: 14) {
+            ZStack {
+                Circle()
+                    .fill(Theme.accent.opacity(0.15))
+                    .frame(width: 44, height: 44)
+                Image(systemName: "bolt.fill")
+                    .foregroundColor(Theme.accent)
+                    .font(.subheadline)
+            }
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Key Correlation • \(percentage)% Match")
+                    .font(.caption2.bold())
+                    .foregroundColor(Theme.accent)
+                    .textCase(.uppercase)
+                
+                Text("**\(triggerName)** frequently leads to **\(topSymptom)**.")
+                    .font(.nSubheadline)
+                    .foregroundColor(Theme.textPrimary)
+                
+                Text("Observed across \(occurrenceCount) logged episodes.")
+                    .font(.nCaption)
+                    .foregroundColor(Theme.textPrimary.opacity(0.6))
+            }
+            
+            Spacer()
+        }
+        .padding()
+        .background(Color(.systemBackground))
+        .cornerRadius(12)
+        .shadow(color: Color.black.opacity(0.03), radius: 6, x: 0, y: 3)
     }
 }

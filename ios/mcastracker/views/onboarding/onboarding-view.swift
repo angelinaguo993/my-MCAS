@@ -8,9 +8,10 @@ struct OnboardingView: View {
     // 1. About You State
     @State private var name = ""
     @State private var birthday = Date()
-    @State private var sex = "Prefer not to say"
+    @State private var sex = ""
     @State private var state = ""
     @State private var city = ""
+    @State private var hasSelectedBirthday = false
     let sexOptions = ["Female", "Male", "Non-binary", "Other", "Prefer not to say"]
 
     // 2. Medications State & Custom Input
@@ -20,7 +21,7 @@ struct OnboardingView: View {
     @State private var newMedicationInput = ""
 
     // 3. Frequency State
-    @State private var episodeFrequency = "Weekly"
+    @State private var episodeFrequency = ""
     let frequencyOptions = ["Daily", "Weekly", "Monthly", "Rarely"]
 
     // 4. Symptoms State & Custom Input
@@ -42,7 +43,13 @@ struct OnboardingView: View {
                 progressBar
 
                 // Multi-Slide Container
-                TabView(selection: $currentStep) {
+                TabView(selection: Binding(
+                    get: { currentStep },
+                    set: { newStep in
+                        guard newStep <= currentStep || (0..<newStep).allSatisfy(isStepComplete) else { return }
+                        currentStep = newStep
+                    }
+                )) {
                     aboutYouSlide.tag(0)
                     medicationsSlide.tag(1)
                     frequencySlide.tag(2)
@@ -73,24 +80,35 @@ struct OnboardingView: View {
 
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Birthday").font(.subheadline).foregroundColor(Theme.textPrimary)
-                    DatePicker("", selection: $birthday, displayedComponents: .date)
+                    DatePicker("", selection: Binding(
+                        get: { birthday },
+                        set: { birthday = $0; hasSelectedBirthday = true }
+                    ), displayedComponents: .date)
                         .datePickerStyle(.compact)
                 }
 
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Sex").font(.subheadline).foregroundColor(Theme.textPrimary)
                     Picker("Sex", selection: $sex) {
+                        Text("Select an option").tag("")
                         ForEach(sexOptions, id: \.self) { option in
                             Text(option).tag(option)
                         }
                     }
-                    .pickerStyle(.segmented)
+                    .pickerStyle(.menu)
+                    .tint(Theme.primary)
                 }
 
                 VStack(alignment: .leading, spacing: 6) {
                     Text("State").font(.subheadline).foregroundColor(Theme.textPrimary)
-                    TextField("e.g., California", text: $state)
-                        .textFieldStyle(.roundedBorder)
+                    Picker("State", selection: $state) {
+                        Text("Select a state").tag("")
+                        ForEach(usStates.filter { $0 != "District of Columbia" }, id: \.self) { state in
+                            Text(state).tag(state)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .tint(Theme.primary)
                 }
 
                 VStack(alignment: .leading, spacing: 6) {
@@ -283,13 +301,41 @@ struct OnboardingView: View {
                     .padding(.horizontal, 28)
                     .padding(.vertical, 12)
                     .background(Theme.accent)
+                    .opacity(isCurrentStepComplete ? 1 : 0.45)
                     .cornerRadius(10)
             }
+            .disabled(!isCurrentStepComplete)
         }
         .padding(.vertical, 8)
     }
 
+    private var isCurrentStepComplete: Bool {
+        isStepComplete(currentStep)
+    }
+
+    private func isStepComplete(_ step: Int) -> Bool {
+        switch step {
+        case 0:
+            return !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                && hasSelectedBirthday
+                && !sex.isEmpty
+                && !state.isEmpty
+                && !city.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        case 1:
+            return !prescribedMedications.isEmpty
+        case 2:
+            return !episodeFrequency.isEmpty
+        case 3:
+            return !selectedSymptoms.isEmpty
+        case 4:
+            return !selectedTriggers.isEmpty
+        default:
+            return false
+        }
+    }
+
     private func completeOnboarding() {
+        guard (0..<totalSteps).allSatisfy(isStepComplete) else { return }
         let mappedSex: BiologicalSex? = {
             switch sex {
                 case "Female": return .female
