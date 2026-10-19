@@ -91,6 +91,14 @@ final class APIClient {
         return try decoder.decode([Episode].self, from: data)
     }
 
+    func deleteEpisode(id: String) async throws {
+        guard let numericID = Int(id) else { throw APIError.decodingFailed }
+        var request = URLRequest(url: Endpoints.episode(id: numericID))
+        request.httpMethod = "DELETE"
+        let (data, response) = try await session.data(for: request)
+        try validate(response, data)
+    }
+
     /// dashboard's trigger/symptom/medication summary cards
     func fetchInsights() async throws -> InsightsResponse {
         let (data, response) = try await session.data(from: Endpoints.insights)

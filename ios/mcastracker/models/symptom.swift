@@ -34,7 +34,7 @@ enum SymptomCategory: String, CaseIterable, Codable, Identifiable {
         case .respiratory:
             return ["Wheezing", "Throat tightness", "Nasal congestion", "Shortness of breath"]
         case .cardiovascular:
-            return ["Rapid heart rate", "Lightheadedness", "Low blood pressure", "Fainting"]
+            return ["Rapid heart rate", "Dizziness", "Lightheadedness", "Low blood pressure", "Fainting"]
         case .neurological:
             return ["Brain fog", "Headache", "Anxiety-like symptoms", "Tremor"]
         case .general:

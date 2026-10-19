@@ -46,7 +46,9 @@ def create_episode(payload: EpisodeCreate, db: Session = Depends(get_db)):
         medication_helped=payload.medication_helped,
         notes=payload.notes,
         sleep_hours=payload.sleep_hours,
-        date=payload.date or datetime.now(timezone.utc)
+        date=payload.date or datetime.now(timezone.utc),
+        end_date=payload.end_date,
+        weather_summary=payload.weather_summary,
     )
     db.add(episode)
     db.commit()
@@ -75,3 +77,12 @@ def get_episode(episode_id: int, db: Session = Depends(get_db)):
     if episode is None:
         raise HTTPException(status_code=404, detail="Episode not found")
     return episode
+
+
+@router.delete("/episodes/{episode_id}", status_code=204)
+def delete_episode(episode_id: int, db: Session = Depends(get_db)):
+    episode = db.query(Episode).filter(Episode.id == episode_id).first()
+    if episode is None:
+        raise HTTPException(status_code=404, detail="Episode not found")
+    db.delete(episode)
+    db.commit()

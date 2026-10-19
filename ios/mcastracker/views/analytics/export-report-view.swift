@@ -56,7 +56,9 @@ final class ExportReportViewModel: ObservableObject {
             var aiResult: AIAnalysisResult? = nil
             if includeAI {
                 let insights = try? await APIClient.shared.fetchInsights()
-                aiResult = try? await AIAnalysisService().fetchAnalysis(for: inPeriod, insights: insights)
+                let profile = UserDefaults.standard.data(forKey: "userProfile")
+                    .flatMap { try? JSONDecoder().decode(UserProfile.self, from: $0) }
+                aiResult = try? await AIAnalysisService().fetchAnalysis(for: inPeriod, insights: insights, profile: profile)
                 if aiResult == nil {
                     notice = "The AI observations couldn't be generated, so this summary was created without them."
                 }

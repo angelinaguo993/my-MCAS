@@ -8,6 +8,7 @@ final class EpisodeLogViewModel: ObservableObject {
     @Published var otherTriggerDescription: String = ""
     @Published var triggerDetails: [Trigger: String] = [:]
     @Published var episodeDate: Date = Date()
+    @Published var episodeEndDate: Date = Date()
     @Published var selectedSymptomCategories: Set<SymptomCategory> = []
     @Published var symptomSeverities: [SymptomCategory: Int] = [:]
     @Published var specificSymptoms: [SymptomCategory: Set<String>] = [:]
@@ -126,7 +127,7 @@ final class EpisodeLogViewModel: ObservableObject {
         !selectedSymptomCategories.isEmpty
     }
 
-    func submit() async {
+    func submit(profileStore: UserProfileStore) async {
         guard canSubmit else {
             errorMessage = "Log at least one symptom before saving."
             return
@@ -163,6 +164,7 @@ final class EpisodeLogViewModel: ObservableObject {
         let episode = Episode(
             id: UUID().uuidString,
             date: episodeDate,
+            endDate: episodeEndDate < episodeDate ? episodeDate : episodeEndDate,
             triggers: Array(selectedTriggers),
             symptoms: symptoms,
             overallSeverity: overallSeverity,
@@ -170,13 +172,21 @@ final class EpisodeLogViewModel: ObservableObject {
             medicationNames: medicationTaken ? medicationNames : [],
             medicationHelped: medicationTaken ? medicationHelped : nil,
             notes: combinedNotes.isEmpty ? nil : combinedNotes,
-            weatherSummary: weather, // <-- Included cleanly with a comma above it
+            weatherSummary: weather,
             sleepHours: sleepHours
         )
 
         do {
             _ = try await APIClient.shared.submitEpisode(episode)
             didSubmitSuccessfully = true
+            
+            // Register any medications taken in this episode directly to the store
+            if medicationTaken {
+                for medication in medicationNames {
+                    profileStore.registerMedicationIfNeeded(medication)
+                }
+            }
+            
         } catch {
             print("SUBMIT EPISODE FAILED:", error)
             errorMessage = "Couldn't save this episode. Check your connection and try again."

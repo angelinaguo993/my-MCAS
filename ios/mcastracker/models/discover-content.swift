@@ -1,20 +1,16 @@
 import Foundation
 
-enum DiscoverCategory: String, CaseIterable, Identifiable {
-    case all, basics, triggers, diagnosis, care, safety
+enum DiscoverCategory: String, CaseIterable, Hashable, Identifiable {
+    case all = "All"
+    case basics = "Basics"
+    case triggers = "Triggers"
+    case diagnosis = "Diagnosis"
+    case care = "Care"
+    case safety = "Safety"
 
     var id: String { rawValue }
 
-    var title: String {
-        switch self {
-        case .all: return "All"
-        case .basics: return "Basics"
-        case .triggers: return "Triggers"
-        case .diagnosis: return "Diagnosis"
-        case .care: return "Care"
-        case .safety: return "Safety"
-        }
-    }
+    var displayName: String { rawValue }
 }
 
 struct DiscoverFact: Identifiable {

@@ -14,6 +14,7 @@ enum Trigger: String, CaseIterable, Codable, Identifiable {
     case drugs = "drugs"
     case venoms = "venoms"
     case allergies = "allergies"
+    case barometricPressure = "barometric_pressure"
     case other = "other"
 
 
@@ -33,6 +34,7 @@ enum Trigger: String, CaseIterable, Codable, Identifiable {
         case .drugs: return "Drugs (opioids, NSAIDS, antibiotics, etc.)"
         case .venoms: return "Venoms (insect stings, snake bites, spider bites, etc.)"
         case .allergies: return "Allergies (pollen, dust, pet dander, etc.)"
+        case .barometricPressure: return "Barometric pressure changes"
 
         case .other: return "Other"
         }
@@ -53,6 +55,7 @@ enum Trigger: String, CaseIterable, Codable, Identifiable {
         case .drugs: return "pills"
         case .venoms: return "skull"
         case .allergies: return "leaf.fill"
+        case .barometricPressure: return "gauge.with.dots.needle.67percent"
         
         case .other: return "questionmark.circle.fill"
         }
@@ -72,6 +75,7 @@ enum Trigger: String, CaseIterable, Codable, Identifiable {
             case .drugs: return "What drug(s) or other medication did you take prior to this episode?"
             case .venoms: return "What bit or stung you prior/while experiencing this episode?"
             case .allergies: return "What allergen(s) may have caused this episode?"
+            case .barometricPressure: return nil
             case .other: return "Describe the trigger"
         }
     }

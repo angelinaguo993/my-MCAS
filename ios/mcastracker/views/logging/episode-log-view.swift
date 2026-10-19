@@ -2,6 +2,7 @@ import SwiftUI
 
 struct EpisodeLogView: View {
     @StateObject private var viewModel = EpisodeLogViewModel()
+    @EnvironmentObject private var profileStore: UserProfileStore
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -39,6 +40,9 @@ struct EpisodeLogView: View {
             .onChange(of: viewModel.didSubmitSuccessfully) { didSucceed in
                 if didSucceed { dismiss() }
             }
+            .onChange(of: viewModel.episodeDate) { newStart in
+                if viewModel.episodeEndDate < newStart { viewModel.episodeEndDate = newStart }
+            }
             .overlay {
                 if viewModel.isSubmitting { LoadingView() }
             }
@@ -49,17 +53,24 @@ struct EpisodeLogView: View {
 
     private var dateSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Date of Episode")
+            Text("Date and time of episode")
                 .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
             DatePicker(
-                "Date of Episode",
+                "Starts",
                 selection: $viewModel.episodeDate,
                 in: ...Date(),
-                displayedComponents: .date
+                displayedComponents: [.date, .hourAndMinute]
             )
-            .labelsHidden()
+            .datePickerStyle(.compact)
+            .tint(Theme.primary)
+            DatePicker(
+                "Ends",
+                selection: $viewModel.episodeEndDate,
+                in: viewModel.episodeDate...Date(),
+                displayedComponents: [.date, .hourAndMinute]
+            )
             .datePickerStyle(.compact)
             .tint(Theme.primary)
         }
@@ -75,13 +86,13 @@ struct EpisodeLogView: View {
                 .foregroundColor(Theme.textPrimary)
 
             FlowChips(
-                items: Trigger.allCases.filter { $0 != .lackOfSleep },
+                items: Trigger.allCases.filter { $0 != .lackOfSleep && $0 != .barometricPressure },
                 isSelected: { viewModel.selectedTriggers.contains($0) },
                 label: { $0.displayName },
                 onTap: { viewModel.toggleTrigger($0) }
             )
 
-            ForEach(Trigger.allCases.filter { viewModel.selectedTriggers.contains($0) }) { trigger in
+            ForEach(Trigger.allCases.filter { $0 != .barometricPressure && viewModel.selectedTriggers.contains($0) }) { trigger in
                 if let placeholder = trigger.detailPlaceholder {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(trigger.displayName)
@@ -235,7 +246,10 @@ struct EpisodeLogView: View {
 
     private var submitButton: some View {
         Button {
-            Task { await viewModel.submit() }
+            Haptics.play(.light)
+            Task { 
+                await viewModel.submit(profileStore: profileStore) 
+            }
         } label: {
             Text("Save Episode")
                 .font(.nHeadline)
@@ -246,6 +260,12 @@ struct EpisodeLogView: View {
                 .cornerRadius(Theme.cardCornerRadius)
         }
         .disabled(!viewModel.canSubmit || viewModel.isSubmitting)
+        .buttonStyle(ScaleSpringButtonStyle())
+        .onChange(of: viewModel.didSubmitSuccessfully) { didSucceed in
+            if didSucceed {
+                Haptics.notification(.success)
+            }
+        }
     }
 }
 

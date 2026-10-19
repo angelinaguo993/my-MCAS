@@ -1,8 +1,15 @@
 import SwiftUI
 
-/// Reached via the gear icon on Home, medications/frequency/
-/// history are set once during onboarding and aren't editable here
+/// Profile details and tracked medications, presented from the Home screen.
 struct SettingsView: View {
+    private let defaultMedications = [
+        "Antihistamines",
+        "Mast Cell Stabilizers",
+        "Leukotriene Inhibitors",
+        "H2 Blockers",
+        "Corticosteroids"
+    ]
+
     @EnvironmentObject private var profileStore: UserProfileStore
     @Environment(\.dismiss) private var dismiss
 
@@ -10,7 +17,11 @@ struct SettingsView: View {
     @State private var birthday = Calendar.current.date(byAdding: .year, value: -18, to: Date()) ?? Date()
     @State private var sex: BiologicalSex?
     @State private var city = ""
-    @State private var state = usStates.first!
+    @State private var state = usStates.first ?? "California"
+    @State private var medications: [String] = []
+    @State private var customMedicationOptions: [String] = []
+    @State private var newMedication = ""
+    @State private var medicationError: String?
 
     var body: some View {
         NavigationStack {
@@ -18,6 +29,8 @@ struct SettingsView: View {
                 Theme.background.ignoresSafeArea()
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
+                        medicationsSection
+
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Name").font(.nSubheadline).foregroundColor(Theme.textPrimary)
                             TextField("Name", text: $name)
@@ -78,7 +91,11 @@ struct SettingsView: View {
         birthday = profile.birthday ?? birthday
         sex = profile.sex
         city = profile.city
-        state = profile.state.isEmpty ? usStates.first! : profile.state
+        state = profile.state.isEmpty ? (usStates.first ?? "California") : profile.state
+        medications = profile.prescribedMedications
+        customMedicationOptions = profile.prescribedMedications.filter { medication in
+            !defaultMedications.contains(where: { $0.localizedCaseInsensitiveCompare(medication) == .orderedSame })
+        }
     }
 
     private func save() {
@@ -89,13 +106,97 @@ struct SettingsView: View {
         profile.sex = sex
         profile.city = city
         profile.state = state
+        profile.prescribedMedications = medications
         profileStore.save(profile)
         dismiss()
     }
-}
 
-struct SettingsView_Previews: PreviewProvider {
-    static var previews: some View {
-        SettingsView().environmentObject(UserProfileStore())
+    private var medicationsSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Tracked Medications")
+                .font(.nHeadline)
+                .foregroundColor(Theme.textPrimary)
+            Text("Choose the medication types you want to track. You can also add a specific medication by name.")
+                .font(.nCaption)
+                .foregroundColor(Theme.textPrimary.opacity(0.75))
+            Text("Tap a chip to add or remove it from your tracked medications.")
+                .font(.nCaption)
+                .foregroundColor(Theme.textPrimary.opacity(0.75))
+
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 140), spacing: 8)], alignment: .leading, spacing: 8) {
+                ForEach(defaultMedications + customMedicationOptions, id: \.self) { medication in
+                    let isSelected = containsMedication(medication)
+                    Button {
+                        toggleMedication(medication)
+                    } label: {
+                        HStack(spacing: 6) {
+                            if isSelected { Image(systemName: "checkmark") }
+                            Text(medication)
+                                .multilineTextAlignment(.leading)
+                        }
+                        .font(.subheadline)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(isSelected ? Theme.accent : Color.gray.opacity(0.15))
+                        .foregroundColor(isSelected ? .white : Theme.textPrimary)
+                        .cornerRadius(20)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(medication)
+                    .accessibilityValue(isSelected ? "Tracked" : "Not tracked")
+                    .accessibilityAddTraits(isSelected ? .isSelected : [])
+                }
+            }
+
+            HStack(spacing: 8) {
+                TextField("Medication name", text: $newMedication)
+                    .textFieldStyle(.roundedBorder)
+                    .submitLabel(.done)
+                    .onSubmit(addMedication)
+                    .onChange(of: newMedication) { _ in medicationError = nil }
+                Button(action: addMedication) {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.system(size: 30))
+                        .foregroundColor(Theme.accent)
+                        .frame(width: 44, height: 44)
+                }
+                .accessibilityLabel("Add medication")
+                .accessibilityHint("Adds the typed medication to your tracked list")
+                    .disabled(newMedication.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            }
+            if let medicationError {
+                Text(medicationError)
+                    .font(.nCaption)
+                    .foregroundColor(Theme.accent)
+            }
+        }
+        .cardStyle()
+    }
+
+    private func addMedication() {
+        let medication = newMedication.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !medication.isEmpty else { return }
+        guard !medications.contains(where: { $0.localizedCaseInsensitiveCompare(medication) == .orderedSame }) else {
+            medicationError = "That medication is already on your list."
+            return
+        }
+        medicationError = nil
+        if !customMedicationOptions.contains(where: { $0.localizedCaseInsensitiveCompare(medication) == .orderedSame }) {
+            customMedicationOptions.append(medication)
+        }
+        medications.append(medication)
+        newMedication = ""
+    }
+
+    private func containsMedication(_ name: String) -> Bool {
+        medications.contains { $0.localizedCaseInsensitiveCompare(name) == .orderedSame }
+    }
+
+    private func toggleMedication(_ name: String) {
+        if containsMedication(name) {
+            medications.removeAll { $0.localizedCaseInsensitiveCompare(name) == .orderedSame }
+        } else {
+            medications.append(name)
+        }
     }
 }

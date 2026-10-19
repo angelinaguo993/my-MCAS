@@ -4,12 +4,24 @@ import SwiftUI
 struct DayEpisodesListView: View {
     let date: Date
     let episodes: [Episode]
+    var onDelete: (Episode) -> Void = { _ in }
+    @State private var visibleEpisodes: [Episode]
+
+    init(date: Date, episodes: [Episode], onDelete: @escaping (Episode) -> Void = { _ in }) {
+        self.date = date
+        self.episodes = episodes
+        self.onDelete = onDelete
+        _visibleEpisodes = State(initialValue: episodes)
+    }
 
     var body: some View {
         NavigationStack {
-            List(episodes) { episode in
+            List(visibleEpisodes) { episode in
                 NavigationLink {
-                    EpisodeDetailView(episode: episode)
+                    EpisodeDetailView(episode: episode) { deletedEpisode in
+                        visibleEpisodes.removeAll { $0.id == deletedEpisode.id }
+                        onDelete(deletedEpisode)
+                    }
                 } label: {
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
@@ -29,6 +41,20 @@ struct DayEpisodesListView: View {
                             .foregroundColor(Theme.accent)
                     }
                     .padding(.vertical, 4)
+                }
+            }
+            .overlay {
+                if visibleEpisodes.isEmpty {
+                    VStack(spacing: 8) {
+                        Image(systemName: "calendar")
+                            .font(.title2)
+                            .foregroundColor(Theme.primary)
+                        Text("No episodes on this date")
+                            .font(.nSubheadline)
+                            .foregroundColor(Theme.textPrimary.opacity(0.75))
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Theme.background)
                 }
             }
             .navigationTitle(date.formatted(date: .abbreviated, time: .omitted))

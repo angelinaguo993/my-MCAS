@@ -28,10 +28,12 @@ def symptom_category_frequencies(episodes: list) -> list[dict]:
 
     counts = Counter()
     for ep in episodes:
+        categories_in_episode = set()
         for symptom in ep.symptoms or []:
             category = symptom.get("category")
             if category:
-                counts[category] += 1
+                categories_in_episode.add(category)
+        counts.update(categories_in_episode)
 
     results = []
     for category, count in counts.items():
@@ -144,6 +146,9 @@ def severity_by_trigger(episodes: list) -> list[dict]:
 
         avg_with = sum(with_trigger) / len(with_trigger)
         avg_without = sum(without_trigger) / len(without_trigger) if without_trigger else avg_with
+
+        if avg_with <= avg_without:
+            continue
 
         results.append({
             "name": trigger,
