@@ -22,6 +22,7 @@
 		E41B1C063052598800A467FA /* dashboard-view-model.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BEF3052598700A467FA /* dashboard-view-model.swift */; };
 		E41B1C073052598800A467FA /* episode-log-view-model.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BF03052598700A467FA /* episode-log-view-model.swift */; };
 		E41B1C083052598800A467FA /* theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BF23052598700A467FA /* theme.swift */; };
+		A7C20B0A4C2E5F6911D384A1 /* haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C20B0A4C2E5F6911D384A0 /* haptics.swift */; };
 		E41B1C093052598800A467FA /* severity-picker-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BF53052598700A467FA /* severity-picker-view.swift */; };
 		E41B1C0A3052598800A467FA /* loading-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BF63052598700A467FA /* loading-view.swift */; };
 		E41B1C0E3052598800A467FA /* episode-log-view.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41B1BFD3052598700A467FA /* episode-log-view.swift */; };
@@ -94,6 +95,7 @@
 		E41B1BEF3052598700A467FA /* dashboard-view-model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "dashboard-view-model.swift"; sourceTree = "<group>"; };
 		E41B1BF03052598700A467FA /* episode-log-view-model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "episode-log-view-model.swift"; sourceTree = "<group>"; };
 		E41B1BF23052598700A467FA /* theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = theme.swift; sourceTree = "<group>"; };
+		A7C20B0A4C2E5F6911D384A0 /* haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = haptics.swift; sourceTree = "<group>"; };
 		E41B1BF53052598700A467FA /* severity-picker-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "severity-picker-view.swift"; sourceTree = "<group>"; };
 		E41B1BF63052598700A467FA /* loading-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "loading-view.swift"; sourceTree = "<group>"; };
 		E41B1BFD3052598700A467FA /* episode-log-view.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "episode-log-view.swift"; sourceTree = "<group>"; };
@@ -313,6 +315,7 @@
 			children = (
 				E46F702B306B6EAA0063F1FF /* user-profile-store.swift */,
 				E41B1BF23052598700A467FA /* theme.swift */,
+				A7C20B0A4C2E5F6911D384A0 /* haptics.swift */,
 				E4696CBC3079ECDE006CA41F /* typography.swift */,
 				E4FBA6CA307ADCD800F6D5CC /* doctor-report-pdf.swift */,
 			);
@@ -611,6 +614,7 @@
 				E48EB4AB3079F8D500D14C23 /* home-hero-header.swift in Sources */,
 				E46F70193064E1750063F1FF /* discover-view.swift in Sources */,
 				E41B1C083052598800A467FA /* theme.swift in Sources */,
+				A7C20B0A4C2E5F6911D384A1 /* haptics.swift in Sources */,
 				E46F70283069C5200063F1FF /* userprofile.swift in Sources */,
 				E41B1C073052598800A467FA /* episode-log-view-model.swift in Sources */,
 				E4FBA6D1307B098000F6D5CC /* chipgrid.swift in Sources */,

@@ -27,6 +27,7 @@ final class AnalyticsViewModel: ObservableObject {
     func generateAIInsights() async {
         isAILoading = true
         errorMessage = nil
+        aiResult = nil
         
         do {
             // 1. get the current year and month

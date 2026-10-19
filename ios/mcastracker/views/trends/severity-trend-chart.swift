@@ -86,8 +86,8 @@ struct SeverityTrendChart: View {
                             AxisValueLabel()
                         }
                     }
-                    .chartXAxisLabel("Episode date")
-                    .chartYAxisLabel("Severity")
+                    .chartXAxisLabel("Date")
+                    .chartYAxisLabel("Severity (1–10)")
                     .chartYScale(domain: 1...10)
                     .chartPlotStyle { plot in
                         plot.background(Theme.primary.opacity(0.06))
@@ -98,6 +98,7 @@ struct SeverityTrendChart: View {
                     Text("The line connects logged episodes in date order; it does not represent values between them.")
                         .font(.nCaption)
                         .foregroundColor(Theme.textPrimary.opacity(0.7))
+                        .fixedSize(horizontal: false, vertical: true)
 
                     DisclosureGroup("Episode values") {
                         VStack(spacing: 0) {

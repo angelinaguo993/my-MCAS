@@ -282,6 +282,7 @@ struct DashboardView: View {
 
     private var recordButton: some View {
         Button {
+            Haptics.play(.light)
             showingEpisodeLog = true
         } label: {
             Label("Record Episode", systemImage: "plus.circle.fill")
@@ -291,6 +292,7 @@ struct DashboardView: View {
                 .background(Theme.accent)
                 .clipShape(RoundedRectangle(cornerRadius: Theme.cardCornerRadius, style: .continuous))
         }
+        .buttonStyle(ScaleSpringButtonStyle())
         .accessibilityHint("Opens a form to record an episode")
     }
 

@@ -246,6 +246,7 @@ struct EpisodeLogView: View {
 
     private var submitButton: some View {
         Button {
+            Haptics.play(.light)
             Task { 
                 await viewModel.submit(profileStore: profileStore) 
             }
@@ -259,6 +260,12 @@ struct EpisodeLogView: View {
                 .cornerRadius(Theme.cardCornerRadius)
         }
         .disabled(!viewModel.canSubmit || viewModel.isSubmitting)
+        .buttonStyle(ScaleSpringButtonStyle())
+        .onChange(of: viewModel.didSubmitSuccessfully) { didSucceed in
+            if didSucceed {
+                Haptics.notification(.success)
+            }
+        }
     }
 }
 

@@ -208,31 +208,20 @@ struct AnalyticsView: View {
             Text("Trigger Combinations")
                 .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
-            Text("How often pairs of triggers show up together in the same episode. Try to avoid being in contact with both of these triggers at the same time.")
+            Text("These triggers appeared together in some of your logged episodes.")
                 .font(.nCaption)
                 .foregroundColor(Theme.textPrimary.opacity(0.6))
 
             ForEach(pairs) { stat in
                 let parts = stat.name.split(separator: "+").map { $0.trimmingCharacters(in: .whitespaces) }
                 let formattedParts = parts.enumerated().map { index, rawPart -> String in
-                    let name = Trigger.from(rawValue: rawPart)?.displayName 
-                        ?? rawPart.replacingOccurrences(of: "_", with: " ").capitalized
-                    // Keep the first trigger capitalized, lowercase any subsequent triggers
+                    let name = Self.displayName(for: rawPart)
                     return index == 0 ? name : name.lowercased()
                 }
-
-                HStack {
-                    Image(systemName: "link")
-                        .foregroundColor(Theme.primary)
-                        .frame(width: 24)
-                    Text(formattedParts.joined(separator: " + "))
-                        .font(.nSubheadline)
-                        .foregroundColor(Theme.textPrimary)
-                    Spacer()
-                    Text("\(Int(stat.proportion * 100))%")
-                        .font(.nCaptionBold)
-                        .foregroundColor(Theme.accent)
-                }
+                PatternInsightCard(
+                    text: "In your logs, \(formattedParts.joined(separator: " + ")) frequently appeared together.",
+                    supportingText: "Reported in \(Int((stat.proportion * Double(stat.sampleSize)).rounded())) of \(stat.sampleSize) episodes."
+                )
             }
         }
         .cardStyle()
@@ -240,10 +229,10 @@ struct AnalyticsView: View {
 
     private func symptomTriggerPairsCard(_ pairs: [FrequencyStat]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Trigger → Symptom Patterns")
+            Text("Triggers & Symptoms in Your Logs")
                 .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
-            Text("Clear connections detected from your entries. The trigger on the left appears to lead to the symptom on the right in your logged episodes.")
+            Text("These are personal co-occurrences in your episode logs, not evidence that one causes the other.")
                 .font(.nCaption)
                 .foregroundColor(Theme.textPrimary.opacity(0.6))
 
@@ -252,21 +241,17 @@ struct AnalyticsView: View {
                 let triggerRaw = parts.first ?? ""
                 let symptomRaw = parts.count >= 2 ? parts[1] : stat.name
                 
-                let triggerName = Trigger.from(rawValue: triggerRaw)?.displayName 
-                    ?? triggerRaw.replacingOccurrences(of: "_", with: " ").capitalized
+                let triggerName = Self.displayName(for: triggerRaw)
                 
                 // Lowercase the symptom name so it reads naturally inside the sentence card
-                let symptomName = (SymptomCategory(rawValue: symptomRaw)?.displayName 
-                    ?? symptomRaw.replacingOccurrences(of: "_", with: " ").capitalized).lowercased()
+                let symptomName = Self.displayName(for: symptomRaw, isSymptom: true).lowercased()
                 
                 let occurrenceCount = Int((stat.proportion * Double(stat.sampleSize)).rounded())
                 let percentage = Int((stat.proportion * 100).rounded())
 
                 PatternInsightCard(
-                    triggerName: triggerName,
-                    topSymptom: symptomName,
-                    occurrenceCount: max(1, occurrenceCount),
-                    percentage: percentage
+                    text: "In your logs, \(triggerName) frequently appeared alongside \(symptomName).",
+                    supportingText: "Reported together in \(occurrenceCount) of \(stat.sampleSize) episodes (\(percentage)%)."
                 )
             }
         }
@@ -322,40 +307,32 @@ struct AnalyticsView: View {
         )
     }
 
-    private struct TriggerSymptomGroup {
-        let trigger: String
-        let symptoms: [FrequencyStat]
-    }
-
-    private func groupedByTrigger(_ pairs: [FrequencyStat]) -> [TriggerSymptomGroup] {
-        var buckets: [String: [FrequencyStat]] = [:]
-        for stat in pairs {
-            let parts = stat.name.split(separator: "→").map { $0.trimmingCharacters(in: .whitespaces) }
-            guard let trigger = parts.first else { continue }
-            buckets[trigger, default: []].append(stat)
+    private static func displayName(for rawValue: String, isSymptom: Bool = false) -> String {
+        if isSymptom, let symptom = SymptomCategory(rawValue: rawValue) {
+            return symptom.displayName
         }
-        return buckets.map { TriggerSymptomGroup(trigger: $0.key, symptoms: $0.value) }
-            .sorted { $0.symptoms.count > $1.symptoms.count }
-    }
-
-    private func symptomNameFromPair(_ raw: String) -> String {
-        let parts = raw.split(separator: "→").map { $0.trimmingCharacters(in: .whitespaces) }
-        guard parts.count == 2 else { return raw }
-        return SymptomCategory(rawValue: parts[1])?.displayName ?? parts[1]
+        if let trigger = Trigger.from(rawValue: rawValue) {
+            return trigger.displayName
+        }
+        return rawValue
+            .replacingOccurrences(of: "_", with: " ")
+            .split(separator: " ")
+            .map { $0.capitalized }
+            .joined(separator: " ")
     }
 
     private func severityByTriggerCard(_ stats: [SeverityComparisonStat]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Triggers That Make Episodes Worse")
+            Text("Severity in Episodes with These Triggers")
                 .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
-            Text("Average severity with this trigger present vs. without it")
+            Text("Average severity in episodes with and without each logged trigger")
                 .font(.nCaption)
                 .foregroundColor(Theme.textPrimary.opacity(0.6))
 
             ForEach(stats) { stat in
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(Trigger.from(rawValue: stat.name)?.displayName ?? stat.name)
+                    Text(Self.displayName(for: stat.name))
                         .font(.nSubheadline)
                         .foregroundColor(Theme.textPrimary)
                     HStack {
@@ -390,11 +367,23 @@ struct AnalyticsView: View {
             .cardStyle()
         } else if let aiResult = viewModel.aiResult {
             VStack(spacing: 16) {
-                Text("AI Insights")
-                    .font(.nTitle2)
-                    .foregroundColor(Theme.textPrimary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.top, 8)
+                HStack {
+                    Text("AI Insights")
+                        .font(.nTitle2)
+                        .foregroundColor(Theme.textPrimary)
+                    Spacer()
+                    Button {
+                        Haptics.play(.light)
+                        Task { await viewModel.generateAIInsights() }
+                    } label: {
+                        Label("Refresh", systemImage: "arrow.clockwise")
+                            .font(.nCaptionBold)
+                            .frame(minHeight: 44)
+                    }
+                    .buttonStyle(ScaleSpringButtonStyle())
+                    .accessibilityHint("Rechecks recent logged episodes for updated patterns")
+                }
+                .padding(.top, 8)
 
                 aiInsightCard(
                     title: "Triggers to Avoid", 
@@ -411,9 +400,10 @@ struct AnalyticsView: View {
                 )
                 aiInsightCard(
                     title: "What's New (Last 2 Weeks)",
-                    subtitle: "Recently appearing patterns compared with your earlier logs.",
+                    subtitle: "Symptom frequency changes and newly logged symptom–trigger pairings, compared with the prior 14 days.",
                     items: aiResult.whatsNew,
-                    icon: "sparkles"
+                    icon: "sparkles",
+                    emptyMessage: "No symptom frequency increases or new symptom–trigger pairings found in these 14-day windows of logged episodes."
                 )
                 weatherComparisonCard(aiResult.weatherInsights)
                 aiInsightCard(
@@ -450,7 +440,7 @@ struct AnalyticsView: View {
         }
     }
     
-    private func aiInsightCard(title: String, subtitle: String? = nil, items: [String], icon: String) -> some View {
+    private func aiInsightCard(title: String, subtitle: String? = nil, items: [String], icon: String, emptyMessage: String = "No specific patterns detected yet.") -> some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: icon)
@@ -467,7 +457,7 @@ struct AnalyticsView: View {
             }
             
             if items.isEmpty {
-                Text("No specific patterns detected yet.")
+                Text(emptyMessage)
                     .font(.nSubheadline)
                     .foregroundColor(Theme.textPrimary.opacity(0.7))
             } else {
@@ -526,33 +516,9 @@ struct AnalyticsView_Previews: PreviewProvider {
 }
 
 
-struct ScaleSpringButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .scaleEffect(configuration.isPressed ? 0.96 : 1.0)
-            .animation(.spring(response: 0.3, dampingFraction: 0.6), value: configuration.isPressed)
-    }
-}
-
-struct Haptics {
-    static func play(_ style: UIImpactFeedbackGenerator.FeedbackStyle) {
-        let generator = UIImpactFeedbackGenerator(style: style)
-        generator.prepare()
-        generator.impactOccurred()
-    }
-    
-    static func notification(_ type: UINotificationFeedbackGenerator.FeedbackType) {
-        let generator = UINotificationFeedbackGenerator()
-        generator.prepare()
-        generator.notificationOccurred(type)
-    }
-}
-
 struct PatternInsightCard: View {
-    let triggerName: String
-    let topSymptom: String
-    let occurrenceCount: Int
-    let percentage: Int
+    let text: String
+    let supportingText: String
     
     var body: some View {
         HStack(alignment: .center, spacing: 14) {
@@ -566,16 +532,10 @@ struct PatternInsightCard: View {
             }
             
             VStack(alignment: .leading, spacing: 4) {
-                Text("Key Correlation • \(percentage)% Match")
-                    .font(.caption2.bold())
-                    .foregroundColor(Theme.accent)
-                    .textCase(.uppercase)
-                
-                Text("**\(triggerName)** frequently leads to **\(topSymptom)**.")
+                Text(text)
                     .font(.nSubheadline)
                     .foregroundColor(Theme.textPrimary)
-                
-                Text("Observed across \(occurrenceCount) logged episodes.")
+                Text(supportingText)
                     .font(.nCaption)
                     .foregroundColor(Theme.textPrimary.opacity(0.6))
             }
