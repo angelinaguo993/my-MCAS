@@ -52,27 +52,46 @@ struct EpisodeLogView: View {
     // MARK: Date
 
     private var dateSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 14) {
             Text("Date and time of episode")
                 .font(.nHeadline)
                 .foregroundColor(Theme.textPrimary)
 
-            DatePicker(
-                "Starts",
-                selection: $viewModel.episodeDate,
-                in: ...Date(),
-                displayedComponents: [.date, .hourAndMinute]
-            )
-            .datePickerStyle(.compact)
-            .tint(Theme.primary)
-            DatePicker(
-                "Ends",
-                selection: $viewModel.episodeEndDate,
-                in: viewModel.episodeDate...Date(),
-                displayedComponents: [.date, .hourAndMinute]
-            )
-            .datePickerStyle(.compact)
-            .tint(Theme.primary)
+            // Starts
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Starts")
+                    .font(.nSubheadline)
+                    .foregroundColor(Theme.textPrimary.opacity(0.7))
+                HStack(spacing: 12) {
+                    DatePicker("Start Date", selection: $viewModel.episodeDate, in: ...Date(), displayedComponents: [.date])
+                        .labelsHidden()
+                        .datePickerStyle(.compact)
+                        .tint(Theme.primary)
+                    
+                    DatePicker("Start Time", selection: $viewModel.episodeDate, displayedComponents: [.hourAndMinute])
+                        .labelsHidden()
+                        .datePickerStyle(.compact)
+                        .tint(Theme.primary)
+                }
+            }
+
+            // Ends
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Ends")
+                    .font(.nSubheadline)
+                    .foregroundColor(Theme.textPrimary.opacity(0.7))
+                HStack(spacing: 12) {
+                    DatePicker("End Date", selection: $viewModel.episodeEndDate, in: min(viewModel.episodeDate, viewModel.episodeEndDate)...Date(), displayedComponents: [.date])
+                        .labelsHidden()
+                        .datePickerStyle(.compact)
+                        .tint(Theme.primary)
+                    
+                    DatePicker("End Time", selection: $viewModel.episodeEndDate, in: min(viewModel.episodeDate, viewModel.episodeEndDate)...Date(), displayedComponents: [.hourAndMinute])
+                        .labelsHidden()
+                        .datePickerStyle(.compact)
+                        .tint(Theme.primary)
+                }
+            }
         }
         .cardStyle()
     }
