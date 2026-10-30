@@ -65,7 +65,7 @@ struct EpisodeDetailView: View {
 
     private func deleteEpisode() {
         isDeleting = true
-        Task {
+        Task { @MainActor in
             do {
                 try await APIClient.shared.deleteEpisode(id: episode.id)
                 onDelete(episode)
